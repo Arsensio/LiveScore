@@ -49,8 +49,10 @@ public class TeamStatisticsServiceImpl {
         )).toDTO();
     }
 
-    public TeamStatisticsDTO putIndividual(Long id, SaveTeamStatisticsDTO saveTeamStatisticsDTO) {
-        teamStatisticsRepository.findById(id).ifPresentOrElse(teamStatisticsEntity -> {
+    public TeamStatisticsDTO putIndividual(Long groupId, Long teamId, SaveTeamStatisticsDTO saveTeamStatisticsDTO) {
+        TeamStatisticsEntity teamStatisticsEntity = teamStatisticsRepository.findTeamStatisticsEntityById(new TeamStatisticsEntityPK(groupRepository.findById(groupId).get(),teamRepository.findById(teamId).get()));
+        System.out.println("##############"+teamStatisticsEntity);
+        if (teamStatisticsEntity !=null){
             teamStatisticsEntity.setGamePlayed(saveTeamStatisticsDTO.getGamePlayed());
             teamStatisticsEntity.setWinCount(saveTeamStatisticsDTO.getWinCount());
             teamStatisticsEntity.setDrawCount(saveTeamStatisticsDTO.getDrawCount());
@@ -59,12 +61,12 @@ public class TeamStatisticsServiceImpl {
             teamStatisticsEntity.setGoalMissed(saveTeamStatisticsDTO.getGoalMissed());
             teamStatisticsEntity.setPoints(saveTeamStatisticsDTO.getPoints());
             teamStatisticsRepository.saveAndFlush(teamStatisticsEntity);
-        }, () -> {
+        }else {
             throw new ResourceNotFoundException("There is no such Team Id");
-        });
+        }
 
 
-        return teamStatisticsRepository.findById(id).get().toDTO();
+        return teamStatisticsRepository.findTeamStatisticsEntityById(new TeamStatisticsEntityPK(groupRepository.findById(groupId).get(),teamRepository.findById(teamId).get())).toDTO();
     }
 
     public void deleteIndividual(Long id) {

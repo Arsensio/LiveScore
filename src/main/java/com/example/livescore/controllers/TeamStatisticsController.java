@@ -29,9 +29,9 @@ public class TeamStatisticsController {
         return teamStatisticsService.getAll(id);
     }
 
-    @PutMapping("/{id}")
-    public TeamStatisticsDTO update(@PathVariable Long id, @RequestBody SaveTeamStatisticsDTO teamStatisticsDTO){
-        return teamStatisticsService.putIndividual(id,teamStatisticsDTO);
+    @PutMapping
+    public TeamStatisticsDTO update(@RequestParam("group") Long group,@RequestParam("team") Long team, @RequestBody SaveTeamStatisticsDTO teamStatisticsDTO){
+        return teamStatisticsService.putIndividual(group,team,teamStatisticsDTO);
     }
 
     @PostMapping
