@@ -5,7 +5,6 @@ import com.example.livescore.service.TeamStatisticsServiceImpl;
 import com.example.livescore.web.teamStatistics.InitTeamStatistics;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
-import com.example.livescore.web.teamStatistics.TeamStatisticsPkDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -11,9 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamStatisticsDTO {
-
-    private String group_name;
     private String groupName;
+    private String teamName;
     private Integer gamePlayed;
     private Integer winCount;
     private Integer drawCount;

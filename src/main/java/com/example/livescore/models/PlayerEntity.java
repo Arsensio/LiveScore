@@ -29,21 +29,17 @@ public class PlayerEntity {
     @JoinColumn(name = "team_id", referencedColumnName = "team_id")
     private TeamEntity team;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "surname")
     private String surname;
 
     @Column(name = "player_number")
     private Integer playerNumber;
 
-    @Column
+    @Column(name = "role")
     private String role;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "player")
-    List<EventEntity> event = new ArrayList<>();
 
     public PlayerDTO toDTO() {
         return new PlayerDTO(

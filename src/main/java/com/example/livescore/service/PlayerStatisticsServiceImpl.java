@@ -1,10 +1,13 @@
 package com.example.livescore.service;
 
 
-import com.example.livescore.models.PlayerEntity;
+import com.example.livescore.exceptions.ResourceNotFoundException;
 import com.example.livescore.models.PlayerStatisticsEntity;
+import com.example.livescore.models.PlayerStatisticsEntityPK;
+import com.example.livescore.store.GroupRepository;
 import com.example.livescore.store.PlayerRepository;
 import com.example.livescore.store.PlayerStatisticsRepository;
+import com.example.livescore.web.playerStatistics.InitPlayerStatisticDTO;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.playerStatistics.SavePlayerStatisticsDTO;
 import lombok.RequiredArgsConstructor;
@@ -15,32 +18,51 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PlayerStatisticsServiceImpl implements MainService<SavePlayerStatisticsDTO, PlayerStatisticsDTO>{
+public class PlayerStatisticsServiceImpl {
 
     private final PlayerStatisticsRepository playerStatisticsRepository;
+    private final GroupRepository groupRepository;
+    private final PlayerRepository playerRepository;
 
-    @Override
-    public List<PlayerStatisticsDTO> getAll() {
-        return playerStatisticsRepository.findAll().stream().map(PlayerStatisticsEntity::toDTO).collect(Collectors.toList());
+    public List<PlayerStatisticsDTO> getAllByGoal(Long groupId) {
+        return playerStatisticsRepository.getPlayerStatisticsEntitiesByGroupIdAndGoals(groupId).stream().map(PlayerStatisticsEntity::toDTO).collect(Collectors.toList());
     }
 
-    @Override
-    public PlayerStatisticsDTO getIndividual(Long id) {
-        return playerStatisticsRepository.getReferenceById(id).toDTO();
+    public PlayerStatisticsDTO getIndividual(Long group, Long player) {
+        return playerStatisticsRepository.findPlayerStatisticsEntitiesById(new PlayerStatisticsEntityPK(groupRepository.findById(group).get(), playerRepository.findById(player).get())).toDTO();
     }
 
-    @Override
-    public PlayerStatisticsDTO postIndividual(SavePlayerStatisticsDTO savePlayerStatisticsDTO) {
-        return null;
+    public PlayerStatisticsDTO postIndividual(InitPlayerStatisticDTO initPlayerStatisticDTO) {
+        return playerStatisticsRepository.save(new PlayerStatisticsEntity(
+                new PlayerStatisticsEntityPK(groupRepository.findById(initPlayerStatisticDTO.getGroupId()).get(), playerRepository.findById(initPlayerStatisticDTO.getPlayerId()).get()),
+                0L,
+                0L,
+                0L,
+                0L,
+                0L
+        )).toDTO();
     }
 
-    @Override
-    public PlayerStatisticsDTO putIndividual(Long id, SavePlayerStatisticsDTO savePlayerStatisticsDTO) {
-        return null;
+    public PlayerStatisticsDTO putIndividual(Long group, Long player, SavePlayerStatisticsDTO savePlayerStatisticsDTO) {
+        PlayerStatisticsEntity playerStatistics = playerStatisticsRepository.findPlayerStatisticsEntitiesById(new PlayerStatisticsEntityPK(groupRepository.findById(group).get(), playerRepository.findById(player).get()));
+        if (playerStatistics != null) {
+            playerStatistics.setMatchPlayed(savePlayerStatisticsDTO.getMatchPlayed());
+            playerStatistics.setAssists(savePlayerStatisticsDTO.getAssists());
+            playerStatistics.setYellowCard(savePlayerStatisticsDTO.getYellowCard());
+            playerStatistics.setRedCard(savePlayerStatisticsDTO.getRedCard());
+            playerStatistics.setGoals(savePlayerStatisticsDTO.getGoals());
+            playerStatisticsRepository.saveAndFlush(playerStatistics);
+        } else {
+            throw new ResourceNotFoundException("There is no such Players Statistics");
+        }
+        return playerStatistics.toDTO();
     }
 
-    @Override
     public void deleteIndividual(Long id) {
+        playerStatisticsRepository.deleteById(id);
+    }
 
+    public List<PlayerStatisticsDTO> getAllByAssists(Long groupId) {
+        return playerStatisticsRepository.getPlayerStatisticsEntitiesByGroupIdAndAssists(groupId).stream().map(PlayerStatisticsEntity::toDTO).collect(Collectors.toList());
     }
 }

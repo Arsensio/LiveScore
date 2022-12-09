@@ -12,15 +12,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SavePlayerStatisticsDTO {
 
-    private Long id;
+    private Long matchPlayed;
 
-    private Integer matchPlayed;
+    private Long goals;
 
-    private Integer goals;
+    private Long assists;
 
-    private Integer assists;
+    private Long yellowCard;
 
-    private Integer yellowCard;
-
-    private Integer redCard;
+    private Long redCard;
 }
