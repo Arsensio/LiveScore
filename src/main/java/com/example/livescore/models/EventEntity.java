@@ -14,9 +14,19 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "events")
 public class EventEntity {
-    @EmbeddedId
-    private EventPk protocolId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
+    private Long eventId;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "protocol_id", referencedColumnName = "protocol_id")
+    private ProtocolEntity protocol;
+
+    @Column(name = "event_name")
+    private String eventName;
 
     @ManyToOne
     @JoinColumn(name = "player_id", referencedColumnName = "player_id")
@@ -25,15 +35,13 @@ public class EventEntity {
     @Column(name ="minute")
     private Integer minute;
 
-    @Column(name = "event_name")
-    private String eventName;
-
     public EventDTO toDTO() {
         return new EventDTO(
-                protocolId.getProtocolId(),
+                eventId,
+                protocol.getProtocolId(),
+                eventName,
                 player.getName(),
-                minute,
-                eventName
+                minute
         );
     }
 }
