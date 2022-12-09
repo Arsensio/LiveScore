@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveProtocolDTO {
+    private Long gameId;
     private Long team1Id;
     private Long team2Id;
     private LocalDateTime dateAndTime;

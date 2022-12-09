@@ -24,8 +24,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ProtocolEntity {
 
-    public ProtocolEntity(Long protocolId, TeamEntity team1, TeamEntity team2, LocalDateTime dateAndTime, int team1Score, int team2Score) {
+    public ProtocolEntity(Long protocolId, GameEntity game, TeamEntity team1, TeamEntity team2, LocalDateTime dateAndTime, int team1Score, int team2Score) {
         this.protocolId = protocolId;
+        this.game = game;
         this.team1 = team1;
         this.team2 = team2;
         this.dateAndTime = dateAndTime;
@@ -38,9 +39,8 @@ public class ProtocolEntity {
     @Column(name = "protocol_id", nullable = false)
     private Long protocolId;
 
-//    @OneToOne(mappedBy = "protocol")
-//    @JoinColumn(name = "game_id", referencedColumnName = "game_id")
-//    private GameEntity game;
+    @OneToOne(mappedBy = "protocol")
+    private GameEntity game;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_1_id", referencedColumnName = "team_id")
