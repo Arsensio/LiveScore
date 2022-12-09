@@ -13,12 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProtocolDTO {
-
     private Long protocolId;
-    private Long gameId;
     private String team1;
     private String team2;
     private LocalDateTime dateAndTime;
-    private boolean isFinished;
-
+    private String gameScore;
 }

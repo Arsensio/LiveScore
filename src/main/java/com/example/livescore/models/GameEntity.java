@@ -39,7 +39,11 @@ public class GameEntity {
         return new GameDTO(
                 gameId,
                 isPlayed,
-                protocol.getGameScore()
+                getGameScoreFromProtocol()
         );
+    }
+
+    private String getGameScoreFromProtocol() {
+        return protocol.getTeam1Score() + ":" + protocol.getTeam2Score();
     }
 }
