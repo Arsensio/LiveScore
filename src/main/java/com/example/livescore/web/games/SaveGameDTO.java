@@ -10,9 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveGameDTO {
-
-    private Long gameId;
+    private Long groupId;
+    private Long protocolId;
     private boolean isPlayed;
-    private String gameScore;
-
 }

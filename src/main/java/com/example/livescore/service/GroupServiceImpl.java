@@ -32,7 +32,6 @@ public class GroupServiceImpl implements MainService<SaveGroupDTO, GroupDTO> {
 
     @Override
     public GroupDTO postIndividual(SaveGroupDTO saveGroupDTO) {
-
         return groupRepository.save(new GroupEntity(
                 null,
                 tournamentRepository.findById(saveGroupDTO.getTournamentId()).get(),
