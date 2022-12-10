@@ -51,7 +51,6 @@ public class TeamStatisticsServiceImpl {
 
     public TeamStatisticsDTO putIndividual(Long groupId, Long teamId, SaveTeamStatisticsDTO saveTeamStatisticsDTO) {
         TeamStatisticsEntity teamStatisticsEntity = teamStatisticsRepository.findTeamStatisticsEntityById(new TeamStatisticsEntityPK(groupRepository.findById(groupId).get(),teamRepository.findById(teamId).get()));
-        System.out.println("##############"+teamStatisticsEntity);
         if (teamStatisticsEntity !=null){
             teamStatisticsEntity.setGamePlayed(saveTeamStatisticsDTO.getGamePlayed());
             teamStatisticsEntity.setWinCount(saveTeamStatisticsDTO.getWinCount());

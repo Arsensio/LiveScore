@@ -31,15 +31,19 @@ public class GameEntity {
     @JoinColumn(name = "group_id", referencedColumnName = "group_id")
     private GroupEntity group;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "protocol_id", referencedColumnName = "protocol_id")
     private ProtocolEntity protocol;
 
     public GameDTO toDTO() {
         return new GameDTO(
                 gameId,
-                isPlayed,
-                getGameScoreFromProtocol()
+                group.getGroupId(),
+                1L,
+//                protocol.getProtocolId(),
+                "0:0",
+                isPlayed
+//                getGameScoreFromProtocol()
         );
     }
 

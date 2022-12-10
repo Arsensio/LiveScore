@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GameServiceImpl implements MainService<SaveGameDTO, GameDTO>{
+public class GameServiceImpl implements GameService{
 
     private final GameRepository gameRepository;
     private final GroupRepository groupRepository;
     private final ProtocolRepository protocolRepository;
 
     @Override
-    public List<GameDTO> getAll() {
-        return gameRepository.findAll().stream().map(GameEntity::toDTO).collect(Collectors.toList());
+    public List<GameDTO> getAllGamesOfGroup(Long groupId) {
+        return gameRepository.getGameEntitiesByGroupGroupId(groupId).stream().map(GameEntity::toDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -31,42 +31,43 @@ public class GameServiceImpl implements MainService<SaveGameDTO, GameDTO>{
     }
 
 
-    // протокол создается после создания игры, поэтому передавать айди не получиться, продумать этот момент
-    // найти более оптимальный способ хранения группы, нежели чем постоянно передавать
-    /** игра создается до того как будет сыграна, поэтому:
-     * isPlayed = false
+    /**
+     *      игра создается до того как будет сыграна, поэтому:
+     *      isPlayed = false
+     *      protocol = null
      * */
     @Override
     public GameDTO postIndividual(SaveGameDTO saveGameDTO) {
-//        return gameRepository.save(
-//                new GameEntity(
-//                        null,
-//                        false,
-//                        groupRepository.getReferenceById(saveGameDTO.getGroupId()),
-//                        protocolRepository.getReferenceById(saveGameDTO.getProtocol())
-//                )
-//        ).toDTO();
-        return null;
-
+        return gameRepository.save(
+                new GameEntity(
+                        null,
+                        false,
+                        groupRepository.getReferenceById(saveGameDTO.getGroupId()),
+                        null
+                )
+        ).toDTO();
     }
+
 
     @Override
     public GameDTO putIndividual(Long id, SaveGameDTO saveGameDTO) {
-//        return gameRepository.save(
-//                new GameEntity(
-//                        id,
-//                        saveGameDTO.getIsPlayed(),
-//                        "",
-//                        groupRepository.getReferenceById(saveGameDTO.getGroupId()),
-//                        protocolRepository.getReferenceById(saveGameDTO.getProtocol())
-//                )
-//        ).toDTO();
-        return null;
+        System.out.println("============================================================");
+        System.out.println(saveGameDTO.isPlayed());
+        System.out.println("============================================================");
 
+
+        return gameRepository.save(
+                new GameEntity(
+                        id,
+                        saveGameDTO.isPlayed(),
+                        groupRepository.getReferenceById(saveGameDTO.getGroupId()),
+                        protocolRepository.getReferenceById(saveGameDTO.getProtocolId())
+                )
+        ).toDTO();
     }
 
     @Override
     public void deleteIndividual(Long id) {
-
+        gameRepository.deleteById(id);
     }
 }
