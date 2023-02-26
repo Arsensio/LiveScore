@@ -1,6 +1,6 @@
 package com.example.core.dto;
 
-public interface AbstractEntity<D> {
+public abstract class AbstractEntity<D> {
 
-    D toDTO();
+    public abstract D toDTO();
 }

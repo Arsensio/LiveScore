@@ -8,15 +8,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 
 /**
- *
- * @param <S> - Service
- * @param <D> - DTO
+ * @param <S>  - Service
+ * @param <D>  - DTO
  * @param <D2> - SaveDTO
  */
 
-public abstract class AbstractController<S extends Service<D,D2>,D,D2> implements Controller<D,D2> {
+public abstract class AbstractController<S extends Service<D, D2>, D, D2> implements Controller<D, D2> {
 
-    S service;
+    protected final S service;
 
     public AbstractController(S service) {
         this.service = service;
@@ -24,7 +23,7 @@ public abstract class AbstractController<S extends Service<D,D2>,D,D2> implement
 
     @Override
     public ResponseEntity<List<D>> getAll() {
-        return new ResponseEntity<>(service.getAll(),HttpStatus.OK);
+        return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
 
     @Override
@@ -39,11 +38,11 @@ public abstract class AbstractController<S extends Service<D,D2>,D,D2> implement
 
     @Override
     public ResponseEntity<D> put(long id, D2 dto) {
-        return new ResponseEntity<>(service.update(id,dto),HttpStatus.OK);
+        return new ResponseEntity<>(service.update(id, dto), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<D> delete(long id) {
-        return new ResponseEntity<>(service.delete(id),HttpStatus.OK);
+        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
     }
 }

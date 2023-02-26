@@ -1,0 +1,16 @@
+package com.example.livescore2.web.teams;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class TeamDTO {
+    private Long teamId;
+    private String teamName;
+    private String teamLogo;
+}

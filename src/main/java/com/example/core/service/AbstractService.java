@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractService<E extends AbstractEntity<D>, D, S, R extends JpaRepository<E, Long>> implements Service<D, S> {
 
-    R repository;
+    protected final R repository;
 
     public AbstractService(R repository) {
         this.repository = repository;
