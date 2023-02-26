@@ -26,5 +26,4 @@ public class PlayerStatisticsEntityPK implements Serializable {
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
 
-
 }
