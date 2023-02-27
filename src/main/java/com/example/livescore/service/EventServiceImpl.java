@@ -1,13 +1,14 @@
 package com.example.livescore.service;
 
-import com.example.livescore.enums.EventNames;
-import com.example.livescore.models.EventEntity;
-import com.example.livescore.models.ProtocolEntity;
-import com.example.livescore.models.TeamStatisticsEntity;
-import com.example.livescore.models.TeamStatisticsEntityPK;
-import com.example.livescore.store.*;
-import com.example.livescore.web.events.EventDTO;
-import com.example.livescore.web.events.SaveEventDTO;
+import com.example.livescore.store.EventRepository;
+import com.example.livescore.store.PlayerRepository;
+import com.example.livescore.store.ProtocolRepository;
+import com.example.livescore.store.TeamStatisticsRepository;
+import com.example.livescore2.models.EventEntity;
+import com.example.livescore2.models.ProtocolEntity;
+import com.example.livescore2.models.TeamStatisticsEntityPK;
+import com.example.livescore2.web.events.EventDTO;
+import com.example.livescore2.web.events.SaveEventDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

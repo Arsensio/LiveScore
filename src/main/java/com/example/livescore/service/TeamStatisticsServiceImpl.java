@@ -1,7 +1,6 @@
 package com.example.livescore.service;
 
 
-import com.example.livescore.exceptions.ResourceNotFoundException;
 import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
 import com.example.livescore.store.GroupRepository;
@@ -10,7 +9,7 @@ import com.example.livescore.store.TeamStatisticsRepository;
 import com.example.livescore.web.teamStatistics.InitTeamStatistics;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
-import com.example.livescore.web.teamStatistics.TeamStatisticsPkDTO;
+import com.example.livescore2.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,11 @@
 package com.example.livescore.service;
 
-import com.example.livescore.exceptions.ResourceNotFoundException;
-import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.PlayerEntity;
 import com.example.livescore.store.PlayerRepository;
 import com.example.livescore.store.TeamRepository;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
+import com.example.livescore2.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
