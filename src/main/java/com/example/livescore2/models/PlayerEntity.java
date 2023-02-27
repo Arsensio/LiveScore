@@ -1,7 +1,8 @@
 package com.example.livescore2.models;
 
 
-import com.example.livescore.web.players.PlayerDTO;
+import com.example.core.dto.AbstractEntity;
+import com.example.livescore2.web.players.PlayerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerEntity {
+public class PlayerEntity extends AbstractEntity<PlayerDTO> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,7 @@ public class PlayerEntity {
     @Column(name = "role")
     private String role;
 
+    @Override
     public PlayerDTO toDTO() {
         return new PlayerDTO(
                 playerId,

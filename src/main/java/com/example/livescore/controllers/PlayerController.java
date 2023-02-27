@@ -12,34 +12,34 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/players")
+//@RequestMapping("/players")
 public class PlayerController {
 
-    private final PlayerServiceImpl playerService;
-
-    @GetMapping("/{id}")
-    public PlayerDTO findOne(@PathVariable Long id) throws Throwable {
-        return playerService.getIndividual(id);
-    }
-
-    @GetMapping
-    public List<PlayerDTO> findAll() {
-        return playerService.getAll();
-    }
-
-    @PostMapping
-    public PlayerDTO save(@RequestBody SavePlayerDTO savePlayerDTO) {
-        return playerService.postIndividual(savePlayerDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        playerService.deleteIndividual(id);
-    }
-
-    @PutMapping("/{id}")
-    public PlayerDTO update(@PathVariable Long id, @RequestBody SavePlayerDTO savePlayerDTO) {
-        return playerService.putIndividual(id, savePlayerDTO);
-    }
+//    private final PlayerServiceImpl playerService;
+//
+//    @GetMapping("/{id}")
+//    public PlayerDTO findOne(@PathVariable Long id) throws Throwable {
+//        return playerService.getIndividual(id);
+//    }
+//
+//    @GetMapping
+//    public List<PlayerDTO> findAll() {
+//        return playerService.getAll();
+//    }
+//
+//    @PostMapping
+//    public PlayerDTO save(@RequestBody SavePlayerDTO savePlayerDTO) {
+//        return playerService.postIndividual(savePlayerDTO);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public void delete(@PathVariable Long id) {
+//        playerService.deleteIndividual(id);
+//    }
+//
+//    @PutMapping("/{id}")
+//    public PlayerDTO update(@PathVariable Long id, @RequestBody SavePlayerDTO savePlayerDTO) {
+//        return playerService.putIndividual(id, savePlayerDTO);
+//    }
 
 }

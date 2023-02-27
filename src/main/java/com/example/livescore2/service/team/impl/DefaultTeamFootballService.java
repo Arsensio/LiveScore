@@ -4,12 +4,14 @@ import com.example.core.service.AbstractFootballService;
 import com.example.livescore2.exceptions.ResourceNotFoundException;
 import com.example.livescore2.models.TeamEntity;
 import com.example.livescore2.repository.TeamRepository;
+import com.example.livescore2.service.team.TeamFootballService;
 import com.example.livescore2.web.teams.SaveTeamDTO;
+import com.example.livescore2.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultTeamFootballService extends AbstractFootballService<
-        TeamEntity, com.example.livescore2.web.teams.TeamDTO, SaveTeamDTO, TeamRepository>
+        TeamEntity, TeamDTO, SaveTeamDTO, TeamRepository>
         implements TeamFootballService {
 
     public DefaultTeamFootballService(TeamRepository repository) {
