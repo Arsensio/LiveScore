@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/player")
-public class DefaultPlayerController extends AbstractFootballController<PlayerService, PlayerDTO, SavePlayerDTO> implements PlayerController {
+public class DefaultPlayerController extends AbstractFootballController<PlayerService, PlayerDTO, SavePlayerDTO,Long> implements PlayerController {
 
     public DefaultPlayerController(PlayerService service) {
         super(service);

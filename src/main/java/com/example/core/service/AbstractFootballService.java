@@ -19,7 +19,7 @@ public abstract class AbstractFootballService<
         E extends AbstractEntity<D>,
         D, S, P,
         R extends JpaRepository<E, P>>
-        implements FootballService<D, S> {
+        implements FootballService<D, S,P> {
 
     protected final R repository;
 
@@ -33,12 +33,12 @@ public abstract class AbstractFootballService<
     }
 
     @Override
-    public D findById(long id) {
+    public D findById(P id) {
         return repository.getReferenceById(id).toDTO();
     }
 
     @Override
-    public D delete(long id) {
+    public D delete(P id) {
         E referenceById = repository.getReferenceById(id);
         repository.deleteById(id);
         return referenceById.toDTO();
@@ -50,7 +50,7 @@ public abstract class AbstractFootballService<
     }
 
     @Override
-    public D update(long id, S dto) {
+    public D update(P id, S dto) {
         return null;
     }
 }

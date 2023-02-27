@@ -6,15 +6,15 @@ import java.util.List;
  * @param <D> - our DTO         //todo: dopisat docu normalno
  * @param <S> - Save DTO
  */
-public interface FootballService<D, S> {
+public interface FootballService<D, S, P> {
 
     List<D> getAll();
 
-    D findById(long id);
+    D findById(P id);
 
     D save(S dto);
 
-    D update(long id, S dto);
+    D update(P id, S dto);
 
-    D delete(long id);
+    D delete(P id);
 }

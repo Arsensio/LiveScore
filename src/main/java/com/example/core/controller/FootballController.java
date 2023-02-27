@@ -11,15 +11,15 @@ import java.util.List;
  * @param <D>
  * @param <S>
  */
-public interface FootballController<D,S> {
+public interface FootballController<D,S,P> {
 
     ResponseEntity<List<D>> getAll();
 
-    ResponseEntity<D> findById(long id);
+    ResponseEntity<D> findById(P id);
 
     ResponseEntity<D> save(@RequestBody S dto);
 
-    ResponseEntity<D> put(@PathVariable long id, @RequestBody S dto);
+    ResponseEntity<D> put(@PathVariable P id, @RequestBody S dto);
 
-    ResponseEntity<D> delete(@PathVariable long id);
+    ResponseEntity<D> delete(@PathVariable P id);
 }
