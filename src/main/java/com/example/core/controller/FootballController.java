@@ -6,7 +6,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-public interface Controller<D,S> {
+/**
+ * //todo: dopisat docu normalno
+ * @param <D>
+ * @param <S>
+ */
+public interface FootballController<D,S> {
 
     ResponseEntity<List<D>> getAll();
 

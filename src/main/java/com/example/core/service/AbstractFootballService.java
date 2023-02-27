@@ -2,15 +2,28 @@ package com.example.core.service;
 
 import com.example.core.dto.AbstractEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractService<E extends AbstractEntity<D>, D, S, R extends JpaRepository<E, Long>> implements Service<D, S> {
+/**
+ * //todo: dopisat docu normalno
+ * @param <E>
+ * @param <D>
+ * @param <S>
+ * @param <R>
+ */
+@Service
+public abstract class AbstractFootballService<
+        E extends AbstractEntity<D>,
+        D, S,
+        R extends JpaRepository<E, Long>>
+        implements FootballService<D, S> {
 
     protected final R repository;
 
-    public AbstractService(R repository) {
+    public AbstractFootballService(R repository) {
         this.repository = repository;
     }
 
