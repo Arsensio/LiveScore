@@ -1,11 +1,10 @@
 package com.example.livescore2.service;
 
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.exceptions.ResourceNotFoundException;
+import com.example.livescore2.exceptions.ResourceNotFoundException;
 import com.example.livescore2.models.TeamEntity;
 import com.example.livescore2.repository.TeamRepository;
 import com.example.livescore2.web.teams.SaveTeamDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

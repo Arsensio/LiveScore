@@ -1,4 +1,4 @@
-package com.example.livescore.exceptions;
+package com.example.livescore2.exceptions;
 
 
 public class ResourceNotFoundException extends RuntimeException{

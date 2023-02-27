@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public abstract class AbstractFootballService<
         E extends AbstractEntity<D>,
-        D, S,
-        R extends JpaRepository<E, Long>>
+        D, S, P,
+        R extends JpaRepository<E, P>>
         implements FootballService<D, S> {
 
     protected final R repository;
@@ -42,5 +42,15 @@ public abstract class AbstractFootballService<
         E referenceById = repository.getReferenceById(id);
         repository.deleteById(id);
         return referenceById.toDTO();
+    }
+
+    @Override
+    public D save(S dto) {
+        return null;
+    }
+
+    @Override
+    public D update(long id, S dto) {
+        return null;
     }
 }
