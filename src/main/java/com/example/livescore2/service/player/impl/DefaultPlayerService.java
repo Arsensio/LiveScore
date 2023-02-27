@@ -2,7 +2,7 @@ package com.example.livescore2.service.player.impl;
 
 
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.exceptions.ResourceNotFoundException;
+import com.example.livescore2.exceptions.ResourceNotFoundException;
 import com.example.livescore2.models.PlayerEntity;
 import com.example.livescore2.repository.PlayerRepository;
 import com.example.livescore2.repository.TeamRepository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, PlayerDTO, SavePlayerDTO, PlayerRepository> implements PlayerService {
+public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, PlayerDTO, SavePlayerDTO,Long, PlayerRepository> implements PlayerService {
 
     private final TeamRepository teamRepository;
 
@@ -35,7 +35,7 @@ public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, 
     }
 
     @Override
-    public PlayerDTO update(long id, SavePlayerDTO savePlayerDTO) {
+    public PlayerDTO update(Long id, SavePlayerDTO savePlayerDTO) {
         repository.findById(id).ifPresentOrElse(playerEntity -> {
             playerEntity.setName(savePlayerDTO.getName());
             playerEntity.setSurname(savePlayerDTO.getSurname());
