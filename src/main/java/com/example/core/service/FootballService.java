@@ -3,10 +3,10 @@ package com.example.core.service;
 import java.util.List;
 
 /**
- * @param <D> - our DTO
+ * @param <D> - our DTO         //todo: dopisat docu normalno
  * @param <S> - Save DTO
  */
-public interface Service<D, S> {
+public interface FootballService<D, S> {
 
     List<D> getAll();
 

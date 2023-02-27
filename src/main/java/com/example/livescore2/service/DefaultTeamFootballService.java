@@ -1,20 +1,24 @@
 package com.example.livescore2.service;
 
-import com.example.core.service.AbstractService;
+import com.example.core.service.AbstractFootballService;
 import com.example.livescore.exceptions.ResourceNotFoundException;
 import com.example.livescore2.models.TeamEntity;
 import com.example.livescore2.repository.TeamRepository;
 import com.example.livescore2.web.teams.SaveTeamDTO;
-import com.example.livescore2.web.teams.TeamDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class DefaultTeamService extends AbstractService<TeamEntity, TeamDTO, SaveTeamDTO, TeamRepository> implements TeamService {
+@Service
+public class DefaultTeamFootballService extends AbstractFootballService<
+        TeamEntity, com.example.livescore2.web.teams.TeamDTO, SaveTeamDTO, TeamRepository>
+        implements TeamFootballService {
 
-    public DefaultTeamService(TeamRepository repository) {
+    public DefaultTeamFootballService(TeamRepository repository) {
         super(repository);
     }
 
     @Override
-    public TeamDTO save(SaveTeamDTO saveTeamDTO) {
+    public com.example.livescore2.web.teams.TeamDTO save(SaveTeamDTO saveTeamDTO) {
         TeamEntity saved = repository.save(new TeamEntity(
                         null,
                         saveTeamDTO.getTeamName(),
@@ -27,7 +31,7 @@ public class DefaultTeamService extends AbstractService<TeamEntity, TeamDTO, Sav
     }
 
     @Override
-    public TeamDTO update(long id, SaveTeamDTO saveTeamDTO) {
+    public com.example.livescore2.web.teams.TeamDTO update(long id, SaveTeamDTO saveTeamDTO) {
         repository.findById(id).ifPresentOrElse(team -> {
             team.setTeamName(saveTeamDTO.getTeamName());
             team.setTeamLogo(saveTeamDTO.getTeamLogo());
