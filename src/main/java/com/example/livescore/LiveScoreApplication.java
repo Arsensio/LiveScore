@@ -10,5 +10,4 @@ public class LiveScoreApplication {
         SpringApplication.run(LiveScoreApplication.class, args);
         System.out.println("Hello world");
     }
-
 }

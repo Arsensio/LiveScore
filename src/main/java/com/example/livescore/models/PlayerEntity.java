@@ -1,16 +1,14 @@
 package com.example.livescore.models;
 
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.players.PlayerDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "players")
@@ -18,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerEntity {
+public class PlayerEntity extends AbstractEntity<PlayerDTO> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +39,7 @@ public class PlayerEntity {
     @Column(name = "role")
     private String role;
 
+    @Override
     public PlayerDTO toDTO() {
         return new PlayerDTO(
                 playerId,

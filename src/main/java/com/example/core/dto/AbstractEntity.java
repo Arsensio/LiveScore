@@ -1,7 +1,8 @@
 package com.example.core.dto;
 
 /**
- * //todo: dopisat docu normalno
+ * todo: complete documentation
+ *
  * @param <D>
  */
 public abstract class AbstractEntity<D> {

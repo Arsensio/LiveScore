@@ -14,5 +14,4 @@ public class TournamentDTO {
     private Long tournamentId;
     private String tournamentName;
     private String tournamentType;
-
 }

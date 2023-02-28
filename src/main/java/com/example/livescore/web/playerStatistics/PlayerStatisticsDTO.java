@@ -13,16 +13,10 @@ import lombok.Setter;
 public class PlayerStatisticsDTO {
 
     private Long playerId;
-
     private Long groupId;
-
     private Long matchPlayed;
-
     private Long goals;
-
     private Long assists;
-
     private Long yellowCard;
-
     private Long redCard;
 }

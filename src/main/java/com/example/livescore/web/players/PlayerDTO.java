@@ -13,15 +13,9 @@ import lombok.Setter;
 public class PlayerDTO {
 
     private Long playerId;
-
     private String teamName;
-
     private String name;
-
     private String surname;
-
     private Integer playerNumber;
-
     private String role;
-
 }

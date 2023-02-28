@@ -3,18 +3,21 @@ package com.example.core.service;
 import java.util.List;
 
 /**
- * @param <D> - our DTO         //todo: dopisat docu normalno
- * @param <S> - Save DTO
+ * todo: complete documentation
+ *
+ * @param <RD> - Response DTO - data transfer object, that will be returned to user
+ * @param <SD> - Save DTO - data transfer object, that our server will get from client to save it in DB
+ * @param <I>  - Unique identifier of a DTO, which will be saved in DB
  */
-public interface FootballService<D, S, P> {
+public interface FootballService<RD, SD, I> {
 
-    List<D> getAll();
+    List<RD> findAll();
 
-    D findById(P id);
+    RD findById(I id);
 
-    D save(S dto);
+    RD save(SD dto);
 
-    D update(P id, S dto);
+    RD update(I id, SD dto);
 
-    D delete(P id);
+    RD delete(I id);
 }

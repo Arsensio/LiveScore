@@ -16,5 +16,4 @@ public class GroupDTO {
     private String tournamentName;
     private String groupName;
     private boolean isPlayoff;
-
 }

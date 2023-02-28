@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameDTO {
+
     private Long gameId;
     private Long groupId;
     private Long protocolId;

@@ -1,12 +1,16 @@
 package com.example.livescore.models;
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "team_statistics")
@@ -14,7 +18,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeamStatisticsEntity {
+public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
 
     @EmbeddedId
     private TeamStatisticsEntityPK id;

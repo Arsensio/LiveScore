@@ -1,6 +1,7 @@
 package com.example.livescore.models;
 
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.teams.TeamDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamEntity {
+public class TeamEntity extends AbstractEntity<TeamDTO> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,7 @@ public class TeamEntity {
     @OneToMany(mappedBy = "team")
     private List<PlayerEntity> players = new ArrayList<>();
 
+    @Override
     public TeamDTO toDTO() {
         return new TeamDTO(
                 teamId,

@@ -7,19 +7,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 /**
- * //todo: dopisat docu normalno
- * @param <D>
- * @param <S>
+ * todo: complete documentation
+ *
+ * @param <RD>
+ * @param <SD>
+ * @param <I>
  */
-public interface FootballController<D,S,P> {
+public interface FootballController<RD, SD, I> {
 
-    ResponseEntity<List<D>> getAll();
+    ResponseEntity<List<RD>> findAll();
 
-    ResponseEntity<D> findById(P id);
+    ResponseEntity<RD> findById(I id);
 
-    ResponseEntity<D> save(@RequestBody S dto);
+    ResponseEntity<RD> save(@RequestBody SD dto);
 
-    ResponseEntity<D> put(@PathVariable P id, @RequestBody S dto);
+    ResponseEntity<RD> put(@PathVariable I id, @RequestBody SD dto);
 
-    ResponseEntity<D> delete(@PathVariable P id);
+    ResponseEntity<RD> delete(@PathVariable I id);
 }

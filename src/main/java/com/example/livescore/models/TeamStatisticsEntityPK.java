@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.io.Serializable;
 
 @Embeddable
@@ -15,6 +18,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeamStatisticsEntityPK implements Serializable {
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private GroupEntity group;
@@ -22,5 +26,4 @@ public class TeamStatisticsEntityPK implements Serializable {
     @OneToOne
     @JoinColumn(name = "team_id")
     private TeamEntity team;
-
 }

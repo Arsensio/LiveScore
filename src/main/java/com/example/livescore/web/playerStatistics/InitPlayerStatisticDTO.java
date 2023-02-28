@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InitPlayerStatisticDTO {
+
     private Long playerId;
     private Long groupId;
 }
