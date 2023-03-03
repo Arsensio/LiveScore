@@ -1,9 +1,12 @@
 package com.example.core.service;
 
 import com.example.core.dto.AbstractEntity;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,9 +27,11 @@ public abstract class AbstractFootballService<
         implements FootballService<RD, SD, I> {
 
     protected final R repository;
+    private Class<E> clazz;
 
     public AbstractFootballService(R repository) {
         this.repository = repository;
+        clazz = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
@@ -36,14 +41,23 @@ public abstract class AbstractFootballService<
 
     @Override
     public RD findById(I id) {
-        return repository.getReferenceById(id).toDTO();
+        try {
+            E referenceById = repository.getReferenceById(id);
+            return referenceById.toDTO();
+        } catch (EntityNotFoundException exception) {
+            throw ResourceNotFoundException.build(id, clazz.getName());
+        }
     }
 
     @Override
     public RD delete(I id) {
-        E referenceById = repository.getReferenceById(id);
-        repository.deleteById(id);
-        return referenceById.toDTO();
+        try {
+            E referenceById = repository.getReferenceById(id);
+            repository.deleteById(id);
+            return referenceById.toDTO();
+        } catch (EntityNotFoundException exception) {
+            throw ResourceNotFoundException.build(id, clazz.getName());
+        }
     }
 
     // todo

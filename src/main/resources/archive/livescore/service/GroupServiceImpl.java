@@ -5,7 +5,7 @@ import com.example.livescore.store.GroupRepository;
 import com.example.livescore.store.TournamentRepository;
 import com.example.livescore.web.groups.GroupDTO;
 import com.example.livescore.web.groups.SaveGroupDTO;
-import com.example.livescore.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
