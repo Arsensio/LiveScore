@@ -1,6 +1,7 @@
 package com.example.livescore.models;
 
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.groups.GroupDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "groups")
-public class GroupEntity {
+public class GroupEntity extends AbstractEntity<GroupDTO> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,7 @@ public class GroupEntity {
     @Column(name = "is_playoff")
     private boolean isPlayoff;
 
+    @Override
     public GroupDTO toDTO() {
         return new GroupDTO(
                 this.groupId,
