@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LiveScoreApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LiveScoreApplication.class, args);
+        SpringApplication.run(com.example.LiveScoreApplication.class, args);
         System.out.println("Hello world");
     }
 

@@ -1,7 +1,7 @@
 package com.example.livescore.service.tournament.impl;
 
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TournamentRepository;
 import com.example.livescore.service.tournament.TournamentService;
@@ -34,7 +34,7 @@ public class DefaultTournamentService extends AbstractFootballService<Tournament
             tournamentEntity.setTournamentType(dto.getTournamentType());
             repository.saveAndFlush(tournamentEntity);
         }, () -> {
-            throw new ResourceNotFoundException("There is no such Team");
+            throw  ResourceNotFoundException.build(id,"TournamentEntity");
         });
         return repository.findById(id).get().toDTO();
     }

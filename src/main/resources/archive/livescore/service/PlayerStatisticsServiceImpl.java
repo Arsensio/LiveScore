@@ -9,7 +9,7 @@ import com.example.livescore.store.PlayerStatisticsRepository;
 import com.example.livescore.web.playerStatistics.InitPlayerStatisticDTO;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.playerStatistics.SavePlayerStatisticsDTO;
-import com.example.livescore.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

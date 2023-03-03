@@ -1,7 +1,7 @@
 package com.example.livescore.service.team.impl;
 
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.team.TeamFootballService;
@@ -20,8 +20,8 @@ public class DefaultTeamFootballService extends AbstractFootballService<TeamEnti
     @Override
     public TeamDTO save(SaveTeamDTO saveTeamDTO) {
         TeamEntity saved = repository.save(new TeamEntity(
-                null,
-                saveTeamDTO.getTeamName(),
+                        null,
+                        saveTeamDTO.getTeamName(),
                         saveTeamDTO.getTeamLogo(),
                         null
                 )
@@ -37,7 +37,7 @@ public class DefaultTeamFootballService extends AbstractFootballService<TeamEnti
             team.setTeamLogo(saveTeamDTO.getTeamLogo());
             repository.saveAndFlush(team);
         }, () -> {
-            throw new ResourceNotFoundException("There is no such Team");
+            throw ResourceNotFoundException.build(id, "Team");
         });
         return repository.findById(id).get().toDTO();
     }
