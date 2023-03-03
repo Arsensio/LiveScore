@@ -1,0 +1,9 @@
+package com.example.livescore.repository;
+
+import com.example.livescore.models.GameEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface GameRepository extends JpaRepository<GameEntity,Long> {
+}

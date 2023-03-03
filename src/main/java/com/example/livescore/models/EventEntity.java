@@ -1,6 +1,7 @@
 package com.example.livescore.models;
 
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.events.EventDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "events")
-public class EventEntity {
+public class EventEntity extends AbstractEntity<EventDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
@@ -35,6 +36,7 @@ public class EventEntity {
     @Column(name ="minute")
     private Integer minute;
 
+    @Override
     public EventDTO toDTO() {
         return new EventDTO(
                 eventId,

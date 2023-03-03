@@ -1,6 +1,7 @@
 package com.example.livescore.models;
 
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.games.GameDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "games")
-public class GameEntity {
+public class GameEntity extends AbstractEntity<GameDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id", nullable = false)
@@ -32,6 +33,7 @@ public class GameEntity {
     @JoinColumn(name = "protocol_id", referencedColumnName = "protocol_id")
     private ProtocolEntity protocol;
 
+    @Override
     public GameDTO toDTO() {
         return new GameDTO(
                 gameId,

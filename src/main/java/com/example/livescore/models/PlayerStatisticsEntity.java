@@ -1,5 +1,6 @@
 package com.example.livescore.models;
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Table(name = "player_statistics")
-public class PlayerStatisticsEntity {
+public class PlayerStatisticsEntity extends AbstractEntity<PlayerStatisticsDTO> {
 
     @EmbeddedId
     private PlayerStatisticsEntityPK id;
@@ -37,6 +38,7 @@ public class PlayerStatisticsEntity {
     @Column(name = "red_card")
     private Long redCard;
 
+    @Override
     public PlayerStatisticsDTO toDTO() {
         return new PlayerStatisticsDTO(
                 id.getPlayer().getPlayerId(),

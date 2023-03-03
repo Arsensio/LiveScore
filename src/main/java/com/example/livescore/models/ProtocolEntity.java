@@ -1,6 +1,7 @@
 package com.example.livescore.models;
 
 
+import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.protocols.ProtocolDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,17 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProtocolEntity {
-
-    public ProtocolEntity(Long protocolId, GameEntity game, TeamEntity team1, TeamEntity team2, LocalDateTime dateAndTime, int team1Score, int team2Score) {
-        this.protocolId = protocolId;
-        this.game = game;
-        this.team1 = team1;
-        this.team2 = team2;
-        this.dateAndTime = dateAndTime;
-        this.team1Score = team1Score;
-        this.team2Score = team2Score;
-    }
+public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +51,18 @@ public class ProtocolEntity {
     @OneToMany(mappedBy = "protocol")
     List<EventEntity> events = new ArrayList<>();
 
+    public ProtocolEntity(Long protocolId, GameEntity game, TeamEntity team1, TeamEntity team2, LocalDateTime dateAndTime, int team1Score, int team2Score) {
+        this.protocolId = protocolId;
+        this.game = game;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.dateAndTime = dateAndTime;
+        this.team1Score = team1Score;
+        this.team2Score = team2Score;
+    }
+
+
+    @Override
     public ProtocolDTO toDTO() {
         return new ProtocolDTO(
                 protocolId,
