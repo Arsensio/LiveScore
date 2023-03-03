@@ -1,7 +1,6 @@
 package com.example.core.controller;
 
 import com.example.core.service.FootballService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * //todo: dopisat docu normalno
+ * todo: complete documentation
  *
- * @param <S>  - Service
- * @param <D>  - DTO
- * @param <D2> - SaveDTO
+ * @param <S>
+ * @param <RD>
+ * @param <SD>
+ * @param <I>
  */
-
 @Controller
 public abstract class AbstractFootballController<
-        S extends FootballService<D, D2,P>,
-        D, D2,P>
-        implements FootballController<D, D2,P> {
+        S extends FootballService<RD, SD, I>,
+        RD, SD, I>
+        implements FootballController<RD, SD, I> {
 
     protected final S service;
 
@@ -31,31 +30,31 @@ public abstract class AbstractFootballController<
 
     @Override
     @GetMapping
-    public ResponseEntity<List<D>> getAll() {
-        return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<RD>> findAll() {
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<D> findById(@PathVariable P id) {
+    public ResponseEntity<RD> findById(@PathVariable I id) {
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
     @Override
     @PostMapping()
-    public ResponseEntity<D> save(D2 dto) {
+    public ResponseEntity<RD> save(SD dto) {
         return new ResponseEntity<>(service.save(dto), HttpStatus.OK);
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<D> put(@PathVariable P id, D2 dto) {
+    public ResponseEntity<RD> put(@PathVariable I id, SD dto) {
         return new ResponseEntity<>(service.update(id, dto), HttpStatus.OK);
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<D> delete(@PathVariable P id) {
+    public ResponseEntity<RD> delete(@PathVariable I id) {
         return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
     }
 }

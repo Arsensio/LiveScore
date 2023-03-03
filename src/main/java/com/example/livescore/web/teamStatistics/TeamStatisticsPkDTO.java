@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamStatisticsPkDTO {
+
     private Long team;
     private Long group;
 }

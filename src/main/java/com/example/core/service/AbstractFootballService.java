@@ -8,18 +8,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * //todo: dopisat docu normalno
+ * todo: complete documentation
+ *
  * @param <E>
- * @param <D>
- * @param <S>
+ * @param <RD>
+ * @param <SD>
+ * @param <I>
  * @param <R>
  */
 @Service
 public abstract class AbstractFootballService<
-        E extends AbstractEntity<D>,
-        D, S, P,
-        R extends JpaRepository<E, P>>
-        implements FootballService<D, S,P> {
+        E extends AbstractEntity<RD>,
+        RD, SD, I,
+        R extends JpaRepository<E, I>>
+        implements FootballService<RD, SD, I> {
 
     protected final R repository;
 
@@ -28,29 +30,31 @@ public abstract class AbstractFootballService<
     }
 
     @Override
-    public List<D> getAll() {
+    public List<RD> findAll() {
         return repository.findAll().stream().map(E::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public D findById(P id) {
+    public RD findById(I id) {
         return repository.getReferenceById(id).toDTO();
     }
 
     @Override
-    public D delete(P id) {
+    public RD delete(I id) {
         E referenceById = repository.getReferenceById(id);
         repository.deleteById(id);
         return referenceById.toDTO();
     }
 
+    // todo
     @Override
-    public D save(S dto) {
+    public RD save(SD dto) {
         return null;
     }
 
+    // todo
     @Override
-    public D update(P id, S dto) {
+    public RD update(I id, SD dto) {
         return null;
     }
 }

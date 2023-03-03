@@ -16,5 +16,4 @@ public class SaveGroupDTO {
     private Long tournamentId;
     private String groupName;
     private boolean isPlayoff;
-
 }

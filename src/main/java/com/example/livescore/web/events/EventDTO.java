@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventDTO {
+
     private Long eventId;
     private Long protocolId;
     private String eventName;

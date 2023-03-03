@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InitTeamStatistics {
+
     private Long group_id;
     private Long team_id;
 }
