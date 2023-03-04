@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DistinctStatisticsDTO {
+public class DistinctTeamStatisticsDTO {
 
     private String statName;
     private String groupName;

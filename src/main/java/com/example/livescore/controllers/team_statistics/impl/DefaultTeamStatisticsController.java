@@ -1,9 +1,10 @@
 package com.example.livescore.controllers.team_statistics.impl;
 
 import com.example.core.controller.AbstractFootballController;
+import com.example.livescore.controllers.team_statistics.TeamStatisticController;
 import com.example.livescore.models.TeamStatisticsEntityPK;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
-import com.example.livescore.web.teamStatistics.DistinctStatisticsDTO;
+import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import org.springframework.http.HttpStatus;
@@ -17,20 +18,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team_statistics")
-public class DefaultTeamStatisticsController extends AbstractFootballController<TeamStatisticsService,
-        TeamStatisticsDTO, SaveTeamStatisticsDTO, TeamStatisticsEntityPK> {
+public class DefaultTeamStatisticsController
+        extends AbstractFootballController<TeamStatisticsService,
+        TeamStatisticsDTO, SaveTeamStatisticsDTO, TeamStatisticsEntityPK>
+        implements TeamStatisticController {
 
     public DefaultTeamStatisticsController(TeamStatisticsService service) {
         super(service);
     }
 
+    @Override
     @GetMapping("/goals")
-    public ResponseEntity<List<DistinctStatisticsDTO>> findAllSortedByGoals(@RequestParam("groupId") long groupId) {
+    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByGoals(@RequestParam("groupId") long groupId) {
         return new ResponseEntity<>(service.findTeamsSortedByGoals(groupId), HttpStatus.OK);
     }
 
+    @Override
     @GetMapping("/points")
-    public ResponseEntity<List<TeamStatisticsDTO>> findAllSortedByPoints(@RequestParam("groupId") long groupId){
+    public ResponseEntity<List<TeamStatisticsDTO>> findAllSortedByPoints(@RequestParam("groupId") long groupId) {
         return new ResponseEntity<>(service.findTeamsSortedByPoints(groupId), HttpStatus.OK);
     }
 

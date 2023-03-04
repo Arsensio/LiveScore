@@ -13,7 +13,7 @@ import java.util.List;
 public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEntity, TeamStatisticsEntityPK> {
 
 
-    @Query(value = "SELECT * FROM team_statistics WHERE group_id = ?1 ORDER BY goal_count DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM team_statistics WHERE group_id = ?1 AND goal_count >= 1 ORDER BY goal_count DESC", nativeQuery = true)
     List<TeamStatisticsEntity> findAllByGroupIdOrderByGoalCount(Long group);
 
     @Query(value = "SELECT * FROM team_statistics WHERE group_id = ?1 ORDER BY points DESC", nativeQuery = true)
