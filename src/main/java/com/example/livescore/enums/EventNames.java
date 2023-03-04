@@ -14,7 +14,7 @@ public enum EventNames {
     RED_CARD;
 
     public static EventNames getEventById(Long id) {
-        return switch(id.intValue()) {
+        return switch (id.intValue()) {
             case 1 -> GOAL;
             case 2 -> ASSIST;
             case 3 -> YELLOW_CARD;

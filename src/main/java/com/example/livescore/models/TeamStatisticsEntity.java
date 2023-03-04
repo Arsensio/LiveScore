@@ -1,8 +1,8 @@
 package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
-import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.DistinctStatisticsDTO;
+import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ import java.text.DecimalFormat;
 public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
 
     @EmbeddedId
-    private TeamStatisticsEntityPK id;
+    private TeamStatisticsEntityPK id;  // todo: clarify if team statistics should be linked to group
 
     @Column(name = "game_played")
     private Integer gamePlayed;

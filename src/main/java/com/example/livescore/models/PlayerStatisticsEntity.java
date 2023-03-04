@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class PlayerStatisticsEntity extends AbstractEntity<PlayerStatisticsDTO> {
 
     @EmbeddedId
-    private PlayerStatisticsEntityPK id;
+    private PlayerStatisticsEntityPK id; //todo: clarify, should statistic be linked to group or tournament
 
     @Column(name = "match_played")
     private Long matchPlayed;
