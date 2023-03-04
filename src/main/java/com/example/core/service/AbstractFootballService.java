@@ -36,7 +36,10 @@ public abstract class AbstractFootballService<
 
     @Override
     public List<RD> findAll() {
-        return repository.findAll().stream().map(E::toDTO).collect(Collectors.toList());
+        return repository.findAll()
+                .stream()
+                .map(E::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
