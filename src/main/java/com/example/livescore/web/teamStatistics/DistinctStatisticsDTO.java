@@ -9,8 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InitTeamStatistics {
+public class DistinctStatisticsDTO {
 
-    private Long group_id;
-    private Long team_id;
+    private String statName;
+    private String groupName;
+    private String teamName;
+    private Integer total;
+    private String perGame;
 }

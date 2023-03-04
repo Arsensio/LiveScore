@@ -2,6 +2,7 @@ package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
+import com.example.livescore.web.teamStatistics.DistinctStatisticsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.text.DecimalFormat;
 
 @Entity
 @Table(name = "team_statistics")
@@ -29,7 +31,7 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     @Column(name = "win_count")
     private Integer winCount;
 
-    @Column(name="draw_count")
+    @Column(name = "draw_count")
     private Integer drawCount;
 
     @Column(name = "lose_count")
@@ -44,6 +46,7 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     @Column(name = "points")
     private Integer points;
 
+    @Override
     public TeamStatisticsDTO toDTO() {
         return new TeamStatisticsDTO(
                 id.getGroup().getGroupName(),
@@ -55,6 +58,20 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
                 goalCount,
                 goalMissed,
                 points
+        );
+    }
+
+    public DistinctStatisticsDTO toDistinctStatisticsDTO(String statName) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        double goal = goalCount;
+        double game = gamePlayed;
+
+        return new DistinctStatisticsDTO(
+                statName,
+                id.getGroup().getGroupName(),
+                id.getTeam().getTeamName(),
+                goalCount,
+                df.format(goal / game)
         );
     }
 }
