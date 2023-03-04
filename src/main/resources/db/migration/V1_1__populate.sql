@@ -44,15 +44,15 @@ values (11, 'Emiliano', '31', 'DEFENDER', 'Sala', 1);
 insert into players
 values (12, 'Jesus', '22', 'DEFENDER', 'Navas', 2);
 
-insert into protocols
-values (1, '2022-12-07 14:43:07.000000', 1, 2, 1, 2);
-
 insert into games
-values (1, true, 1, 1);
+values (1, true, 1);
 insert into games
 values (2, false, 1);
 insert into games
 values (3, false, 1);
+
+insert into protocols
+values (1, 1, '2022-12-07 14:43:07.000000', 1, 2, 1, 2);
 
 insert into events
 values (1, 'GOAL', 11, 8, 1);

@@ -28,10 +28,22 @@ create table teams
     team_name varchar(255)
 );
 
+create table games
+(
+    game_id   bigserial
+        primary key,
+    is_played boolean,
+    group_id  bigint,
+    constraint fk_group
+        foreign key (group_id)
+            references groups (group_id)
+);
+
 create table protocols
 (
     protocol_id  bigserial
         primary key,
+    game_id      bigint,
     date_time    timestamp,
     team_1_score integer,
     team_2_score integer,
@@ -42,22 +54,10 @@ create table protocols
             references teams (team_id),
     constraint fk_team_2
         foreign key (team_1_id)
-            references teams (team_id)
-);
-
-create table games
-(
-    game_id     bigserial
-        primary key,
-    is_played   boolean,
-    group_id    bigint,
-    protocol_id bigint,
-    constraint fk_group
-        foreign key (group_id)
-            references groups (group_id),
-    constraint fk_protocol
-        foreign key (protocol_id)
-            references protocols (protocol_id)
+            references teams (team_id),
+    constraint fk_game
+        foreign key (game_id)
+            references games (game_id)
 );
 
 create table players

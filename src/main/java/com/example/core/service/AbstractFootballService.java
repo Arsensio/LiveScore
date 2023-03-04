@@ -5,9 +5,9 @@ import com.example.core.exception.exceptions.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +31,7 @@ public abstract class AbstractFootballService<
 
     public AbstractFootballService(R repository) {
         this.repository = repository;
-        clazz = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.clazz = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
@@ -44,22 +44,22 @@ public abstract class AbstractFootballService<
 
     @Override
     public RD findById(I id) {
-        try {
-            E referenceById = repository.getReferenceById(id);
-            return referenceById.toDTO();
-        } catch (EntityNotFoundException exception) {
+        Optional<E> referenceById = repository.findById(id);
+        if (referenceById.isEmpty()) {
             throw ResourceNotFoundException.build(id, clazz.getName());
+        } else {
+            return referenceById.get().toDTO();
         }
     }
 
     @Override
     public RD delete(I id) {
-        try {
-            E referenceById = repository.getReferenceById(id);
-            repository.deleteById(id);
-            return referenceById.toDTO();
-        } catch (EntityNotFoundException exception) {
+        Optional<E> referenceById = repository.findById(id);
+        if (referenceById.isEmpty()) {
             throw ResourceNotFoundException.build(id, clazz.getName());
+        } else {
+            repository.deleteById(id);
+            return referenceById.get().toDTO();
         }
     }
 
