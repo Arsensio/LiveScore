@@ -1,7 +1,7 @@
 package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
-import com.example.livescore.web.teamStatistics.DistinctStatisticsDTO;
+import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,12 +61,12 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
         );
     }
 
-    public DistinctStatisticsDTO toDistinctStatisticsDTO(String statName) {
+    public DistinctTeamStatisticsDTO toDistinctStatisticsDTO(String statName) {
         DecimalFormat df = new DecimalFormat("0.00");
         double goal = goalCount;
         double game = gamePlayed;
 
-        return new DistinctStatisticsDTO(
+        return new DistinctTeamStatisticsDTO(
                 statName,
                 id.getGroup().getGroupName(),
                 id.getTeam().getTeamName(),

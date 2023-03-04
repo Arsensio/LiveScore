@@ -5,7 +5,7 @@ import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
 import com.example.livescore.repository.TeamStatisticsRepository;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
-import com.example.livescore.web.teamStatistics.DistinctStatisticsDTO;
+import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public List<DistinctStatisticsDTO> findTeamsSortedByGoals(long groupId) {
+    public List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId) {
         return repository.findAllByGroupIdOrderByGoalCount(groupId)
                 .stream()
                 .map(team -> team.toDistinctStatisticsDTO("GOALS"))
