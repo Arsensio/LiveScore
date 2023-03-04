@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class ProtocolDTO {
 
     private Long protocolId;
+    private Long gameId;
     private String team1;
     private String team2;
     private LocalDateTime dateAndTime;

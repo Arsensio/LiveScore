@@ -12,6 +12,5 @@ import lombok.Setter;
 public class SaveGameDTO {
 
     private Long groupId;
-    private Long protocolId;
     private boolean isPlayed;
 }

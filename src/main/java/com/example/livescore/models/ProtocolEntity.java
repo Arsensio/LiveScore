@@ -5,6 +5,7 @@ import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.protocols.ProtocolDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
 
     @Id
@@ -26,7 +28,8 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
     @Column(name = "protocol_id", nullable = false)
     private Long protocolId;
 
-    @OneToOne(mappedBy = "protocol")
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id")
     private GameEntity game;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -51,21 +54,11 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
     @OneToMany(mappedBy = "protocol")
     List<EventEntity> events = new ArrayList<>();
 
-    public ProtocolEntity(Long protocolId, GameEntity game, TeamEntity team1, TeamEntity team2, LocalDateTime dateAndTime, int team1Score, int team2Score) {
-        this.protocolId = protocolId;
-        this.game = game;
-        this.team1 = team1;
-        this.team2 = team2;
-        this.dateAndTime = dateAndTime;
-        this.team1Score = team1Score;
-        this.team2Score = team2Score;
-    }
-
-
     @Override
     public ProtocolDTO toDTO() {
         return new ProtocolDTO(
                 protocolId,
+                game.getGameId(),
                 team1.getTeamName(),
                 team2.getTeamName(),
                 dateAndTime,

@@ -10,10 +10,10 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "games")
 public class GameEntity extends AbstractEntity<GameDTO> {
@@ -29,8 +29,7 @@ public class GameEntity extends AbstractEntity<GameDTO> {
     @JoinColumn(name = "group_id", referencedColumnName = "group_id")
     private GroupEntity group;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "protocol_id", referencedColumnName = "protocol_id")
+    @OneToOne(mappedBy = "game", cascade = CascadeType.MERGE)
     private ProtocolEntity protocol;
 
     @Override
@@ -38,15 +37,16 @@ public class GameEntity extends AbstractEntity<GameDTO> {
         return new GameDTO(
                 gameId,
                 group.getGroupId(),
-                1L,
-//                protocol.getProtocolId(),
-                "0:0",
+                "1:1", // todo: getGameScoreFromProtocol()
+//                getGameScoreFromProtocol(),
                 isPlayed
-//                getGameScoreFromProtocol()
         );
     }
 
+    // todo: creating an null pointer exception, find the cause. protocol  i null
     private String getGameScoreFromProtocol() {
         return protocol.getTeam1Score() + ":" + protocol.getTeam2Score();
     }
 }
+
+
