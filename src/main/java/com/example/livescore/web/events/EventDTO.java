@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EventDTO {
 
-    private Long eventId;
-    private Long protocolId;
     private String eventName;
     private String playerName;
     private Integer minute;

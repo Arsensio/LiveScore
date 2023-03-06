@@ -1,11 +1,13 @@
 package com.example.livescore.web.protocols;
 
+import com.example.livescore.web.events.EventDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -20,4 +22,6 @@ public class ProtocolDTO {
     private String team2;
     private LocalDateTime dateAndTime;
     private String gameScore;
+    private List<EventDTO> events;
+    private boolean isPlayed;
 }

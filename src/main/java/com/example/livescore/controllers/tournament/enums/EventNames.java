@@ -1,4 +1,4 @@
-package com.example.livescore.enums;
+package com.example.livescore.controllers.tournament.enums;
 
 public enum EventNames {
     // event enum ID = 1

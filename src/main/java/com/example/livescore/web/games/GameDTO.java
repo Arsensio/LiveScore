@@ -15,4 +15,5 @@ public class GameDTO {
     private Long groupId;
     private String gameScore;
     private boolean isPlayed;
+    private Long protocolId;
 }

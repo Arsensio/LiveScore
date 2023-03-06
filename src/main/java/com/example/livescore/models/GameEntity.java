@@ -37,9 +37,10 @@ public class GameEntity extends AbstractEntity<GameDTO> {
         return new GameDTO(
                 gameId,
                 group.getGroupId(),
-                "1:1", // todo: getGameScoreFromProtocol()
-//                getGameScoreFromProtocol(),
-                isPlayed
+//                "1:1", // todo: getGameScoreFromProtocol()
+                getGameScoreFromProtocol(),
+                isPlayed,
+                protocol.getProtocolId()
         );
     }
 
