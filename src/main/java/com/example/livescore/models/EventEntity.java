@@ -33,16 +33,14 @@ public class EventEntity extends AbstractEntity<EventDTO> {
     @JoinColumn(name = "player_id", referencedColumnName = "player_id")
     private PlayerEntity player;
 
-    @Column(name ="minute")
+    @Column(name = "minute")
     private Integer minute;
 
     @Override
     public EventDTO toDTO() {
         return new EventDTO(
-                eventId,
-                protocol.getProtocolId(),
                 eventName,
-                player.getName(),
+                player.getName()+" "+ player.getSurname(),
                 minute
         );
     }

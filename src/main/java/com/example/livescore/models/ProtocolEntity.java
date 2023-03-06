@@ -2,6 +2,7 @@ package com.example.livescore.models;
 
 
 import com.example.core.dto.AbstractEntity;
+import com.example.livescore.web.events.EventDTO;
 import com.example.livescore.web.protocols.ProtocolDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,6 +15,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "protocols")
@@ -56,13 +58,17 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
 
     @Override
     public ProtocolDTO toDTO() {
+        List<EventDTO> eventDTOS = events.stream().map(EventEntity::toDTO).collect(Collectors.toList());
+
         return new ProtocolDTO(
                 protocolId,
                 game.getGameId(),
                 team1.getTeamName(),
                 team2.getTeamName(),
                 dateAndTime,
-                gameScore()
+                gameScore(),
+                eventDTOS,
+                LocalDateTime.now().isAfter(dateAndTime)
         );
     }
 

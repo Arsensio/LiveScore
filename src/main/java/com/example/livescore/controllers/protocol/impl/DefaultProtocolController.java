@@ -17,4 +17,5 @@ public class DefaultProtocolController
     public DefaultProtocolController(ProtocolService service) {
         super(service);
     }
+
 }
