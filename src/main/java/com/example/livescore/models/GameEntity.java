@@ -37,16 +37,19 @@ public class GameEntity extends AbstractEntity<GameDTO> {
         return new GameDTO(
                 gameId,
                 group.getGroupId(),
-//                "1:1", // todo: getGameScoreFromProtocol()
-                getGameScoreFromProtocol(),
+                getGameScoreFromProtocol(isPlayed),
                 isPlayed,
-                protocol.getProtocolId()
+                protocol.getProtocolId(),
+                protocol.getDateAndTime()
         );
     }
 
-    // todo: creating an null pointer exception, find the cause. protocol  i null
-    private String getGameScoreFromProtocol() {
-        return protocol.getTeam1Score() + ":" + protocol.getTeam2Score();
+    private String getGameScoreFromProtocol(boolean isPlayed) {
+        if (isPlayed) {
+            return protocol.getTeam1Score() + ":" + protocol.getTeam2Score();
+        }
+
+        return "0:0";
     }
 }
 
