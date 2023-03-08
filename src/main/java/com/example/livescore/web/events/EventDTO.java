@@ -14,4 +14,6 @@ public class EventDTO {
     private String eventName;
     private String playerName;
     private Integer minute;
+    private Long teamId;
+    private String teamName;
 }

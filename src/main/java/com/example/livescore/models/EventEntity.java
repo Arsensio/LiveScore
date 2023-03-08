@@ -3,10 +3,7 @@ package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.events.EventDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "events")
+@ToString
 public class EventEntity extends AbstractEntity<EventDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +39,9 @@ public class EventEntity extends AbstractEntity<EventDTO> {
         return new EventDTO(
                 eventName,
                 player.getName()+" "+ player.getSurname(),
-                minute
+                minute,
+                player.getTeam().getTeamId(),
+                player.getTeam().getTeamName()
         );
     }
 }

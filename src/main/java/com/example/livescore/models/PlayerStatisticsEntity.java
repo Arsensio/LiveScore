@@ -3,10 +3,7 @@ package com.example.livescore.models;
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,6 +17,7 @@ import java.text.DecimalFormat;
 @Getter
 @Setter
 @Table(name = "player_statistics")
+@ToString
 public class PlayerStatisticsEntity extends AbstractEntity<PlayerStatisticsDTO> {
 
     @EmbeddedId

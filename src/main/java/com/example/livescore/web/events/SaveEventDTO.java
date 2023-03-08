@@ -11,9 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SaveEventDTO {
 
-    private Long eventId;
     private Long protocolId;
     private Long eventEnumId;
+    private Long team1Id;
+    private Long team2Id;
     private Long playerId;
     private Integer minute;
 }

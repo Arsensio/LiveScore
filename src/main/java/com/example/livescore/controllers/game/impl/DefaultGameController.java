@@ -28,9 +28,9 @@ public class DefaultGameController
         return new ResponseEntity<>(service.findAllByDate(date), HttpStatus.OK);
     }
 
+    @PostMapping("/start/{id}")
     @Override
-    public ResponseEntity<GameDTO> save(@RequestBody SaveGameDTO saveGameDTO) {
-        System.out.println("here");
-        return new ResponseEntity<>(service.save(saveGameDTO), HttpStatus.OK);
+    public ResponseEntity<GameDTO> startMatch(@PathVariable Long id) {
+        return new ResponseEntity<>(service.startMatch(id),HttpStatus.OK);
     }
 }
