@@ -55,19 +55,19 @@ insert into protocols
 values (1, 1, '2022-12-07 14:43:07.000000', 1, 2, 1, 2);
 
 insert into events
-values (1, 'GOAL', 11, 8, 1);
+values (1, 'GOAL','0:1', 11, 8, 1);
 insert into events
-values (2, 'ASSIST', 11, 2, 1);
+values (2, 'ASSIST','0:1', 11, 2, 1);
 insert into events
-values (3, 'YELLOW_CARD', 30, 8, 1);
+values (3, 'YELLOW_CARD','0:1', 30, 8, 1);
 insert into events
-values (4, 'RED_CARD', 43, 8, 1);
+values (4, 'RED_CARD','0:1',43, 8, 1);
 insert into events
-values (5, 'GOAL', 49, 6, 1);
+values (5, 'GOAL','0:2', 49, 6, 1);
 insert into events
-values (6, 'GOAL', 67, 5, 1);
+values (6, 'GOAL','1:2', 67, 5, 1);
 insert into events
-values (7, 'ASSIST', 67, 7, 1);
+values (7, 'ASSIST','1:2', 67, 7, 1);
 
 insert into player_statistics
 values (0, 0, 1, 0, 0, 1, 1);

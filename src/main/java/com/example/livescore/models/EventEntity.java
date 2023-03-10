@@ -27,6 +27,9 @@ public class EventEntity extends AbstractEntity<EventDTO> {
     @Column(name = "event_name")
     private String eventName;
 
+    @Column(name = "game_score")
+    private String goalScore;
+
     @ManyToOne
     @JoinColumn(name = "player_id", referencedColumnName = "player_id")
     private PlayerEntity player;
@@ -41,7 +44,8 @@ public class EventEntity extends AbstractEntity<EventDTO> {
                 player.getName()+" "+ player.getSurname(),
                 minute,
                 player.getTeam().getTeamId(),
-                player.getTeam().getTeamName()
+                player.getTeam().getTeamName(),
+                goalScore
         );
     }
 }

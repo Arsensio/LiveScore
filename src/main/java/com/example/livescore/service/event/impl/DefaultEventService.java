@@ -45,9 +45,9 @@ public class DefaultEventService
                 .getGame()
                 .getGroup();
 
+        updatePlayerStatistic(group, player, event, protocol);
         EventEntity save = repository.save(getNewEvent(dto, event, protocol, player));
         log.info("CREATE NEW EVENT"+ save);
-        updatePlayerStatistic(group, player, event, protocol);
 
         return save.toDTO();
     }
@@ -58,6 +58,7 @@ public class DefaultEventService
                 null,
                 protocol,
                 event.getEventName(),
+                protocol.getTeam1Score()+":"+protocol.getTeam2Score(),
                 player,
                 dto.getMinute()
         );
