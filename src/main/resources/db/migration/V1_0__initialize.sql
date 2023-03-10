@@ -117,6 +117,7 @@ create table events
     event_id    bigserial
         primary key,
     event_name  varchar(255),
+    game_score  varchar(255),
     minute      integer,
     player_id   bigint,
     protocol_id bigint,

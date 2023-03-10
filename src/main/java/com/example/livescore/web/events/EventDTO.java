@@ -16,4 +16,5 @@ public class EventDTO {
     private Integer minute;
     private Long teamId;
     private String teamName;
+    private String gameScore;
 }
