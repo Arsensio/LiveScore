@@ -13,6 +13,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.text.DecimalFormat;
+import java.util.List;
+
+import static com.example.livescore.enums.EventNames.GOAL;
+import static com.example.livescore.enums.EventNames.RED_CARD;
 
 @Entity
 @Table(name = "team_statistics")
@@ -62,16 +66,22 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     }
 
     public DistinctTeamStatisticsDTO toDistinctStatisticsDTO(String statName) {
-        DecimalFormat df = new DecimalFormat("0.00");
-        double goal = goalCount;
-        double game = gamePlayed;
-
-        return new DistinctTeamStatisticsDTO(
+        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(
                 statName,
                 id.getGroup().getGroupName(),
-                id.getTeam().getTeamName(),
-                goalCount,
-                df.format(goal / game)
+                id.getTeam().getTeamName()
         );
+        if (statName.equals(GOAL.getEventName())) {
+            DecimalFormat df = new DecimalFormat("0.00");
+            double goal = goalCount;
+            double game = gamePlayed;
+            distinctTeamStatisticsDTO.setTotal(goalCount);
+            distinctTeamStatisticsDTO.setPerGame(df.format(goal / game));
+        }
+        return distinctTeamStatisticsDTO;
+    }
+
+    public List<PlayerEntity> getPlayers() {
+        return id.getTeam().getPlayers();
     }
 }

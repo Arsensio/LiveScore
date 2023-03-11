@@ -17,6 +17,8 @@ public class GameDTO {
     private Long groupId;
     private String team1Name;
     private String team2Name;
+    private String team1Logo;
+    private String team2Logo;
     private String gameScore;
     private boolean isPlayed;
     private Long protocolId;

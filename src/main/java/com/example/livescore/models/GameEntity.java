@@ -39,6 +39,8 @@ public class GameEntity extends AbstractEntity<GameDTO> {
                 group.getGroupId(),
                 protocol.getTeam1().getTeamName(),
                 protocol.getTeam2().getTeamName(),
+                protocol.getTeam1().getTeamLogo(),
+                protocol.getTeam2().getTeamLogo(),
                 getGameScoreFromProtocol(isPlayed),
                 isPlayed,
                 protocol.getProtocolId(),

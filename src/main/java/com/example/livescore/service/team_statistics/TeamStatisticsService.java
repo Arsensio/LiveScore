@@ -13,4 +13,8 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
     List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId);
 
     List<TeamStatisticsDTO> findTeamsSortedByPoints(long groupId);
+
+    List<DistinctTeamStatisticsDTO> findTeamsSortedByRedCards(long groupId);
+
+    List<DistinctTeamStatisticsDTO> findTeamsSortedByYellowCard(long groupId);
 }
