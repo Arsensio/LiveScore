@@ -33,7 +33,7 @@ public class DefaultTeamStatisticsService
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId) {
         return repository.findAllByGroupIdOrderByGoalCount(groupId)
                 .stream()
-                .map(team -> team.toDistinctStatisticsDTO("GOALS"))
+                .map(team -> team.toDistinctStatisticsDTO(EventNames.GOAL.getEventName()))
                 .collect(Collectors.toList());
     }
 
