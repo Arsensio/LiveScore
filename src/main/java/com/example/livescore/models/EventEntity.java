@@ -6,6 +6,7 @@ import com.example.livescore.web.events.EventDTO;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Getter
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "events")
 @ToString
-public class EventEntity extends AbstractEntity<EventDTO> {
+public class EventEntity extends AbstractEntity<EventDTO> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
@@ -37,15 +38,35 @@ public class EventEntity extends AbstractEntity<EventDTO> {
     @Column(name = "minute")
     private Integer minute;
 
+    @Column(name = "penalty")
+    private Boolean isPenalty;
+
+    @OneToOne
+    @JoinColumn(name = "event_id")
+    private AssistEntity assist;
+
+    public EventEntity(Long eventId, ProtocolEntity protocol, String eventName, String goalScore, PlayerEntity player, Integer minute, Boolean isPenalty) {
+        this.eventId = eventId;
+        this.protocol = protocol;
+        this.eventName = eventName;
+        this.goalScore = goalScore;
+        this.player = player;
+        this.minute = minute;
+        this.isPenalty = isPenalty;
+    }
+
     @Override
     public EventDTO toDTO() {
+
         return new EventDTO(
                 eventName,
-                player.getName()+" "+ player.getSurname(),
+                player.getName() + " " + player.getSurname(),
                 minute,
                 player.getTeam().getTeamId(),
                 player.getTeam().getTeamName(),
-                goalScore
+                goalScore,
+                assist.toDTO(),
+                isPenalty
         );
     }
 }

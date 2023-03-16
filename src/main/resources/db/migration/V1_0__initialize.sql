@@ -121,6 +121,7 @@ create table events
     minute      integer,
     player_id   bigint,
     protocol_id bigint,
+    penalty boolean,
     constraint fk_player
         foreign key (player_id)
             references players (player_id),
