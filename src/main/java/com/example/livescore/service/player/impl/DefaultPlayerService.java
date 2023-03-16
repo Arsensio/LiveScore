@@ -11,6 +11,9 @@ import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, PlayerDTO, SavePlayerDTO, Long,
         PlayerRepository> implements PlayerService {
@@ -47,5 +50,13 @@ public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, 
             throw ResourceNotFoundException.build(id,"Player");
         });
         return repository.findById(id).get().toDTO();
+    }
+
+    @Override
+    public List<PlayerDTO> findAllByTeamId(long teamId) {
+        return repository.findAllByTeamId(teamId)
+                .stream()
+                .map(PlayerEntity::toDTO)
+                .toList();
     }
 }
