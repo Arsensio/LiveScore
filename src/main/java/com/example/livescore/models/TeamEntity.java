@@ -4,18 +4,16 @@ package com.example.livescore.models;
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.teams.TeamDTO;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "teams")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamEntity extends AbstractEntity<TeamDTO> {

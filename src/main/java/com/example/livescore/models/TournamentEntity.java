@@ -4,18 +4,16 @@ package com.example.livescore.models;
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.tournaments.TournamentDTO;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "tournaments")
+@NoArgsConstructor
+@AllArgsConstructor
 public class TournamentEntity extends AbstractEntity<TournamentDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

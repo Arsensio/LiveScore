@@ -5,19 +5,17 @@ import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.groups.GroupDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "groups")
+@NoArgsConstructor
+@AllArgsConstructor
 public class GroupEntity extends AbstractEntity<GroupDTO> {
 
     @Id

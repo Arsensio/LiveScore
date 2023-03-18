@@ -9,8 +9,8 @@ import com.example.livescore.web.protocols.SaveProtocolDTO;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultProtocolService
-        extends AbstractFootballService<ProtocolEntity, ProtocolDTO, SaveProtocolDTO, Long, ProtocolRepository>
+public class DefaultProtocolService extends AbstractFootballService<ProtocolEntity, ProtocolDTO, SaveProtocolDTO,
+        Long, ProtocolRepository>
         implements ProtocolService {
 
     public DefaultProtocolService(ProtocolRepository repository) {

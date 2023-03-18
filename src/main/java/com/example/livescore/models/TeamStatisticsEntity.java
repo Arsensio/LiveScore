@@ -4,9 +4,8 @@ import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -16,12 +15,10 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import static com.example.livescore.enums.EventNames.GOAL;
-import static com.example.livescore.enums.EventNames.RED_CARD;
 
+@Data
 @Entity
 @Table(name = "team_statistics")
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {

@@ -1,7 +1,7 @@
 package com.example.livescore.service.team.impl;
 
-import com.example.core.service.AbstractFootballService;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.team.TeamFootballService;
@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultTeamFootballService extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long,
-        TeamRepository> implements TeamFootballService {
+        TeamRepository>
+        implements TeamFootballService {
 
     public DefaultTeamFootballService(TeamRepository repository) {
         super(repository);
@@ -20,13 +21,12 @@ public class DefaultTeamFootballService extends AbstractFootballService<TeamEnti
     @Override
     public TeamDTO save(SaveTeamDTO saveTeamDTO) {
         TeamEntity saved = repository.save(new TeamEntity(
-                        null,
-                        saveTeamDTO.getTeamName(),
+                null,
+                saveTeamDTO.getTeamName(),
                         saveTeamDTO.getTeamLogo(),
                         null
                 )
         );
-
         return saved.toDTO();
     }
 
@@ -39,6 +39,8 @@ public class DefaultTeamFootballService extends AbstractFootballService<TeamEnti
         }, () -> {
             throw ResourceNotFoundException.build(id, "Team");
         });
-        return repository.findById(id).get().toDTO();
+        return repository.findById(id)
+                .get()
+                .toDTO();
     }
 }

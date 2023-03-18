@@ -17,8 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class DefaultGameService
-        extends AbstractFootballService<GameEntity, GameDTO, SaveGameDTO, Long, GameRepository>
+public class DefaultGameService extends AbstractFootballService<GameEntity, GameDTO, SaveGameDTO, Long, GameRepository>
         implements GameService {
 
     private final GroupRepository groupRepository;
@@ -55,7 +54,7 @@ public class DefaultGameService
         } else {
             GameEntity gameEntity = foundGame.get();
             if (gameEntity.isPlayed()) {
-                System.out.println("уже начался"+gameEntity.isPlayed());
+                System.out.println("уже начался" + gameEntity.isPlayed());
                 return gameEntity.toDTO();
             }
             GroupEntity group = gameEntity.getGroup();

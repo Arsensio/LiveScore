@@ -7,5 +7,6 @@ import com.example.livescore.web.players.SavePlayerDTO;
 import java.util.List;
 
 public interface PlayerService extends FootballService<PlayerDTO, SavePlayerDTO, Long> {
+
     List<PlayerDTO> findAllByTeamId(long teamId);
 }

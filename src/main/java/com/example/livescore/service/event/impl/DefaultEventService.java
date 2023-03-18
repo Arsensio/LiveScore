@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-public class DefaultEventService
-        extends AbstractFootballService<EventEntity, EventDTO, SaveEventDTO, Long, EventRepository>
+public class DefaultEventService extends AbstractFootballService<EventEntity, EventDTO, SaveEventDTO, Long,
+        EventRepository>
         implements EventService {
 
     private final PlayerRepository playerRepository;
@@ -41,13 +41,12 @@ public class DefaultEventService
 
         ProtocolEntity protocol = getProtocolById(dto.getProtocolId());
         PlayerEntity player = getPlayerById(dto.getPlayerId());
-        GroupEntity group = protocol
-                .getGame()
+        GroupEntity group = protocol.getGame()
                 .getGroup();
 
         updatePlayerStatistic(group, player, event, protocol);
         EventEntity save = repository.save(getNewEvent(dto, event, protocol, player));
-        log.info("CREATE NEW EVENT"+ save);
+        log.info("CREATE NEW EVENT" + save);
 
         return save.toDTO();
     }
@@ -58,7 +57,7 @@ public class DefaultEventService
                 null,
                 protocol,
                 event.getEventName(),
-                protocol.getTeam1Score()+":"+protocol.getTeam2Score(),
+                protocol.getTeam1Score() + ":" + protocol.getTeam2Score(),
                 player,
                 dto.getMinute()
         );
@@ -131,5 +130,4 @@ public class DefaultEventService
         protocolRepository.saveAndFlush(protocol);
         log.info("UPDATE PROTOCOL SCORE " + protocol.getTeam1() + " " + protocol.getTeam1Score() + " : " + protocol.getTeam2Score() + " " + protocol.getTeam2());
     }
-
 }

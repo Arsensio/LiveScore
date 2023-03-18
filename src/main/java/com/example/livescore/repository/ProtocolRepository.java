@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProtocolRepository extends JpaRepository<ProtocolEntity, Long> {
-
-
 }

@@ -13,14 +13,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/game")
-public class DefaultGameController
-        extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
+public class DefaultGameController extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
         implements GameController {
 
     public DefaultGameController(GameService service) {
         super(service);
     }
-
 
     @GetMapping("/date")
     @Override
@@ -31,6 +29,6 @@ public class DefaultGameController
     @PostMapping("/start/{id}")
     @Override
     public ResponseEntity<GameDTO> startMatch(@PathVariable Long id) {
-        return new ResponseEntity<>(service.startMatch(id),HttpStatus.OK);
+        return new ResponseEntity<>(service.startMatch(id), HttpStatus.OK);
     }
 }

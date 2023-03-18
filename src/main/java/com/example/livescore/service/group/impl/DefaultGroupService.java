@@ -9,8 +9,8 @@ import com.example.livescore.web.groups.SaveGroupDTO;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultGroupService
-        extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long, GroupRepository>
+public class DefaultGroupService extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long,
+        GroupRepository>
         implements GroupService {
 
     public DefaultGroupService(GroupRepository repository) {
