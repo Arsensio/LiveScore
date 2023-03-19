@@ -2,6 +2,7 @@ package com.example.livescore.models;
 
 
 import com.example.core.dto.AbstractEntity;
+import com.example.livescore.enums.EventNames;
 import com.example.livescore.web.events.EventDTO;
 import lombok.*;
 
@@ -43,7 +44,7 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
 
     @OneToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
-    private AssistEntity assist;
+    private GoalInfoEntity goalInfo;
 
     public EventEntity(Long eventId, ProtocolEntity protocol, String eventName, String goalScore, PlayerEntity player, Integer minute, Boolean isPenalty) {
         this.eventId = eventId;
@@ -66,10 +67,15 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
                 goalScore,
                 isPenalty
         );
-        if (assist == null) {
-            eventDTO.setAssist(null);
-        } else {
-            eventDTO.setAssist(assist.toDTO());
+        if (goalInfo != null) {
+            if (goalInfo.getName().equals(EventNames.ASSIST.getEventName())) {
+                System.out.println("Assist" + goalInfo.toDTO());
+                eventDTO.setAssist(goalInfo.toDTO());
+                eventDTO.setPenalty(false);
+            } else if (goalInfo.getName().equals(EventNames.PENALTY.getEventName())) {
+                eventDTO.setAssist(null);
+                eventDTO.setPenalty(true);
+            }
         }
 
         return eventDTO;

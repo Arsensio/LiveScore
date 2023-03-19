@@ -11,9 +11,9 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "assists")
+@Table(name = "goal_info")
 @ToString
-public class AssistEntity extends AbstractEntity<AssistDTO> {
+public class GoalInfoEntity extends AbstractEntity<AssistDTO> {
 
     @Id
     private Long id;
@@ -30,10 +30,10 @@ public class AssistEntity extends AbstractEntity<AssistDTO> {
     @JoinColumn(name = "id", referencedColumnName = "event_id")
     private EventEntity event;
 
-    public AssistEntity(Long id, PlayerEntity player, String name) {
-        this.id = id;
+    public GoalInfoEntity(PlayerEntity player, String name, EventEntity event) {
         this.player = player;
         this.name = name;
+        this.event = event;
     }
 
     @Override

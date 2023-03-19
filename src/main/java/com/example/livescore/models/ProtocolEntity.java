@@ -68,7 +68,7 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
                 dateAndTime,
                 gameScore(),
                 eventDTOS,
-                LocalDateTime.now().isAfter(dateAndTime)
+                game.isPlayed()
         );
     }
 
