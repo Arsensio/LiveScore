@@ -64,7 +64,7 @@ public class DefaultEventService
     }
 
     private AssistEntity getNewAssistEntity(PlayerEntity assistPlayer, EventEntity event) {
-        return new AssistEntity(new AssistEntityPK(event), assistPlayer);
+        return new AssistEntity(event.getEventId(), assistPlayer, event.getEventName());
     }
 
     @Override

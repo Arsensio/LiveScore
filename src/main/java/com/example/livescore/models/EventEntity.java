@@ -42,7 +42,7 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
     private Boolean isPenalty;
 
     @OneToOne
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "event_id", referencedColumnName = "id")
     private AssistEntity assist;
 
     public EventEntity(Long eventId, ProtocolEntity protocol, String eventName, String goalScore, PlayerEntity player, Integer minute, Boolean isPenalty) {
@@ -57,16 +57,21 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
 
     @Override
     public EventDTO toDTO() {
-
-        return new EventDTO(
+        EventDTO eventDTO = new EventDTO(
                 eventName,
                 player.getName() + " " + player.getSurname(),
                 minute,
                 player.getTeam().getTeamId(),
                 player.getTeam().getTeamName(),
                 goalScore,
-                assist.toDTO(),
                 isPenalty
         );
+        if (assist == null) {
+            eventDTO.setAssist(null);
+        } else {
+            eventDTO.setAssist(assist.toDTO());
+        }
+
+        return eventDTO;
     }
 }
