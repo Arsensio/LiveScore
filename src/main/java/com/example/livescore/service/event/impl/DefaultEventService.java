@@ -8,6 +8,7 @@ import com.example.livescore.repository.*;
 import com.example.livescore.service.event.EventService;
 import com.example.livescore.web.events.EventDTO;
 import com.example.livescore.web.events.SaveEventDTO;
+import com.example.livescore.web.events.SaveGoalEventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,43 @@ public class DefaultEventService
     private final ProtocolRepository protocolRepository;
     private final PlayerStatisticsRepository playerStatisticsRepository;
     private final TeamStatisticsRepository teamStatisticsRepository;
+    private final GoalInfoRepository goalInfoRepository;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public DefaultEventService(EventRepository repository, PlayerRepository playerRepository, ProtocolRepository protocolRepository, PlayerStatisticsRepository playerStatisticsRepository, TeamStatisticsRepository teamStatisticsRepository, TeamRepository teamRepository) {
+    public DefaultEventService(EventRepository repository, PlayerRepository playerRepository, ProtocolRepository protocolRepository, PlayerStatisticsRepository playerStatisticsRepository, TeamStatisticsRepository teamStatisticsRepository, TeamRepository teamRepository, GoalInfoRepository goalInfoRepository) {
         super(repository);
         this.playerRepository = playerRepository;
         this.protocolRepository = protocolRepository;
         this.playerStatisticsRepository = playerStatisticsRepository;
         this.teamStatisticsRepository = teamStatisticsRepository;
+        this.goalInfoRepository = goalInfoRepository;
+    }
+
+
+    @Override
+    @Transactional
+    public EventDTO save(SaveGoalEventDTO dto) {
+        EventNames goal = EventNames.GOAL;
+        EventNames assist = EventNames.ASSIST;
+
+        ProtocolEntity protocol = getProtocolById(dto.getProtocolId());
+        GroupEntity group = protocol.getGame().getGroup();
+
+        PlayerEntity goalPlayer = getPlayerById(dto.getPlayerId());
+        updatePlayerStatistic(group, goalPlayer, goal, protocol);
+        EventEntity save = repository.save(getNewEvent(dto, goal, protocol, goalPlayer));
+
+        if (dto.getAssistId() != null) {
+            PlayerEntity assistPlayer = getPlayerById(dto.getAssistId());
+            updatePlayerStatistic(group, assistPlayer, assist, protocol);
+            goalInfoRepository.save(getGoalInfoEntity(assistPlayer, save, 2));
+        } else if (dto.getIsPenalty()) {
+            goalInfoRepository.save(getGoalInfoEntity(null, save, 5));
+        }
+
+        log.info("CREATE NEW EVENT {}", save);
+
+        return save.toDTO();
     }
 
     @Override
@@ -47,20 +77,24 @@ public class DefaultEventService
 
         updatePlayerStatistic(group, player, event, protocol);
         EventEntity save = repository.save(getNewEvent(dto, event, protocol, player));
-        log.info("CREATE NEW EVENT"+ save);
+        log.info("CREATE NEW EVENT {}", save);
 
         return save.toDTO();
     }
 
-    private EventEntity getNewEvent(SaveEventDTO dto, EventNames event, ProtocolEntity protocol, PlayerEntity player) {
+    private GoalInfoEntity getGoalInfoEntity(PlayerEntity assistPlayer, EventEntity event, long eventId) {
+        return new GoalInfoEntity(assistPlayer, EventNames.getEventNameById(eventId), event);
+    }
 
+    private EventEntity getNewEvent(SaveEventDTO dto, EventNames event, ProtocolEntity protocol, PlayerEntity player) {
         return new EventEntity(
                 null,
                 protocol,
                 event.getEventName(),
-                protocol.getTeam1Score()+":"+protocol.getTeam2Score(),
+                protocol.getTeam1Score() + ":" + protocol.getTeam2Score(),
                 player,
-                dto.getMinute()
+                dto.getMinute(),
+                false
         );
     }
 
@@ -113,17 +147,17 @@ public class DefaultEventService
         TeamEntity team1 = protocol.getTeam1();
         TeamEntity team2 = protocol.getTeam2();
 
-        TeamStatisticsEntityPK team1StatisticsEntityPK;
+        TeamStatisticsEntityPK teamStatisticsEntityPK;
         if (player.getTeam().equals(team1)) {
-            team1StatisticsEntityPK = new TeamStatisticsEntityPK(group, team1);
-            teamStatisticsRepository.incrementGoalCount(team1StatisticsEntityPK);
+            teamStatisticsEntityPK = new TeamStatisticsEntityPK(group, team1);
+            teamStatisticsRepository.incrementGoalCount(teamStatisticsEntityPK);
             TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(group, team2);
             teamStatisticsRepository.incrementGoalMissedCount(team2StatisticsEntityPK);
             protocol.setTeam1Score(protocol.getTeam1Score() + 1);
 
         } else {
-            team1StatisticsEntityPK = new TeamStatisticsEntityPK(group, team2);
-            teamStatisticsRepository.incrementGoalCount(team1StatisticsEntityPK);
+            teamStatisticsEntityPK = new TeamStatisticsEntityPK(group, team2);
+            teamStatisticsRepository.incrementGoalCount(teamStatisticsEntityPK);
             TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(group, team1);
             teamStatisticsRepository.incrementGoalMissedCount(team2StatisticsEntityPK);
             protocol.setTeam2Score(protocol.getTeam2Score() + 1);
