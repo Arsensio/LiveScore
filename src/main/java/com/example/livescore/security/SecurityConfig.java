@@ -19,16 +19,20 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final String[] pathArr = {"/assist/**", "/game/**", "/group/**", "/player/**", "/player_statistics/**",
+            "/protocol/**", "/team/**", "/team_statistics/**", "/tournament/**", "/event/**"};
+    private final String LOGIN_ENDPOINT = "/auth/login";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/login", "/swagger-ui/", "/event/**").permitAll()
-                .antMatchers(GET, "/team").permitAll()
-                .antMatchers(POST, "/team/**").hasAuthority("ADMIN")
-                .antMatchers(PUT, "/team/**").hasAuthority("ADMIN")
-                .antMatchers(DELETE, "/team/**").hasAuthority("ADMIN")
+                .antMatchers(LOGIN_ENDPOINT).permitAll()
+                .antMatchers("/swagger-ui.html", "/webjars/**", "/v2/**", "/swagger-resources/**").permitAll()
+                .antMatchers(GET, pathArr).permitAll()
+                .antMatchers(POST, pathArr).hasAuthority("ADMIN")
+                .antMatchers(PUT, pathArr).hasAuthority("ADMIN")
+                .antMatchers(DELETE, pathArr).hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS)

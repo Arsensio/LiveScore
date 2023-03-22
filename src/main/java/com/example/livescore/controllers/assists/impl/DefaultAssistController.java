@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/assists")
+@RequestMapping("/assist")
 public class DefaultAssistController
         extends AbstractFootballController<AssistService, AssistDTO, SaveAssistsDTO, Long>
         implements AssistController {
