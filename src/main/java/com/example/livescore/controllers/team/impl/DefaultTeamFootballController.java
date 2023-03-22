@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/team")
-public class DefaultTeamFootballController
-        extends AbstractFootballController<TeamFootballService, TeamDTO, SaveTeamDTO, Long>
+public class DefaultTeamFootballController extends AbstractFootballController<TeamFootballService, TeamDTO,
+        SaveTeamDTO, Long>
         implements TeamFootballController {
 
     public DefaultTeamFootballController(TeamFootballService service) {

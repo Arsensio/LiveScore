@@ -17,6 +17,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "games")
 public class GameEntity extends AbstractEntity<GameDTO> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id", nullable = false)

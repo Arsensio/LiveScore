@@ -5,5 +5,5 @@ import com.example.livescore.web.protocols.ProtocolDTO;
 import com.example.livescore.web.protocols.SaveProtocolDTO;
 
 
-public interface ProtocolService extends FootballService<ProtocolDTO,SaveProtocolDTO,Long> {
+public interface ProtocolService extends FootballService<ProtocolDTO, SaveProtocolDTO, Long> {
 }

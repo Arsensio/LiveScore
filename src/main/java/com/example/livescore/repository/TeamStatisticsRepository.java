@@ -1,6 +1,5 @@
 package com.example.livescore.repository;
 
-import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
 import com.example.livescore.web.teamStatistics.StatisticDTO;

@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -23,11 +24,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/login/**").permitAll()
-                .antMatchers("/event/**").permitAll()
-                .antMatchers("/player/**").permitAll()
+                .antMatchers("/auth/login", "/swagger-ui/", "/event/**").permitAll()
+                .antMatchers(GET, "/team").permitAll()
+                .antMatchers(POST, "/team/**").hasAuthority("ADMIN")
+                .antMatchers(PUT, "/team/**").hasAuthority("ADMIN")
+                .antMatchers(DELETE, "/team/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(STATELESS)
+                .and()
+                .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

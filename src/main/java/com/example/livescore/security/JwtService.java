@@ -16,7 +16,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267";
+    @Value("${jwt.token.secret}")
+    private String secretKey;
 
     @Value("${jwt.token.expired}")
     private Long validityTime;
@@ -61,7 +62,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

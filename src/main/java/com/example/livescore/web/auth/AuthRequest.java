@@ -1,4 +1,5 @@
-package com.example.livescore.security;
+package com.example.livescore.web.auth;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
+public class AuthRequest {
 
-    private String token;
+    private String username;
+    private String password;
 }

@@ -63,13 +63,17 @@ public abstract class AbstractFootballService<
         }
     }
 
-    // todo
+    /***
+     * left so that heirs do not have to implement unnecessary functionality
+     */
     @Override
     public RD save(SD dto) {
         return null;
     }
 
-    // todo
+    /***
+     * left so that heirs do not have to implement unnecessary functionality
+     */
     @Override
     public RD update(I id, SD dto) {
         return null;

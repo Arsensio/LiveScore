@@ -1,6 +1,9 @@
-package com.example.livescore.security;
+package com.example.livescore.service.auth.impl;
 
-import com.example.livescore.repository.UserRepository;
+import com.example.livescore.security.JwtService;
+import com.example.livescore.service.auth.AuthService;
+import com.example.livescore.web.auth.AuthRequest;
+import com.example.livescore.web.auth.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,9 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class DefaultAuthService implements AuthService {
 
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 

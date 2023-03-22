@@ -13,8 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/game")
-public class DefaultGameController
-        extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
+public class DefaultGameController extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
         implements GameController {
 
     public DefaultGameController(GameService service) {

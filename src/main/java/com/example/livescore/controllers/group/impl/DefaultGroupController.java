@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/group")
-public class DefaultGroupController
-        extends AbstractFootballController<GroupService, GroupDTO, SaveGroupDTO, Long>
+public class DefaultGroupController extends AbstractFootballController<GroupService, GroupDTO, SaveGroupDTO, Long>
         implements GroupController {
 
     public DefaultGroupController(GroupService service) {
