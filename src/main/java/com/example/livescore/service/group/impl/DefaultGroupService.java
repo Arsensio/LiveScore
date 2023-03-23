@@ -8,6 +8,8 @@ import com.example.livescore.web.groups.GroupDTO;
 import com.example.livescore.web.groups.SaveGroupDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DefaultGroupService
         extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long, GroupRepository>
@@ -15,5 +17,13 @@ public class DefaultGroupService
 
     public DefaultGroupService(GroupRepository repository) {
         super(repository);
+    }
+
+    @Override
+    public List<GroupDTO> findAllByTournamentId(long tournamentId) {
+        return repository.findAllByTournamentId(tournamentId)
+                .stream()
+                .map(GroupEntity::toDTO)
+                .toList();
     }
 }

@@ -9,6 +9,8 @@ import com.example.livescore.web.tournaments.SaveTournamentDTO;
 import com.example.livescore.web.tournaments.TournamentDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DefaultTournamentService extends AbstractFootballService<TournamentEntity,
         TournamentDTO, SaveTournamentDTO, Long, TournamentRepository>
@@ -34,8 +36,16 @@ public class DefaultTournamentService extends AbstractFootballService<Tournament
             tournamentEntity.setTournamentType(dto.getTournamentType());
             repository.saveAndFlush(tournamentEntity);
         }, () -> {
-            throw  ResourceNotFoundException.build(id,"TournamentEntity");
+            throw ResourceNotFoundException.build(id, "TournamentEntity");
         });
         return repository.findById(id).get().toDTO();
+    }
+
+    @Override
+    public List<TournamentDTO> findAllByUserId(long userId) {
+        return repository.findAllTournamentByUserId(userId)
+                .stream()
+                .map(TournamentEntity::toDTO)
+                .toList();
     }
 }
