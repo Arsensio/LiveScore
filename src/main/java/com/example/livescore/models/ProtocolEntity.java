@@ -2,7 +2,6 @@ package com.example.livescore.models;
 
 
 import com.example.core.dto.AbstractEntity;
-import com.example.livescore.enums.EventNames;
 import com.example.livescore.web.events.EventDTO;
 import com.example.livescore.web.protocols.ProtocolDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -68,7 +67,7 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
                 dateAndTime,
                 gameScore(),
                 eventDTOS,
-                game.isPlayed()
+                game.getGameState()
         );
     }
 

@@ -45,21 +45,21 @@ insert into players
 values (12, 'Jesus', '22', 'DEFENDER', 'Navas', 2);
 
 insert into games
-values (1, true, 1);
+values (1, 'ENDED', 1);
 insert into games
-values (2, true, 1);
+values (2, 'ENDED', 1);
 insert into games
-values (3, true, 1);
+values (3, 'ENDED', 1);
 
 insert into protocols
 values (1, 1, '2022-12-07 14:43:07.000000', 1, 2, 1, 2);
 
 insert into events
-values (1, 'GOAL','0:1', 11, 8, 1,false);
+values (1, 'GOAL', '0:1', 11, 8, 1, false);
 insert into events
-values (2, 'ASSIST','0:1', 11, 2, 1,false);
+values (2, 'ASSIST', '0:1', 11, 2, 1, false);
 insert into events
-values (3, 'YELLOW_CARD','0:1', 30, 8, 1,false);
+values (3, 'YELLOW_CARD', '0:1', 30, 8, 1, false);
 insert into events
 values (4, 'RED_CARD','0:1',43, 8, 1,false);
 insert into events
@@ -95,7 +95,7 @@ insert into player_statistics
 values (0, 0, 1, 0, 0, 1, 12);
 
 insert into team_statistics
-values (0, 1, 1, 2, 1, 1, 0, 1, 1);
+values (1, 1, 1, 2, 0, 1, 0, 1, 1);
 insert into team_statistics
 values (0, 1, 2, 1, 0, 3, 1, 1, 2);
 insert into team_statistics

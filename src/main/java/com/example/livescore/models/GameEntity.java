@@ -2,11 +2,15 @@ package com.example.livescore.models;
 
 
 import com.example.core.dto.AbstractEntity;
+import com.example.livescore.enums.GameState;
+import com.example.livescore.enums.PgSQLEnumType;
 import com.example.livescore.web.games.GameDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
@@ -16,14 +20,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "games")
+@TypeDef(
+        name = "game_state",
+        typeClass = PgSQLEnumType.class
+)
 public class GameEntity extends AbstractEntity<GameDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id", nullable = false)
     private Long gameId;
 
-    @Column(name = "is_played")
-    private boolean isPlayed;
+    @Column(name = "game_state")
+    @Enumerated(EnumType.STRING)
+    @Type(type = "game_state")
+    private GameState gameState;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "group_id", referencedColumnName = "group_id")
@@ -41,15 +51,15 @@ public class GameEntity extends AbstractEntity<GameDTO> {
                 protocol.getTeam2().getTeamName(),
                 protocol.getTeam1().getTeamLogo(),
                 protocol.getTeam2().getTeamLogo(),
-                getGameScoreFromProtocol(isPlayed),
-                isPlayed,
+                getGameScoreFromProtocol(gameState),
+                gameState,
                 protocol.getProtocolId(),
                 protocol.getDateAndTime()
         );
     }
 
-    private String getGameScoreFromProtocol(boolean isPlayed) {
-        if (isPlayed) {
+    private String getGameScoreFromProtocol(GameState gameState) {
+        if (gameState == GameState.ENDED || gameState == GameState.STARTED) {
             return protocol.getTeam1Score() + ":" + protocol.getTeam2Score();
         }
 

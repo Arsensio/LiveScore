@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class SaveGameDTO {
 
     private Long groupId;
-    private boolean isPlayed;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
     private Long team1Id;

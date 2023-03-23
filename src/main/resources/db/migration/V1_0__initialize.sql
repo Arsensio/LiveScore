@@ -28,12 +28,14 @@ create table teams
     team_name varchar(255)
 );
 
+CREATE TYPE game_state AS ENUM ('NOT_STARTED','STARTED','ENDED');
+
 create table games
 (
-    game_id   bigserial
+    game_id    bigserial
         primary key,
-    is_played boolean,
-    group_id  bigint,
+    game_state game_state default 'NOT_STARTED',
+    group_id   bigint,
     constraint fk_group
         foreign key (group_id)
             references groups (group_id)
