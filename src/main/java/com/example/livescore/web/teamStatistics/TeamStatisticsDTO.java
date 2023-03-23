@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamStatisticsDTO {
+public class TeamStatisticsDTO implements Comparable<TeamStatisticsDTO> {
 
     private String groupName;
     private String teamName;
@@ -21,4 +21,20 @@ public class TeamStatisticsDTO {
     private Integer goalCount;
     private Integer goalMissed;
     private Integer points;
+
+
+    @Override
+    public int compareTo(TeamStatisticsDTO o) {
+        if (this.points > o.getPoints()) {
+            return -1;
+        } else if (this.points < o.getPoints()) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return teamName;
+    }
 }

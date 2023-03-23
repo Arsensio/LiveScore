@@ -1,5 +1,6 @@
 package com.example.livescore.web.games;
 
+import com.example.livescore.enums.GameState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class GameDTO {
     private String team1Logo;
     private String team2Logo;
     private String gameScore;
-    private boolean isPlayed;
+    private GameState gameState;
     private Long protocolId;
     private LocalDateTime gameDateTime;
 }

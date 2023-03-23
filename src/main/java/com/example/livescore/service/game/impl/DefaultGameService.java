@@ -2,6 +2,7 @@ package com.example.livescore.service.game.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
+import com.example.livescore.enums.GameState;
 import com.example.livescore.models.*;
 import com.example.livescore.repository.*;
 import com.example.livescore.service.game.GameService;
@@ -54,8 +55,7 @@ public class DefaultGameService
             throw ResourceNotFoundException.build(gameId, "GameEntity");
         } else {
             GameEntity gameEntity = foundGame.get();
-            if (gameEntity.isPlayed()) {
-                System.out.println("уже начался"+gameEntity.isPlayed());
+            if (gameEntity.getGameState() == GameState.STARTED) {
                 return gameEntity.toDTO();
             }
             GroupEntity group = gameEntity.getGroup();
@@ -64,7 +64,7 @@ public class DefaultGameService
 
             repository.updateIsPlayed(gameId);
             increaseGameCount(group, team1, team2);
-            gameEntity.setPlayed(true);
+            gameEntity.setGameState(GameState.STARTED);
 
 
             return gameEntity.toDTO();
@@ -93,7 +93,7 @@ public class DefaultGameService
     private GameEntity createGameEntity(GroupEntity group) {
         GameEntity gameEntity = new GameEntity(
                 null,
-                false,
+                GameState.NOT_STARTED,
                 group,
                 null
         );

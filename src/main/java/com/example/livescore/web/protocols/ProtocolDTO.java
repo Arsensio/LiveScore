@@ -1,5 +1,6 @@
 package com.example.livescore.web.protocols;
 
+import com.example.livescore.enums.GameState;
 import com.example.livescore.web.events.EventDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,5 +24,5 @@ public class ProtocolDTO {
     private LocalDateTime dateAndTime;
     private String gameScore;
     private List<EventDTO> events;
-    private boolean isPlayed;
+    private GameState gameState;
 }
