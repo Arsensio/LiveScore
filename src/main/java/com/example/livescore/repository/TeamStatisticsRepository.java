@@ -46,6 +46,18 @@ public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEn
     Integer incrementGameCount(TeamStatisticsEntityPK firstTeam);
 
     @Modifying
+    @Query("update TeamStatisticsEntity t set t.points = t.points+3 where t.id =?1")
+    Integer incrementPoint(TeamStatisticsEntityPK team);
+
+    @Modifying
+    @Query("update TeamStatisticsEntity t set t.points = t.points-3 where t.id =?1")
+    Integer decrementPoint(TeamStatisticsEntityPK team);
+
+    @Modifying
+    @Query("update TeamStatisticsEntity t set t.points = t.points+1 where t.id =?1")
+    Integer drawPoint(TeamStatisticsEntityPK team);
+
+    @Modifying
     @Query("update TeamStatisticsEntity t set t.winCount = t.winCount + 1 where t.id = ?1")
     Integer incrementWinCount(TeamStatisticsEntityPK id);
 

@@ -4,5 +4,9 @@ import com.example.core.service.FootballService;
 import com.example.livescore.web.tournaments.SaveTournamentDTO;
 import com.example.livescore.web.tournaments.TournamentDTO;
 
+import java.util.List;
+
 public interface TournamentService extends FootballService<TournamentDTO, SaveTournamentDTO, Long> {
+
+    List<TournamentDTO> findAllByUserId(long userId);
 }
