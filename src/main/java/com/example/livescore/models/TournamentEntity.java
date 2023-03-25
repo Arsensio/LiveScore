@@ -30,9 +30,9 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
 
     public TournamentDTO toDTO() {
         return new TournamentDTO(
-                tournamentId,
-                tournamentName,
-                tournamentType
+                this.tournamentId,
+                this.tournamentName,
+                this.tournamentType
         );
     }
 }

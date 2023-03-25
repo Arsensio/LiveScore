@@ -56,10 +56,10 @@ public class PlayerStatisticsEntity extends AbstractEntity<PlayerStatisticsDTO> 
 
         DistinctPlayerStatisticsDTO distinctPlayerStatisticsDTO = new DistinctPlayerStatisticsDTO(
                 statName,
-                id.getGroup().getGroupName(),
-                id.getPlayer().getTeam().getTeamName(),
-                id.getPlayer().getTeam().getTeamLogo(),
-                id.getPlayer().getName() + " " + id.getPlayer().getSurname()
+                this.id.getGroup().getGroupName(),
+                this.id.getPlayer().getTeam().getTeamName(),
+                this.id.getPlayer().getTeam().getTeamLogo(),
+                this.id.getPlayer().getName() + " " + this.id.getPlayer().getSurname()
         );
 
         setTotalAndPerGame(statName, df, distinctPlayerStatisticsDTO);

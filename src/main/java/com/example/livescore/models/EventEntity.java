@@ -69,7 +69,6 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
         );
         if (goalInfo != null) {
             if (goalInfo.getName().equals(EventNames.ASSIST.getEventName())) {
-                System.out.println("Assist" + goalInfo.toDTO());
                 eventDTO.setAssist(goalInfo.toDTO());
                 eventDTO.setPenalty(false);
             } else if (goalInfo.getName().equals(EventNames.PENALTY.getEventName())) {

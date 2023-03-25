@@ -28,9 +28,15 @@ public class DefaultGameController
         return new ResponseEntity<>(service.findAllByDate(date), HttpStatus.OK);
     }
 
+    @GetMapping("/live")
+    @Override
+    public ResponseEntity<List<GameDTO>> findAllByDate() {
+        return new ResponseEntity<>(service.findAllLiveMatches(), HttpStatus.OK);
+    }
+
     @PostMapping("/start/{id}")
     @Override
     public ResponseEntity<GameDTO> startMatch(@PathVariable Long id) {
-        return new ResponseEntity<>(service.startMatch(id),HttpStatus.OK);
+        return new ResponseEntity<>(service.startMatch(id), HttpStatus.OK);
     }
 }

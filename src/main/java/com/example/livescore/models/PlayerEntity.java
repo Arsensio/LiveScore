@@ -42,12 +42,12 @@ public class PlayerEntity extends AbstractEntity<PlayerDTO> {
     @Override
     public PlayerDTO toDTO() {
         return new PlayerDTO(
-                playerId,
-                team.getTeamName(),
-                name,
-                surname,
-                playerNumber,
-                role
+                this.playerId,
+                this.team.getTeamName(),
+                this.name,
+                this.surname,
+                this.playerNumber,
+                this.role
         );
     }
 }

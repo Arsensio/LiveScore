@@ -60,25 +60,19 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
         List<EventDTO> eventDTOS = events.stream().map(EventEntity::toDTO).toList();
 
         return new ProtocolDTO(
-                protocolId,
-                game.getGameId(),
-                team1.getTeamName(),
-                team2.getTeamName(),
-                dateAndTime,
+                this.protocolId,
+                this.game.getGameId(),
+                this.team1.getTeamName(),
+                this.team2.getTeamName(),
+                this.dateAndTime,
                 gameScore(),
                 eventDTOS,
-                game.getGameState()
+                this.game.getGameState()
         );
     }
 
     private String gameScore() {
-        return team1Score + ":" + team2Score;
+        return this.team1Score + ":" + this.team2Score;
     }
 
-    public void incrementTeamScore(boolean first) {
-        if (first)
-            team1Score++;
-        else
-            team2Score++;
-    }
 }

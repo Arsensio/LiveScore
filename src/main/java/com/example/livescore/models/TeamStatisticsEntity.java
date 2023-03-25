@@ -16,7 +16,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import static com.example.livescore.enums.EventNames.GOAL;
-import static com.example.livescore.enums.EventNames.RED_CARD;
 
 @Entity
 @Table(name = "team_statistics")
@@ -53,15 +52,15 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     @Override
     public TeamStatisticsDTO toDTO() {
         return new TeamStatisticsDTO(
-                id.getGroup().getGroupName(),
-                id.getTeam().getTeamName(),
-                gamePlayed,
-                winCount,
-                drawCount,
-                loseCount,
-                goalCount,
-                goalMissed,
-                points
+                this.id.getGroup().getGroupName(),
+                this.id.getTeam().getTeamName(),
+                this.gamePlayed,
+                this.winCount,
+                this.drawCount,
+                this.loseCount,
+                this.goalCount,
+                this.goalMissed,
+                this.points
         );
     }
 

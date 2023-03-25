@@ -5,7 +5,6 @@ import com.example.livescore.enums.EventNames;
 import com.example.livescore.models.ProtocolEntity;
 import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
-import com.example.livescore.repository.GroupRepository;
 import com.example.livescore.repository.ProtocolRepository;
 import com.example.livescore.repository.TeamStatisticsRepository;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
@@ -16,9 +15,7 @@ import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DefaultTeamStatisticsService
@@ -26,13 +23,11 @@ public class DefaultTeamStatisticsService
         SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
         implements TeamStatisticsService {
 
-    private final GroupRepository groupRepository;
     private final ProtocolRepository protocolRepository;
 
 
-    public DefaultTeamStatisticsService(TeamStatisticsRepository repository, GroupRepository groupRepository, ProtocolRepository protocolRepository) {
+    public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolRepository protocolRepository) {
         super(repository);
-        this.groupRepository = groupRepository;
         this.protocolRepository = protocolRepository;
     }
 
@@ -41,7 +36,7 @@ public class DefaultTeamStatisticsService
         return repository.findAllByGroupIdOrderByGoalCount(groupId)
                 .stream()
                 .map(team -> team.toDistinctStatisticsDTO(EventNames.GOAL.getEventName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -52,39 +47,21 @@ public class DefaultTeamStatisticsService
 
         for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
             for (ProtocolEntity protocolEntity : allByGameStateStarted) {
+                int team1Score = protocolEntity.getTeam1Score();
+                int team2Score = protocolEntity.getTeam2Score();
 
                 if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-                    int team1Score = protocolEntity.getTeam1Score();
-                    int team2Score = protocolEntity.getTeam2Score();
-
-                    if (team1Score > team2Score) {
-                        teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
-                        teamStatistics.setPoints(teamStatistics.getPoints() + 3);
-                    } else if (team1Score == team2Score) {
-                        teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
-                        teamStatistics.setPoints(teamStatistics.getPoints() + 1);
-                    } else {
-                        teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
-                    }
+                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
                 } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-                    int team1Score = protocolEntity.getTeam1Score();
-                    int team2Score = protocolEntity.getTeam2Score();
-
-                    if (team2Score > team1Score) {
-                        teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
-                        teamStatistics.setPoints(teamStatistics.getPoints() + 3);
-                    } else if (team1Score == team2Score) {
-                        teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
-                        teamStatistics.setPoints(teamStatistics.getPoints() + 1);
-                    } else {
-                        teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
-                    }
+                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
                 }
             }
             orderedByPointList.add(teamStatistics.toDTO());
         }
 
-        Collections.sort(orderedByPointList);
+        orderedByPointList.sort((o1, o2) ->
+                o2.getPoints().compareTo(o1.getPoints())
+        );
 
         return orderedByPointList;
     }
@@ -97,7 +74,7 @@ public class DefaultTeamStatisticsService
                 .stream()
                 .map(statisticDTO ->
                         statisticDTO.toDistinctTeamStatisticsDTO(EventNames.RED_CARD))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -108,8 +85,18 @@ public class DefaultTeamStatisticsService
                 .stream()
                 .map(statisticDTO ->
                         statisticDTO.toDistinctTeamStatisticsDTO(EventNames.YELLOW_CARD))
-                .collect(Collectors.toList());
+                .toList();
     }
 
-
+    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {
+        if (foundTeam > rivalTeam) {
+            teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
+            teamStatistics.setPoints(teamStatistics.getPoints() + 3);
+        } else if (foundTeam == rivalTeam) {
+            teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
+            teamStatistics.setPoints(teamStatistics.getPoints() + 1);
+        } else {
+            teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
+        }
+    }
 }

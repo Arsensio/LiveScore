@@ -12,5 +12,7 @@ public interface GameController extends FootballController<GameDTO, SaveGameDTO,
 
     ResponseEntity<List<GameDTO>> findAllByDate(String date);
 
+    ResponseEntity<List<GameDTO>> findAllByDate();
+
     ResponseEntity<GameDTO> startMatch(@PathVariable Long id);
 }
