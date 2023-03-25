@@ -30,7 +30,7 @@ public class DefaultGameController
 
     @GetMapping("/live")
     @Override
-    public ResponseEntity<List<GameDTO>> findAllByDate() {
+    public ResponseEntity<List<GameDTO>> findAllLiveMatches() {
         return new ResponseEntity<>(service.findAllLiveMatches(), HttpStatus.OK);
     }
 
