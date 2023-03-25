@@ -38,7 +38,6 @@ public class GoalInfoEntity extends AbstractEntity<AssistDTO> {
 
     @Override
     public AssistDTO toDTO() {
-
         return new AssistDTO(
                 player.getName() + " " + player.getSurname()
         );

@@ -37,9 +37,9 @@ public class TeamEntity extends AbstractEntity<TeamDTO> {
     @Override
     public TeamDTO toDTO() {
         return new TeamDTO(
-                teamId,
-                teamName,
-                teamLogo
+                this.teamId,
+                this.teamName,
+                this.teamLogo
         );
     }
 }

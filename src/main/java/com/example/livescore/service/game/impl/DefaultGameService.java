@@ -48,6 +48,14 @@ public class DefaultGameService
     }
 
     @Override
+    public List<GameDTO> findAllLiveMatches() {
+        return repository.findAllLiveGame()
+                .stream()
+                .map(GameEntity::toDTO)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public GameDTO startMatch(Long gameId) {
         Optional<GameEntity> foundGame = repository.findById(gameId);
@@ -69,14 +77,6 @@ public class DefaultGameService
 
             return gameEntity.toDTO();
         }
-    }
-
-    private void increaseGameCount(GroupEntity group, TeamEntity team1, TeamEntity team2) {
-        TeamStatisticsEntityPK team1PK = new TeamStatisticsEntityPK(group, team1);
-        TeamStatisticsEntityPK team2PK = new TeamStatisticsEntityPK(group, team2);
-        System.out.println("update game count");
-        teamStatisticsRepository.incrementGameCount(team1PK);
-        teamStatisticsRepository.incrementGameCount(team2PK);
     }
 
     @Override
@@ -130,5 +130,13 @@ public class DefaultGameService
         } else {
             return referenceById.get();
         }
+    }
+
+    private void increaseGameCount(GroupEntity group, TeamEntity team1, TeamEntity team2) {
+        TeamStatisticsEntityPK team1PK = new TeamStatisticsEntityPK(group, team1);
+        TeamStatisticsEntityPK team2PK = new TeamStatisticsEntityPK(group, team2);
+        System.out.println("update game count");
+        teamStatisticsRepository.incrementGameCount(team1PK);
+        teamStatisticsRepository.incrementGameCount(team2PK);
     }
 }

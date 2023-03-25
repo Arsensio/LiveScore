@@ -18,4 +18,7 @@ public interface GameRepository extends JpaRepository<GameEntity, Long> {
     @Modifying
     @Query(value = "UPDATE GameEntity g set g.gameState = 'STARTED' where g.gameId =?1")
     Integer updateIsPlayed(long gameId);
+
+    @Query("FROM GameEntity g where g.gameState = 'STARTED'")
+    List<GameEntity> findAllLiveGame();
 }

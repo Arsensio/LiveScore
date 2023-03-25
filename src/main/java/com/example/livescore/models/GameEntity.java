@@ -45,22 +45,22 @@ public class GameEntity extends AbstractEntity<GameDTO> {
     @Override
     public GameDTO toDTO() {
         return new GameDTO(
-                gameId,
-                group.getGroupId(),
-                protocol.getTeam1().getTeamName(),
-                protocol.getTeam2().getTeamName(),
-                protocol.getTeam1().getTeamLogo(),
-                protocol.getTeam2().getTeamLogo(),
+                this.gameId,
+                this.group.getGroupId(),
+                this.protocol.getTeam1().getTeamName(),
+                this.protocol.getTeam2().getTeamName(),
+                this.protocol.getTeam1().getTeamLogo(),
+                this.protocol.getTeam2().getTeamLogo(),
                 getGameScoreFromProtocol(gameState),
-                gameState,
-                protocol.getProtocolId(),
-                protocol.getDateAndTime()
+                this.gameState,
+                this.protocol.getProtocolId(),
+                this.protocol.getDateAndTime()
         );
     }
 
     private String getGameScoreFromProtocol(GameState gameState) {
         if (gameState == GameState.ENDED || gameState == GameState.STARTED) {
-            return protocol.getTeam1Score() + ":" + protocol.getTeam2Score();
+            return this.protocol.getTeam1Score() + ":" + this.protocol.getTeam2Score();
         }
 
         return "0:0";
