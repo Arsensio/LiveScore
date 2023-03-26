@@ -9,7 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveGoalEventDTO extends SaveEventDTO {
+public class SaveGoalEventDTO {
 
+    private Long protocolId;
+    private Long playerId;
+    private Integer minute;
+    private Boolean isPenalty;
     private Long assistId;
 }

@@ -1,8 +1,8 @@
 package com.example.livescore.service.player.impl;
 
 
-import com.example.core.service.AbstractFootballService;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.PlayerEntity;
 import com.example.livescore.repository.PlayerRepository;
 import com.example.livescore.repository.TeamRepository;
@@ -12,7 +12,7 @@ import com.example.livescore.web.players.SavePlayerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, PlayerDTO, SavePlayerDTO, Long,
@@ -58,5 +58,15 @@ public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, 
                 .stream()
                 .map(PlayerEntity::toDTO)
                 .toList();
+    }
+
+    @Override
+    public PlayerEntity findEntityById(long playerId) {
+        Optional<PlayerEntity> player = repository.findById(playerId);
+        if (player.isEmpty()) {
+            throw ResourceNotFoundException.build(playerId, "PlayerEntity");
+        } else {
+            return player.get();
+        }
     }
 }

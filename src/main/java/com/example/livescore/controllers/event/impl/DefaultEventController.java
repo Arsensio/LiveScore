@@ -24,6 +24,6 @@ public class DefaultEventController extends AbstractFootballController<EventServ
     @PostMapping("/save_goal")
     @Override
     public ResponseEntity<EventDTO> saveGoal(@RequestBody SaveGoalEventDTO saveGoalEventDTO) {
-        return new ResponseEntity<>(service.save(saveGoalEventDTO), HttpStatus.OK);
+        return new ResponseEntity<>(service.saveGoal(saveGoalEventDTO), HttpStatus.OK);
     }
 }

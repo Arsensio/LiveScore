@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SaveTeamDTO {
 
-    private Long teamId;
     private String teamName;
     private String teamLogo;
+    private long groupId;
 }

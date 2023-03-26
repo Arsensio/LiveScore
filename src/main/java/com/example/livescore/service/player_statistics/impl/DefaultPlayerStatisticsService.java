@@ -1,5 +1,6 @@
 package com.example.livescore.service.player_statistics.impl;
 
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.PlayerStatisticsEntity;
 import com.example.livescore.models.PlayerStatisticsEntityPK;
@@ -11,6 +12,7 @@ import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,5 +55,20 @@ public class DefaultPlayerStatisticsService
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("ASSISTS"))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PlayerStatisticsEntity findEntityById(PlayerStatisticsEntityPK playerId) {
+        Optional<PlayerStatisticsEntity> player = repository.findById(playerId);
+        if (player.isEmpty()) {
+            throw ResourceNotFoundException.build(playerId, "PlayerEntity");
+        } else {
+            return player.get();
+        }
+    }
+
+    @Override
+    public PlayerStatisticsEntity saveAndFlush(PlayerStatisticsEntity playerStatistics) {
+        return repository.saveAndFlush(playerStatistics);
     }
 }

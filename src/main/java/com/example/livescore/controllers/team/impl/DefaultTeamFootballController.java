@@ -5,8 +5,14 @@ import com.example.livescore.controllers.team.TeamFootballController;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.web.teams.SaveTeamDTO;
 import com.example.livescore.web.teams.TeamDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/team")
@@ -16,5 +22,11 @@ public class DefaultTeamFootballController
 
     public DefaultTeamFootballController(TeamFootballService service) {
         super(service);
+    }
+
+    @Override
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<TeamDTO>> findAllTeamByGroupId(@PathVariable long groupId) {
+        return new ResponseEntity<>(service.findAllTeamByGroupId(groupId), HttpStatus.OK);
     }
 }
