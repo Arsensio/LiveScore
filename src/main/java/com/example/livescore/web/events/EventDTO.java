@@ -15,6 +15,7 @@ public class EventDTO {
     private Long eventId;
     private String eventName;
     private String playerName;
+    private Long playerId;
     private Integer minute;
     private Long teamId;
     private String teamName;
@@ -22,10 +23,11 @@ public class EventDTO {
     private GoalInfoDTO assist;
     private boolean isPenalty;
 
-    public EventDTO(Long eventId, String eventName, String playerName, Integer minute, Long teamId, String teamName, String gameScore, boolean isPenalty) {
+    public EventDTO(Long eventId, String eventName, String playerName, Long playerId, Integer minute, Long teamId, String teamName, String gameScore, boolean isPenalty) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.playerName = playerName;
+        this.playerId = playerId;
         this.minute = minute;
         this.teamId = teamId;
         this.teamName = teamName;

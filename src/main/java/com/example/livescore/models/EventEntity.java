@@ -62,6 +62,7 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
                 this.eventId,
                 this.eventName,
                 this.player.getName() + " " + this.player.getSurname(),
+                this.player.getPlayerId(),
                 this.minute,
                 this.player.getTeam().getTeamId(),
                 this.player.getTeam().getTeamName(),
