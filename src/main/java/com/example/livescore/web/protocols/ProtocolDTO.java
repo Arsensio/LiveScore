@@ -21,6 +21,8 @@ public class ProtocolDTO {
     private Long gameId;
     private String team1;
     private String team2;
+    private Long team1Id;
+    private Long team2Id;
     private LocalDateTime dateAndTime;
     private String gameScore;
     private List<EventDTO> events;
