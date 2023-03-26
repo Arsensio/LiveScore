@@ -15,5 +15,4 @@ public class SaveEventDTO {
     private Long eventEnumId;
     private Long playerId;
     private Integer minute;
-    private Boolean isPenalty;
 }

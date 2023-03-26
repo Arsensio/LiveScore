@@ -28,4 +28,8 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
     void incrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
 
     void incrementGoalMissedCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
+
+    void decrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
+
+    void decrementGoalMissedCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
 }

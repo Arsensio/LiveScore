@@ -73,6 +73,14 @@ public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEn
     Integer incrementGoalCount(TeamStatisticsEntityPK id);
 
     @Modifying
+    @Query("update TeamStatisticsEntity t set t.goalCount = t.goalCount - 1 where t.id = ?1")
+    Integer decrementGoalCount(TeamStatisticsEntityPK id);
+
+    @Modifying
     @Query("update TeamStatisticsEntity t set t.goalMissed = t.goalMissed + 1 where t.id = ?1")
     Integer incrementGoalMissedCount(TeamStatisticsEntityPK id);
+
+    @Modifying
+    @Query("update TeamStatisticsEntity t set t.goalMissed = t.goalMissed - 1 where t.id = ?1")
+    Integer decrementGoalMissedCount(TeamStatisticsEntityPK id);
 }

@@ -9,4 +9,6 @@ import org.springframework.http.ResponseEntity;
 public interface EventController extends FootballController<EventDTO, SaveEventDTO, Long> {
 
     ResponseEntity<EventDTO> saveGoal(SaveGoalEventDTO saveGoalEventDTO);
+
+    ResponseEntity<EventDTO> updateGoal(Long id, SaveGoalEventDTO saveGoalEventDTO);
 }

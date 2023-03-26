@@ -119,6 +119,16 @@ public class DefaultTeamStatisticsService
         repository.incrementGoalMissedCount(teamStatisticsEntityPK);
     }
 
+    @Override
+    public void decrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK) {
+        repository.decrementGoalCount(teamStatisticsEntityPK);
+    }
+
+    @Override
+    public void decrementGoalMissedCount(TeamStatisticsEntityPK teamStatisticsEntityPK) {
+        repository.decrementGoalMissedCount(teamStatisticsEntityPK);
+    }
+
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {
         if (foundTeam > rivalTeam) {
             teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
