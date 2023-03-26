@@ -1,33 +1,48 @@
 package com.example.livescore.service.team.impl;
 
-import com.example.core.service.AbstractFootballService;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.service.AbstractFootballService;
+import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.repository.TeamRepository;
+import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.team.TeamFootballService;
+import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teams.SaveTeamDTO;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
-public class DefaultTeamFootballService extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long,
-        TeamRepository> implements TeamFootballService {
+public class DefaultTeamFootballService
+        extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long, TeamRepository>
+        implements TeamFootballService {
 
-    public DefaultTeamFootballService(TeamRepository repository) {
+    private final GroupService groupService;
+    private final TeamStatisticsService teamStatisticsService;
+
+    public DefaultTeamFootballService(TeamRepository repository, GroupService groupService, TeamStatisticsService teamStatisticsService) {
         super(repository);
+        this.groupService = groupService;
+        this.teamStatisticsService = teamStatisticsService;
     }
 
     @Override
+    @Transactional
     public TeamDTO save(SaveTeamDTO saveTeamDTO) {
-        TeamEntity saved = repository.save(new TeamEntity(
+        TeamEntity savedTeam = repository.save(new TeamEntity(
                         null,
                         saveTeamDTO.getTeamName(),
                         saveTeamDTO.getTeamLogo(),
                         null
                 )
         );
+        GroupEntity group = groupService.findById(saveTeamDTO.getGroupId());
+        teamStatisticsService.save(group, savedTeam);
 
-        return saved.toDTO();
+        return savedTeam.toDTO();
     }
 
     @Override
@@ -41,4 +56,10 @@ public class DefaultTeamFootballService extends AbstractFootballService<TeamEnti
         });
         return repository.findById(id).get().toDTO();
     }
+
+    @Override
+    public List<TeamDTO> findAllTeamByGroupId(long groupId) {
+        return teamStatisticsService.findAllTeamByGroupId(groupId);
+    }
+
 }

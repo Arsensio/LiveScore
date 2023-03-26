@@ -2,9 +2,7 @@ package com.example.livescore.service.team_statistics.impl;
 
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventNames;
-import com.example.livescore.models.ProtocolEntity;
-import com.example.livescore.models.TeamStatisticsEntity;
-import com.example.livescore.models.TeamStatisticsEntityPK;
+import com.example.livescore.models.*;
 import com.example.livescore.repository.ProtocolRepository;
 import com.example.livescore.repository.TeamStatisticsRepository;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
@@ -12,6 +10,7 @@ import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.StatisticDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
+import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -86,6 +85,38 @@ public class DefaultTeamStatisticsService
                 .map(statisticDTO ->
                         statisticDTO.toDistinctTeamStatisticsDTO(EventNames.YELLOW_CARD))
                 .toList();
+    }
+
+    @Override
+    public TeamStatisticsDTO save(GroupEntity group, TeamEntity team) {
+        TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(group, team);
+        TeamStatisticsEntity saved = repository.save(new TeamStatisticsEntity(
+                pk,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+        ));
+
+        return saved.toDTO();
+    }
+
+    @Override
+    public List<TeamDTO> findAllTeamByGroupId(long groupId) {
+        return repository.findAllTeamByGroupId(groupId);
+    }
+
+    @Override
+    public void incrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK) {
+        repository.incrementGoalCount(teamStatisticsEntityPK);
+    }
+
+    @Override
+    public void incrementGoalMissedCount(TeamStatisticsEntityPK teamStatisticsEntityPK) {
+        repository.incrementGoalMissedCount(teamStatisticsEntityPK);
     }
 
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {

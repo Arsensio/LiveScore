@@ -7,5 +7,5 @@ import com.example.livescore.web.events.SaveGoalEventDTO;
 
 public interface EventService extends FootballService<EventDTO, SaveEventDTO,Long> {
 
-    EventDTO save(SaveGoalEventDTO dto);
+    EventDTO saveGoal(SaveGoalEventDTO dto);
 }

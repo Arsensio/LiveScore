@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SaveGroupDTO {
 
-    private Long groupId;
     private Long tournamentId;
     private String groupName;
     private boolean isPlayoff;

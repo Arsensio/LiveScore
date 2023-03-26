@@ -1,7 +1,7 @@
 package com.example.livescore.service.tournament.impl;
 
-import com.example.core.service.AbstractFootballService;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TournamentRepository;
 import com.example.livescore.service.tournament.TournamentService;
@@ -10,6 +10,7 @@ import com.example.livescore.web.tournaments.TournamentDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DefaultTournamentService extends AbstractFootballService<TournamentEntity,
@@ -47,5 +48,15 @@ public class DefaultTournamentService extends AbstractFootballService<Tournament
                 .stream()
                 .map(TournamentEntity::toDTO)
                 .toList();
+    }
+
+    @Override
+    public TournamentEntity findEntityById(long id) {
+        Optional<TournamentEntity> tournament = repository.findById(id);
+        if (tournament.isEmpty()) {
+            throw ResourceNotFoundException.build(id, "TournamentEntity");
+        } else {
+            return tournament.get();
+        }
     }
 }
