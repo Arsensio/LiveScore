@@ -30,7 +30,7 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
     private String eventName;
 
     @Column(name = "game_score")
-    private String goalScore;
+    private String gameScore;
 
     @ManyToOne
     @JoinColumn(name = "player_id", referencedColumnName = "player_id")
@@ -46,11 +46,11 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private GoalInfoEntity goalInfo;
 
-    public EventEntity(Long eventId, ProtocolEntity protocol, String eventName, String goalScore, PlayerEntity player, Integer minute, Boolean isPenalty) {
+    public EventEntity(Long eventId, ProtocolEntity protocol, String eventName, String gameScore, PlayerEntity player, Integer minute, Boolean isPenalty) {
         this.eventId = eventId;
         this.protocol = protocol;
         this.eventName = eventName;
-        this.goalScore = goalScore;
+        this.gameScore = gameScore;
         this.player = player;
         this.minute = minute;
         this.isPenalty = isPenalty;
@@ -59,13 +59,15 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
     @Override
     public EventDTO toDTO() {
         EventDTO eventDTO = new EventDTO(
-                eventName,
-                player.getName() + " " + player.getSurname(),
-                minute,
-                player.getTeam().getTeamId(),
-                player.getTeam().getTeamName(),
-                goalScore,
-                isPenalty
+                this.eventId,
+                this.eventName,
+                this.player.getName() + " " + this.player.getSurname(),
+                this.player.getPlayerId(),
+                this.minute,
+                this.player.getTeam().getTeamId(),
+                this.player.getTeam().getTeamName(),
+                this.gameScore,
+                this.isPenalty
         );
         if (goalInfo != null) {
             if (goalInfo.getName().equals(EventNames.ASSIST.getEventName())) {

@@ -8,10 +8,7 @@ import com.example.livescore.web.events.SaveEventDTO;
 import com.example.livescore.web.events.SaveGoalEventDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/event")
@@ -25,5 +22,11 @@ public class DefaultEventController extends AbstractFootballController<EventServ
     @Override
     public ResponseEntity<EventDTO> saveGoal(@RequestBody SaveGoalEventDTO saveGoalEventDTO) {
         return new ResponseEntity<>(service.saveGoal(saveGoalEventDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("/update_goal/{id}")
+    @Override
+    public ResponseEntity<EventDTO> updateGoal(@PathVariable Long id, @RequestBody SaveGoalEventDTO saveGoalEventDTO) {
+        return new ResponseEntity<>(service.updateGoal(id, saveGoalEventDTO), HttpStatus.OK);
     }
 }

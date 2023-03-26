@@ -4,13 +4,14 @@ import com.example.core.service.FootballService;
 import com.example.livescore.models.EventEntity;
 import com.example.livescore.models.GoalInfoEntity;
 import com.example.livescore.models.PlayerEntity;
-import com.example.livescore.web.assists.AssistDTO;
+import com.example.livescore.web.assists.GoalInfoDTO;
 import com.example.livescore.web.assists.SaveAssistsDTO;
 
-public interface GoalInfoService extends FootballService<AssistDTO, SaveAssistsDTO, Long> {
+public interface GoalInfoService extends FootballService<GoalInfoDTO, SaveAssistsDTO, Long> {
 
     GoalInfoEntity saveAssist(PlayerEntity assistPlayer, EventEntity event);
 
     GoalInfoEntity savePenalty(PlayerEntity assistPlayer, EventEntity event);
 
+    GoalInfoEntity findEntityById(Long id);
 }

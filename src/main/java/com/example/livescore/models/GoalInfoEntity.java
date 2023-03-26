@@ -1,7 +1,7 @@
 package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
-import com.example.livescore.web.assists.AssistDTO;
+import com.example.livescore.web.assists.GoalInfoDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "goal_info")
 @ToString
-public class GoalInfoEntity extends AbstractEntity<AssistDTO> {
+public class GoalInfoEntity extends AbstractEntity<GoalInfoDTO> {
 
     @Id
     private Long id;
@@ -37,9 +37,10 @@ public class GoalInfoEntity extends AbstractEntity<AssistDTO> {
     }
 
     @Override
-    public AssistDTO toDTO() {
-        return new AssistDTO(
-                player.getName() + " " + player.getSurname()
+    public GoalInfoDTO toDTO() {
+        return new GoalInfoDTO(
+                player.getName() + " " + player.getSurname(),
+                player.getPlayerId()
         );
     }
 }

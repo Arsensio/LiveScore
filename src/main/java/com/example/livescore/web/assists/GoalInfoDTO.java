@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssistDTO {
+public class GoalInfoDTO {
 
     String assistPlayer;
+    Long assistPlayerId;
 }
