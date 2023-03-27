@@ -9,14 +9,16 @@ insert into groups
 values (1, 'Group A', false, 1);
 
 insert into teams
-values (1, 'https://photos.app.goo.gl/FGnVZcq2xp6eejR69', 'Avangar');
+values (1,
+        'https://photos.google.com/share/AF1QipOLy-FXommznjKDWSVHk6_5OCGNFjE4G17C-JHhWS_PfvqBELSJFKfiGqybfPHhGg/photo/AF1QipPnFGymRKolwKj2C3Hb3gRDtNX5w3Y_lAbd7H2d?key=U2ZfNzFMVDNXVzRrb2xHYk9lTzBPSi1ITDhKc1JR',
+        'Avangar');
 insert into teams
 values (2,
-        'https://photos.app.goo.gl/GhcQuP7wEsvfCNEE9',
+        'https://photos.google.com/share/AF1QipNZeOpg96M0H9qKauZVe45Prmgb50DpUNqUqGP2pVX3dy_fXNkxD-vUypUsvWt_gg/photo/AF1QipMK-D6aGEbzbpf8G6v8bfH0CcbdthAGl587StZx?key=UElPUkg5VG9IMjJRNWhobFJaVmctcHF5Nkplekln',
         'Barabar');
 insert into teams
 values (3,
-        'https://photos.app.goo.gl/VN2LxDJ7mwDRuCWr8',
+        'https://photos.google.com/share/AF1QipMIE_mGTQw5D_pCOoE7PLAA4623q-AXHddSmVdGow22z0wOJ84xsx2TS78p-XxZ5Q/photo/AF1QipM1aZeld6DFmVIOTHykc4_4UbaG-3orK6WpGmU1?key=cldJS0JlY0ZYQ29aSmpFWkd6SE1aWWJRd2RVUm13',
         'Evolution');
 
 insert into players
