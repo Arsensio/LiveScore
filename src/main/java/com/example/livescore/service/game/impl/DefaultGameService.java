@@ -2,9 +2,8 @@ package com.example.livescore.service.game.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.enums.GameState;
 import com.example.livescore.models.*;
-import com.example.livescore.repository.*;
+import com.example.livescore.repository.GameRepository;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
@@ -20,6 +19,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.livescore.enums.GameState.NOT_STARTED;
+import static com.example.livescore.enums.GameState.STARTED;
 
 @Service
 public class DefaultGameService
@@ -65,7 +67,7 @@ public class DefaultGameService
     @Transactional
     public GameDTO startMatch(Long gameId) {
         GameEntity gameEntity = findEntityById(gameId);
-        if (gameEntity.getGameState() == GameState.STARTED) {
+        if (gameEntity.getGameState() == STARTED) {
             return gameEntity.toDTO();
         }
         GroupEntity group = gameEntity.getGroup();
@@ -75,7 +77,7 @@ public class DefaultGameService
         repository.updateIsPlayed(gameId);
         increaseGameCount(group, team1);
         increaseGameCount(group, team2);
-        gameEntity.setGameState(GameState.STARTED);
+        gameEntity.setGameState(STARTED);
 
         return gameEntity.toDTO();
     }
@@ -103,7 +105,7 @@ public class DefaultGameService
     private GameEntity createGameEntity(GroupEntity group) {
         GameEntity gameEntity = new GameEntity(
                 null,
-                GameState.NOT_STARTED,
+                NOT_STARTED,
                 group,
                 null
         );

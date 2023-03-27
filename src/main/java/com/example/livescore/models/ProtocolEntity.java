@@ -64,6 +64,8 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
                 this.game.getGameId(),
                 this.team1.getTeamName(),
                 this.team2.getTeamName(),
+                this.team1.getTeamLogo(),
+                this.team2.getTeamLogo(),
                 this.team1.getTeamId(),
                 this.team2.getTeamId(),
                 this.dateAndTime,
