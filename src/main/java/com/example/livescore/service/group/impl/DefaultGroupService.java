@@ -46,7 +46,7 @@ public class DefaultGroupService
     }
 
     @Override
-    public GroupEntity findById(long id) {
+    public GroupEntity findEntityById(long id) {
         Optional<GroupEntity> referenceById = repository.findById(id);
         if (referenceById.isEmpty()) {
             throw ResourceNotFoundException.build(id, "GroupEntity");

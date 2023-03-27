@@ -71,4 +71,9 @@ public class DefaultPlayerStatisticsService
     public PlayerStatisticsEntity saveAndFlush(PlayerStatisticsEntity playerStatistics) {
         return repository.saveAndFlush(playerStatistics);
     }
+
+    @Override
+    public void incrementGamePlayed(PlayerStatisticsEntityPK id) {
+        repository.incrementGameCount(id);
+    }
 }
