@@ -22,4 +22,6 @@ public interface PlayerStatisticsService
     PlayerStatisticsEntity findEntityById(PlayerStatisticsEntityPK id);
 
     PlayerStatisticsEntity saveAndFlush(PlayerStatisticsEntity player);
+
+    void incrementGamePlayed(PlayerStatisticsEntityPK id);
 }

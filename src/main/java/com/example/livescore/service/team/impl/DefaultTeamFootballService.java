@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DefaultTeamFootballService
@@ -39,7 +40,7 @@ public class DefaultTeamFootballService
                         null
                 )
         );
-        GroupEntity group = groupService.findById(saveTeamDTO.getGroupId());
+        GroupEntity group = groupService.findEntityById(saveTeamDTO.getGroupId());
         teamStatisticsService.save(group, savedTeam);
 
         return savedTeam.toDTO();
@@ -60,6 +61,16 @@ public class DefaultTeamFootballService
     @Override
     public List<TeamDTO> findAllTeamByGroupId(long groupId) {
         return teamStatisticsService.findAllTeamByGroupId(groupId);
+    }
+
+    @Override
+    public TeamEntity findEntityById(long id) {
+        Optional<TeamEntity> referenceById = repository.findById(id);
+        if (referenceById.isEmpty()) {
+            throw ResourceNotFoundException.build(id, "TeamEntity");
+        } else {
+            return referenceById.get();
+        }
     }
 
 }

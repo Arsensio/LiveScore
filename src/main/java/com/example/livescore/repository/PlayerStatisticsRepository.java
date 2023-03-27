@@ -2,8 +2,10 @@ package com.example.livescore.repository;
 
 import com.example.livescore.models.PlayerStatisticsEntity;
 import com.example.livescore.models.PlayerStatisticsEntityPK;
+import com.example.livescore.models.TeamStatisticsEntityPK;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +25,8 @@ public interface PlayerStatisticsRepository extends JpaRepository<PlayerStatisti
 
     @Query(value = "SELECT * FROM player_statistics WHERE group_id = ?1 AND assists >= 1 ORDER BY assists DESC",nativeQuery = true)
     List<PlayerStatisticsEntity> findAllByAssists(long groupId);
+
+    @Modifying
+    @Query("update PlayerStatisticsEntity p set p.matchPlayed = p.matchPlayed + 1 where p.id = ?1")
+    Integer incrementGameCount(PlayerStatisticsEntityPK playerStatisticsEntityPK);
 }
