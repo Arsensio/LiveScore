@@ -9,14 +9,14 @@ insert into groups
 values (1, 'Group A', false, 1);
 
 insert into teams
-values (1, 'https://upload.wikimedia.org/wikipedia/ru/9/98/Real_Madrid.png', 'Avangar');
+values (1, 'https://photos.app.goo.gl/FGnVZcq2xp6eejR69', 'Avangar');
 insert into teams
 values (2,
-        'https://static.dezeen.com/uploads/2017/01/juventus-logo-design-graphics-football_products_dezeen_2364_col_7.jpg',
+        'https://photos.app.goo.gl/GhcQuP7wEsvfCNEE9',
         'Barabar');
 insert into teams
 values (3,
-        'https://upload.wikimedia.org/wikipedia/ru/thumb/7/7a/Manchester_United_FC_crest.svg/1200px-Manchester_United_FC_crest.svg.png',
+        'https://photos.app.goo.gl/VN2LxDJ7mwDRuCWr8',
         'Evolution');
 
 insert into players
