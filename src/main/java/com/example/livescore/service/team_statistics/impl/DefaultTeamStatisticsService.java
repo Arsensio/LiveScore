@@ -3,8 +3,8 @@ package com.example.livescore.service.team_statistics.impl;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventNames;
 import com.example.livescore.models.*;
-import com.example.livescore.repository.ProtocolRepository;
 import com.example.livescore.repository.TeamStatisticsRepository;
+import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
@@ -22,12 +22,12 @@ public class DefaultTeamStatisticsService
         SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
         implements TeamStatisticsService {
 
-    private final ProtocolRepository protocolRepository;
+    private final ProtocolService protocolService;
 
 
-    public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolRepository protocolRepository) {
+    public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolService protocolService) {
         super(repository);
-        this.protocolRepository = protocolRepository;
+        this.protocolService = protocolService;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DefaultTeamStatisticsService
     @Override
     public List<TeamStatisticsDTO> findTeamsSortedByPoints(long groupId) {
         List<TeamStatisticsEntity> allByGroupIdOrderByWinCount = repository.findAllByGroupIdOrderByWinCount(groupId);
-        List<ProtocolEntity> allByGameStateStarted = protocolRepository.findAllByGameStateStarted();
+        List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
         List<TeamStatisticsDTO> orderedByPointList = new ArrayList<>();
 
         for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
@@ -105,6 +105,11 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
+    public TeamStatisticsEntity save(TeamStatisticsEntity teamStatistics) {
+        return repository.saveAndFlush(teamStatistics);
+    }
+
+    @Override
     public List<TeamDTO> findAllTeamByGroupId(long groupId) {
         return repository.findAllTeamByGroupId(groupId);
     }
@@ -132,6 +137,11 @@ public class DefaultTeamStatisticsService
     @Override
     public void incrementGameCount(TeamStatisticsEntityPK teamStatisticsEntityPK) {
         repository.incrementGameCount(teamStatisticsEntityPK);
+    }
+
+    @Override
+    public List<TeamStatisticsEntity> findAllByGroupIdOrderByWinCount(Long groupId) {
+        return repository.findAllByGroupIdOrderByWinCount(groupId);
     }
 
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {

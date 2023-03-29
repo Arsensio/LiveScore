@@ -3,6 +3,7 @@ package com.example.livescore.service.team_statistics;
 import com.example.core.service.FootballService;
 import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.TeamEntity;
+import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
@@ -23,6 +24,8 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
 
     TeamStatisticsDTO save(GroupEntity group, TeamEntity team);
 
+    TeamStatisticsEntity save(TeamStatisticsEntity teamStatistics);
+
     List<TeamDTO> findAllTeamByGroupId(long groupId);
 
     void incrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
@@ -34,4 +37,6 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
     void decrementGoalMissedCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
 
     void incrementGameCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
+
+    List<TeamStatisticsEntity> findAllByGroupIdOrderByWinCount(Long groupId);
 }

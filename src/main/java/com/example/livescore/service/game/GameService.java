@@ -15,4 +15,6 @@ public interface GameService extends FootballService<GameDTO, SaveGameDTO, Long>
     GameDTO startMatch(Long gameId);
 
     GameEntity findEntityById(long id);
+
+    GameDTO endMatch(Long id);
 }

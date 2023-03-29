@@ -20,8 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.livescore.enums.GameState.NOT_STARTED;
-import static com.example.livescore.enums.GameState.STARTED;
+import static com.example.livescore.enums.GameState.*;
 
 @Service
 public class DefaultGameService
@@ -92,6 +91,39 @@ public class DefaultGameService
     }
 
     @Override
+    public GameDTO endMatch(Long id) {
+        GameEntity gameEntity = findEntityById(id);
+        if (gameEntity.getGameState() == ENDED) {
+            return gameEntity.toDTO();
+        }
+        GroupEntity group = gameEntity.getGroup();
+        List<TeamStatisticsEntity> allByGroupIdOrderByWinCount = teamStatisticsService.findAllByGroupIdOrderByWinCount(group.getGroupId());
+        List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
+
+        TeamEntity team1 = gameEntity.getProtocol().getTeam1();
+        TeamEntity team2 = gameEntity.getProtocol().getTeam2();
+
+        for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
+            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
+                int team1Score = protocolEntity.getTeam1Score();
+                int team2Score = protocolEntity.getTeam2Score();
+
+                if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
+                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
+                    teamStatisticsService.save(teamStatistics);
+                } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
+                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
+                    teamStatisticsService.save(teamStatistics);
+                }
+            }
+        }
+        gameEntity.setGameState(ENDED);
+        repository.save(gameEntity);
+
+        return gameEntity.toDTO();
+    }
+
+    @Override
     public GameDTO save(SaveGameDTO dto) {
         GroupEntity group = groupService.findEntityById(dto.getGroupId());
         GameEntity createdGame = createGameEntity(group);
@@ -137,5 +169,17 @@ public class DefaultGameService
     private void increaseGamePlayed(GroupEntity group, PlayerEntity player) {
         PlayerStatisticsEntityPK playerPk = new PlayerStatisticsEntityPK(group, player);
         playerStatisticsService.incrementGamePlayed(playerPk);
+    }
+
+    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {
+        if (foundTeam > rivalTeam) {
+            teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
+            teamStatistics.setPoints(teamStatistics.getPoints() + 3);
+        } else if (foundTeam == rivalTeam) {
+            teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
+            teamStatistics.setPoints(teamStatistics.getPoints() + 1);
+        } else {
+            teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
+        }
     }
 }
