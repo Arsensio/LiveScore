@@ -9,6 +9,7 @@ import com.example.livescore.web.protocols.ProtocolDTO;
 import com.example.livescore.web.protocols.SaveProtocolDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,5 +34,10 @@ public class DefaultProtocolService
     @Override
     public ProtocolEntity saveAndFlush(ProtocolEntity protocol) {
         return repository.saveAndFlush(protocol);
+    }
+
+    @Override
+    public List<ProtocolEntity> findAllByGameStateStarted() {
+        return repository.findAllByGameStateStarted();
     }
 }

@@ -5,10 +5,14 @@ import com.example.livescore.models.ProtocolEntity;
 import com.example.livescore.web.protocols.ProtocolDTO;
 import com.example.livescore.web.protocols.SaveProtocolDTO;
 
+import java.util.List;
+
 
 public interface ProtocolService extends FootballService<ProtocolDTO, SaveProtocolDTO, Long> {
 
     ProtocolEntity findEntityById(long id);
 
     ProtocolEntity saveAndFlush(ProtocolEntity protocol);
+
+    List<ProtocolEntity> findAllByGameStateStarted();
 }

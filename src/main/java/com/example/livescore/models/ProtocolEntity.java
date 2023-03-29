@@ -14,6 +14,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -59,6 +60,9 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
     public ProtocolDTO toDTO() {
         List<EventDTO> eventDTOS = events.stream().map(EventEntity::toDTO).toList();
 
+        List<EventDTO> eventsToSort = new ArrayList<>(eventDTOS);
+        eventsToSort.sort(Comparator.comparing(EventDTO::getMinute));
+
         return new ProtocolDTO(
                 this.protocolId,
                 this.game.getGameId(),
@@ -70,7 +74,7 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
                 this.team2.getTeamId(),
                 this.dateAndTime,
                 gameScore(),
-                eventDTOS,
+                eventsToSort,
                 this.game.getGameState()
         );
     }
