@@ -19,8 +19,8 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final String[] pathArr = {"/assist/**", "/game/**", "/group/**", "/player/**", "/player_statistics/**",
-            "/protocol/**", "/team/**", "/team_statistics/**", "/tournament/**", "/event/**"};
+    private final String[] pathArr = {"/game/**", "/group/**", "/player/**", "/player_statistics/**", "/protocol/**",
+            "/team/**", "/team_statistics/**", "/tournament/**", "/event/**", "/goal_info/**", "/info/upload/playerInfo"};
     private final String LOGIN_ENDPOINT = "/auth/login";
     private final String[] SWAGGER_ENDPOINTS = {"/swagger-ui/**", "/swagger-ui.html", "/webjars/**", "/v2/**",
             "/swagger-resources/**"};
