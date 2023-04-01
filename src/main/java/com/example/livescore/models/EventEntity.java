@@ -4,19 +4,20 @@ package com.example.livescore.models;
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.enums.EventNames;
 import com.example.livescore.web.events.EventDTO;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@Data
 @Entity
-@Getter
-@Setter
+@Table(name = "events")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "events")
-@ToString
 public class EventEntity extends AbstractEntity<EventDTO> implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")

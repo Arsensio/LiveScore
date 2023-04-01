@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DefaultProtocolService
-        extends AbstractFootballService<ProtocolEntity, ProtocolDTO, SaveProtocolDTO, Long, ProtocolRepository>
+public class DefaultProtocolService extends AbstractFootballService<ProtocolEntity, ProtocolDTO, SaveProtocolDTO,
+        Long, ProtocolRepository>
         implements ProtocolService {
 
     public DefaultProtocolService(ProtocolRepository repository) {

@@ -4,6 +4,8 @@ import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.GroupEntity;
 import com.example.core.service.AbstractFootballService;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.group.GroupService;
@@ -18,8 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DefaultTeamFootballService
-        extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long, TeamRepository>
+public class DefaultTeamFootballService extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long,
+        TeamRepository>
         implements TeamFootballService {
 
     private final GroupService groupService;
@@ -56,7 +58,9 @@ public class DefaultTeamFootballService
         }, () -> {
             throw ResourceNotFoundException.build(id, "Team");
         });
-        return repository.findById(id).get().toDTO();
+        return repository.findById(id)
+                .get()
+                .toDTO();
     }
 
     @Override

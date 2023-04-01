@@ -7,9 +7,8 @@ import com.example.livescore.web.protocols.ProtocolDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,10 +16,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "protocols")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {

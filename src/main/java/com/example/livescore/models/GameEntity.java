@@ -6,7 +6,7 @@ import com.example.livescore.enums.GameState;
 import com.example.livescore.enums.PgSQLEnumType;
 import com.example.livescore.web.games.GameDTO;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -14,17 +14,17 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "games")
+@NoArgsConstructor
+@AllArgsConstructor
 @TypeDef(
         name = "game_state",
         typeClass = PgSQLEnumType.class
 )
 public class GameEntity extends AbstractEntity<GameDTO> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id", nullable = false)
@@ -66,5 +66,3 @@ public class GameEntity extends AbstractEntity<GameDTO> {
         return "0:0";
     }
 }
-
-

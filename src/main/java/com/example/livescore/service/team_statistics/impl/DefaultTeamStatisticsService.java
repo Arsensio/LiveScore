@@ -3,6 +3,9 @@ package com.example.livescore.service.team_statistics.impl;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventNames;
 import com.example.livescore.models.*;
+import com.example.livescore.models.TeamStatisticsEntity;
+import com.example.livescore.models.TeamStatisticsEntityPK;
+import com.example.livescore.repository.GroupRepository;
 import com.example.livescore.repository.TeamStatisticsRepository;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
@@ -15,15 +18,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class DefaultTeamStatisticsService
-        extends AbstractFootballService<TeamStatisticsEntity, TeamStatisticsDTO,
+public class DefaultTeamStatisticsService extends AbstractFootballService<TeamStatisticsEntity, TeamStatisticsDTO,
         SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
         implements TeamStatisticsService {
 
     private final ProtocolService protocolService;
-
 
     public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolService protocolService) {
         super(repository);

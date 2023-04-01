@@ -16,8 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team")
-public class DefaultTeamFootballController
-        extends AbstractFootballController<TeamFootballService, TeamDTO, SaveTeamDTO, Long>
+public class DefaultTeamFootballController extends AbstractFootballController<TeamFootballService, TeamDTO,
+        SaveTeamDTO, Long>
         implements TeamFootballController {
 
     public DefaultTeamFootballController(TeamFootballService service) {
