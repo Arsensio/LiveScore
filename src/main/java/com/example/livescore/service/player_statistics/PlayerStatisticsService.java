@@ -9,8 +9,9 @@ import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
 
 import java.util.List;
 
-public interface PlayerStatisticsService
-        extends FootballService<PlayerStatisticsDTO, SavePlayerStatisticsDTO, PlayerStatisticsEntityPK> {
+public interface PlayerStatisticsService extends FootballService<PlayerStatisticsDTO, SavePlayerStatisticsDTO,
+        PlayerStatisticsEntityPK> {
+
     List<DistinctPlayerStatisticsDTO> findAllByGoals(long groupId);
 
     List<DistinctPlayerStatisticsDTO> findAllByYellowCard(long groupId);

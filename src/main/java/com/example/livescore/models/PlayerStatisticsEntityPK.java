@@ -25,5 +25,4 @@ public class PlayerStatisticsEntityPK implements Serializable {
     @OneToOne
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
-
 }

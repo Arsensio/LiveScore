@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO, SaveTeamStatisticsDTO,
         TeamStatisticsEntityPK> {
+
     List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId);
 
     List<TeamStatisticsDTO> findTeamsSortedByPoints(long groupId);

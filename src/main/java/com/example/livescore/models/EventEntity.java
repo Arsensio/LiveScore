@@ -17,6 +17,7 @@ import java.io.Serializable;
 @Table(name = "events")
 @ToString
 public class EventEntity extends AbstractEntity<EventDTO> implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")

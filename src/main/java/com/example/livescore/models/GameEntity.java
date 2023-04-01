@@ -25,6 +25,7 @@ import javax.persistence.*;
         typeClass = PgSQLEnumType.class
 )
 public class GameEntity extends AbstractEntity<GameDTO> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_id", nullable = false)

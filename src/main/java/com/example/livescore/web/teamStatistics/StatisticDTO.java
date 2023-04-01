@@ -3,6 +3,7 @@ package com.example.livescore.web.teamStatistics;
 import com.example.livescore.enums.EventNames;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.text.DecimalFormat;
@@ -11,6 +12,7 @@ import static com.example.livescore.enums.EventNames.RED_CARD;
 import static com.example.livescore.enums.EventNames.YELLOW_CARD;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class StatisticDTO {
