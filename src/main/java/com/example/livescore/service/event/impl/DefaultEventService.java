@@ -24,8 +24,8 @@ import java.util.Optional;
 import static com.example.livescore.enums.EventNames.*;
 
 @Service
-public class DefaultEventService extends AbstractFootballService<EventEntity, EventDTO, SaveEventDTO, Long,
-        EventRepository>
+public class DefaultEventService
+        extends AbstractFootballService<EventEntity, EventDTO, SaveEventDTO, Long, EventRepository>
         implements EventService {
 
     private final PlayerService playerService;

@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DefaultPlayerStatisticsService
-        extends AbstractFootballService<PlayerStatisticsEntity, PlayerStatisticsDTO, SavePlayerStatisticsDTO,
-        PlayerStatisticsEntityPK, PlayerStatisticsRepository>
+        extends AbstractFootballService<PlayerStatisticsEntity, PlayerStatisticsDTO,
+        SavePlayerStatisticsDTO, PlayerStatisticsEntityPK, PlayerStatisticsRepository>
         implements PlayerStatisticsService {
 
     public DefaultPlayerStatisticsService(PlayerStatisticsRepository repository) {

@@ -23,7 +23,8 @@ import java.util.Optional;
 import static com.example.livescore.enums.GameState.*;
 
 @Service
-public class DefaultGameService extends AbstractFootballService<GameEntity, GameDTO, SaveGameDTO, Long, GameRepository>
+public class DefaultGameService
+        extends AbstractFootballService<GameEntity, GameDTO, SaveGameDTO, Long, GameRepository>
         implements GameService {
 
     private final TeamFootballService teamFootballService;

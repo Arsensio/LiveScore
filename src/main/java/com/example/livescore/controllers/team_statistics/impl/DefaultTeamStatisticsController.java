@@ -15,7 +15,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team_statistics")
-public class DefaultTeamStatisticsController extends AbstractFootballController<TeamStatisticsService,
+public class DefaultTeamStatisticsController
+        extends AbstractFootballController<TeamStatisticsService,
         TeamStatisticsDTO, SaveTeamStatisticsDTO, TeamStatisticsEntityPK>
         implements TeamStatisticController {
 

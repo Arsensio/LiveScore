@@ -16,8 +16,7 @@ import java.util.Optional;
 
 @Service
 public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, PlayerDTO, SavePlayerDTO, Long,
-        PlayerRepository>
-        implements PlayerService {
+        PlayerRepository> implements PlayerService {
 
     private final TeamRepository teamRepository;
 
@@ -48,7 +47,7 @@ public class DefaultPlayerService extends AbstractFootballService<PlayerEntity, 
             playerEntity.setPlayerNumber(savePlayerDTO.getPlayerNumber());
             repository.saveAndFlush(playerEntity);
         }, () -> {
-            throw ResourceNotFoundException.build(id, "Player");
+            throw ResourceNotFoundException.build(id,"Player");
         });
         return repository.findById(id).get().toDTO();
     }

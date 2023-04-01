@@ -6,12 +6,15 @@ import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.playerStatistics.SavePlayerStatisticsDTO;
 import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 
-public interface PlayerStatisticsController extends FootballController<PlayerStatisticsDTO, SavePlayerStatisticsDTO,
-        PlayerStatisticsEntityPK> {
+public interface PlayerStatisticsController
+        extends FootballController<PlayerStatisticsDTO, SavePlayerStatisticsDTO, PlayerStatisticsEntityPK> {
 
     ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByGoals(long groupId);
 
@@ -19,5 +22,5 @@ public interface PlayerStatisticsController extends FootballController<PlayerSta
 
     ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByRedCard(long groupId);
 
-    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(long groupId);
+    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(long groupId);
 }

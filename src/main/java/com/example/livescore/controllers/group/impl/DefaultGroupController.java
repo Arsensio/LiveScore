@@ -16,7 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/group")
-public class DefaultGroupController extends AbstractFootballController<GroupService, GroupDTO, SaveGroupDTO, Long>
+public class DefaultGroupController
+        extends AbstractFootballController<GroupService, GroupDTO, SaveGroupDTO, Long>
         implements GroupController {
 
     public DefaultGroupController(GroupService service) {

@@ -1,7 +1,6 @@
 package com.example.livescore.enums;
 
 public enum EventNames {
-
     // event enum ID = 1
     GOAL("GOAL"),
 

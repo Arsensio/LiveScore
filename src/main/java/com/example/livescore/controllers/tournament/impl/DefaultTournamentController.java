@@ -17,8 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/tournament")
 public class DefaultTournamentController extends AbstractFootballController<TournamentService, TournamentDTO,
-        SaveTournamentDTO, Long>
-        implements TournamentController {
+        SaveTournamentDTO, Long> implements TournamentController {
 
     public DefaultTournamentController(TournamentService service) {
         super(service);

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DefaultTournamentService extends AbstractFootballService<TournamentEntity, TournamentDTO,
-        SaveTournamentDTO, Long, TournamentRepository>
+public class DefaultTournamentService extends AbstractFootballService<TournamentEntity,
+        TournamentDTO, SaveTournamentDTO, Long, TournamentRepository>
         implements TournamentService {
 
     public DefaultTournamentService(TournamentRepository repository) {

@@ -29,9 +29,10 @@ public class StatisticDTO {
     }
 
     public DistinctTeamStatisticsDTO toDistinctTeamStatisticsDTO(EventNames eventNames) {
-        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(eventNames.getEventName(),
-                groupName, teamName);
+        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(eventNames.getEventName(), groupName, teamName);
+
         setStatAndPerGame(eventNames, distinctTeamStatisticsDTO);
+
         return distinctTeamStatisticsDTO;
     }
 

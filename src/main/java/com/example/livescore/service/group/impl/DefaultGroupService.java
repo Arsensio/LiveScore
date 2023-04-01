@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DefaultGroupService extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long,
-        GroupRepository>
+public class DefaultGroupService
+        extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long, GroupRepository>
         implements GroupService {
 
     private final TournamentService tournamentService;
