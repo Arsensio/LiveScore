@@ -3,6 +3,7 @@ package com.example.livescore.service.team.impl;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.GroupEntity;
+import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.group.GroupService;
@@ -73,4 +74,9 @@ public class DefaultTeamFootballService
         }
     }
 
+
+    @Override
+    public TeamDTO findTeamByName(String teamName) {
+        return repository.findTeamEntityByTeamName(teamName).toDTO();
+    }
 }
