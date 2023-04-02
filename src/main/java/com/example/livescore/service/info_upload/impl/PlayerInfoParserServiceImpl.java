@@ -1,5 +1,6 @@
-package com.example.livescore.service.info;
+package com.example.livescore.service.info_upload.impl;
 
+import com.example.livescore.service.info_upload.PlayerInfoParserService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.web.players.SavePlayerDTO;
@@ -17,22 +18,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
-import static com.example.livescore.enums.PlayerRole.*;
+import static com.example.livescore.service.info_upload.ParserUtils.*;
 
 @Service
 @RequiredArgsConstructor
-public class PlayerInfoParserService {
+public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
 
-    private final static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    private final static String SHEET_NAME = "Form Responses 1";
     private final PlayerService playerService;
     private final TeamFootballService teamService;
 
-    public static boolean hasExcelFormat(MultipartFile file) {
-        return file.getContentType().equals(TYPE);
-    }
-
+    @Override
     public void savePlayers(InputStream inputStream) {
         List<SavePlayerDTO> players = excelToPlayers(inputStream);
         for (SavePlayerDTO playerDTO : players) {
@@ -40,6 +37,18 @@ public class PlayerInfoParserService {
         }
     }
 
+    @Override
+    public void savePlayers(String url) {
+
+    }
+
+    public static boolean hasExcelFormat(MultipartFile file) {
+        return Objects.equals(file.getContentType(), TYPE);
+    }
+
+    /**
+     * This method will work only with certain format of an Excel file, any changes to file structure may cause errors
+     */
     private List<SavePlayerDTO> excelToPlayers(InputStream inputStream) {
         try {
             Workbook workbook = new XSSFWorkbook(inputStream);
@@ -79,24 +88,5 @@ public class PlayerInfoParserService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private String resolveRole(String roleInSheet) {
-        return switch (roleInSheet) {
-            case "вратарь (голкипер)" -> String.valueOf(GOALKEEPER);
-            case "защитник (дефендер)" -> String.valueOf(DEFENDER);
-            case "полузащитник (мидфилдер)" -> String.valueOf(MIDDLE_DEFENDER);
-            case "нападающий (форвард)" -> String.valueOf(STRIKER);
-            default -> "Неизвестно";
-        };
-    }
-
-    private String beautifyName(String sheetName) {
-        char[] nameChars = sheetName.toCharArray();
-        nameChars[0] = Character.toUpperCase(nameChars[0]);
-        for (int n = nameChars.length, i = 1; i < n; i++) {
-            nameChars[i] = Character.toLowerCase(nameChars[i]);
-        }
-        return String.valueOf(nameChars);
     }
 }

@@ -20,10 +20,11 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final String[] pathArr = {"/game/**", "/group/**", "/player/**", "/player_statistics/**", "/protocol/**",
-            "/team/**", "/team_statistics/**", "/tournament/**", "/event/**", "/goal_info/**", "/info/upload/playerInfo"};
+            "/team/**", "/team_statistics/**", "/tournament/**", "/event/**", "/goal_info/**"};
     private final String LOGIN_ENDPOINT = "/auth/login";
     private final String[] SWAGGER_ENDPOINTS = {"/swagger-ui/**", "/swagger-ui.html", "/webjars/**", "/v2/**",
             "/swagger-resources/**"};
+    private final String INFO_UPLOAD_ENDPOINT = "/info/upload/**";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,6 +36,8 @@ public class SecurityConfig {
                 .antMatchers(POST, pathArr).hasAuthority("ADMIN")
                 .antMatchers(PUT, pathArr).hasAuthority("ADMIN")
                 .antMatchers(DELETE, pathArr).hasAuthority("ADMIN")
+                .antMatchers(INFO_UPLOAD_ENDPOINT).permitAll()
+//                .antMatchers(INFO_UPLOAD_ENDPOINT).hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS)
