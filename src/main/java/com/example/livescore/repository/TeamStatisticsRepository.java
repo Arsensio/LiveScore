@@ -20,21 +20,21 @@ public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEn
     @Query(value = "SELECT * FROM team_statistics WHERE group_id = ?1 ORDER BY points DESC", nativeQuery = true)
     List<TeamStatisticsEntity> findAllByGroupIdOrderByWinCount(Long group);
 
-    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.group.groupName,t.teamName,sum(ps.redCard),ts.gamePlayed)" +
+    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.group.groupName,t.teamName,sum(ps.redCard),ts.gamePlayed,ts.id.team.teamLogo)" +
             "FROM TeamEntity t inner join PlayerEntity p on t.teamId= p.team.teamId " +
             "inner join PlayerStatisticsEntity ps on ps.id.player.playerId = p.playerId " +
             "inner join TeamStatisticsEntity ts on ts.id.team.teamId = t.teamId " +
             "WHERE ps.id.group.groupId = ?1 AND ps.redCard >=1" +
-            "group by t.teamName,ts.gamePlayed,ts.id.group.groupName " +
+            "group by t.teamName,ts.gamePlayed,ts.id.group.groupName,ts.id.team.teamLogo " +
             "ORDER BY sum(ps.redCard) DESC")
     List<StatisticDTO> findAllByGroupIdOrderByRedCard(long group);
 
-    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.group.groupName,t.teamName,sum(ps.yellowCard),ts.gamePlayed)" +
+    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.group.groupName,t.teamName,sum(ps.yellowCard),ts.gamePlayed,ts.id.team.teamLogo)" +
             "FROM TeamEntity t inner join PlayerEntity p on t.teamId= p.team.teamId " +
             "inner join PlayerStatisticsEntity ps on ps.id.player.playerId = p.playerId " +
             "inner join TeamStatisticsEntity ts on ts.id.team.teamId = t.teamId " +
             "WHERE ps.id.group.groupId = ?1 AND ps.yellowCard >=1" +
-            "group by t.teamName,ts.gamePlayed,ts.id.group.groupName " +
+            "group by t.teamName,ts.gamePlayed,ts.id.group.groupName,ts.id.team.teamLogo " +
             "ORDER BY sum(ps.yellowCard) DESC")
     List<StatisticDTO> findAllByGroupIdOrderByYellowCard(long group);
 

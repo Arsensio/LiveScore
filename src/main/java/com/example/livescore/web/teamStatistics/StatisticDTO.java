@@ -22,16 +22,19 @@ public class StatisticDTO {
     private String teamName;
     private Integer statCount;
     private Integer mathPlayed;
+    private String teamLogo;
 
-    public StatisticDTO(String groupName, String teamName, Long redCard, Integer mathPlayed) {
+    public StatisticDTO(String groupName, String teamName, Long redCard, Integer mathPlayed, String teamLogo) {
         this.groupName = groupName;
         this.teamName = teamName;
         this.statCount = redCard.intValue();
         this.mathPlayed = mathPlayed;
+        this.teamLogo = teamLogo;
     }
 
     public DistinctTeamStatisticsDTO toDistinctTeamStatisticsDTO(EventNames eventNames) {
-        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(eventNames.getEventName(), groupName, teamName);
+        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(eventNames.getEventName(),
+                groupName, teamName, teamLogo);
 
         setStatAndPerGame(eventNames, distinctTeamStatisticsDTO);
 

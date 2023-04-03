@@ -7,6 +7,7 @@ import com.example.livescore.models.PlayerEntity;
 import com.example.livescore.repository.PlayerRepository;
 import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.player.PlayerService;
+import com.example.livescore.web.players.MinPlayerDto;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
 import org.springframework.stereotype.Service;
@@ -69,5 +70,10 @@ public class DefaultPlayerService
         } else {
             return player.get();
         }
+    }
+
+    @Override
+    public List<MinPlayerDto> findAllPlayersOfTeam(Long teamId) {
+        return repository.findAllPlayersOfTeam(teamId);
     }
 }
