@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -47,5 +48,18 @@ public class GroupEntity extends AbstractEntity<GroupDTO> {
                 this.groupName,
                 this.isPlayoff
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupEntity that = (GroupEntity) o;
+        return groupId.equals(that.groupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(groupId);
     }
 }

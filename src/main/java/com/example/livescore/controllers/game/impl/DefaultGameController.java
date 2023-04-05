@@ -4,6 +4,7 @@ import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.game.GameController;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.web.games.GameDTO;
+import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,8 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/game")
-public class DefaultGameController extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
+public class DefaultGameController
+        extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
         implements GameController {
 
     public DefaultGameController(GameService service) {
@@ -26,6 +28,12 @@ public class DefaultGameController extends AbstractFootballController<GameServic
     @Override
     public ResponseEntity<List<GameDTO>> findAllByDate(@RequestParam("date") String date) {
         return new ResponseEntity<>(service.findAllByDate(date), OK);
+    }
+
+    @GetMapping("/new/date")
+    @Override
+    public ResponseEntity<List<NewGameDTO>> newFindAllByDate(String date) {
+        return new ResponseEntity<>(service.newFindAllByDate(date), OK);
     }
 
     @GetMapping("/live")

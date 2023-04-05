@@ -11,5 +11,7 @@ public interface TournamentService extends FootballService<TournamentDTO, SaveTo
 
     List<TournamentDTO> findAllByUserId(long userId);
 
+    List<TournamentEntity> findAllEntity();
+
     TournamentEntity findEntityById(long id);
 }

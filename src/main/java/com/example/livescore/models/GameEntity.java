@@ -5,6 +5,7 @@ import com.example.core.dto.AbstractEntity;
 import com.example.livescore.enums.GameState;
 import com.example.livescore.enums.PgSQLEnumType;
 import com.example.livescore.web.games.GameDTO;
+import com.example.livescore.web.games.NewGameDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -10,13 +10,17 @@ import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
+import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.games.GameDTO;
+import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
+import com.example.livescore.web.tournaments.TournamentDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +56,38 @@ public class DefaultGameService
                 .stream()
                 .map(GameEntity::toDTO)
                 .toList();
+    }
+
+    @Override
+    public List<NewGameDTO> newFindAllByDate(String date) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
+        LocalDateTime date2 = date1.plusMinutes(1439);
+
+        List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2);
+        List<GroupEntity> allGroups = groupService.findAllEntity();
+
+        List<NewGameDTO> returnGameByDate = new ArrayList<>();
+        for (GroupEntity group : allGroups) {
+            NewGameDTO newGame = new NewGameDTO();
+            newGame.setTournamentName(group.getTournament().getTournamentName());
+            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
+            newGame.setGroupName(group.getGroupName());
+
+            List<GameDTO> games = new ArrayList<>();
+            for (GameEntity game : allGameByDate) {
+                if (group.equals(game.getGroup())) {
+                    games.add(game.toDTO());
+                }
+            }
+            newGame.setGames(games);
+
+            if (!games.isEmpty()) {
+                returnGameByDate.add(newGame);
+            }
+        }
+
+        return returnGameByDate;
     }
 
     @Override
