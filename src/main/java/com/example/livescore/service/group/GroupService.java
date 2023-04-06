@@ -11,5 +11,7 @@ public interface GroupService extends FootballService<GroupDTO, SaveGroupDTO, Lo
 
     List<GroupDTO> findAllByTournamentId(long tournamentId);
 
+    List<GroupEntity> findAllEntity();
+
     GroupEntity findEntityById(long id);
 }
