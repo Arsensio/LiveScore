@@ -21,6 +21,7 @@ public class TeamStatisticsDTO {
     private Integer goalCount;
     private Integer goalMissed;
     private Integer points;
+    private String teamLogo;
 
     @Override
     public String toString() {

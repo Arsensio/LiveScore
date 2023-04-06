@@ -34,6 +34,11 @@ public class DefaultGroupService
     }
 
     @Override
+    public List<GroupEntity> findAllEntity() {
+        return repository.findAll();
+    }
+
+    @Override
     public GroupDTO save(SaveGroupDTO dto) {
         return repository.save(new GroupEntity(
                         null,

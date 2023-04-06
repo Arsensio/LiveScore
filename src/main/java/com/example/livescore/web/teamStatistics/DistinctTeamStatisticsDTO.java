@@ -16,10 +16,18 @@ public class DistinctTeamStatisticsDTO {
     private String teamName;
     private Integer total;
     private String perGame;
+    private String teamLogo;
 
     public DistinctTeamStatisticsDTO(String statName, String groupName, String teamName) {
         this.statName = statName;
         this.groupName = groupName;
         this.teamName = teamName;
+    }
+
+    public DistinctTeamStatisticsDTO(String statName, String groupName, String teamName, String teamLogo) {
+        this.statName = statName;
+        this.groupName = groupName;
+        this.teamName = teamName;
+        this.teamLogo = teamLogo;
     }
 }

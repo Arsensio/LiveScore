@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,11 +30,27 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
     @Column(name = "tournament_type")
     private String tournamentType;
 
+    @Column(name = "tournament_logo")
+    private String tournamentLogo;
+
     public TournamentDTO toDTO() {
         return new TournamentDTO(
                 this.tournamentId,
                 this.tournamentName,
                 this.tournamentType
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TournamentEntity that = (TournamentEntity) o;
+        return tournamentId.equals(that.tournamentId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tournamentId);
     }
 }

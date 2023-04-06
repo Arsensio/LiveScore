@@ -2,8 +2,7 @@ package com.example.livescore.service.player_statistics.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.models.PlayerStatisticsEntity;
-import com.example.livescore.models.PlayerStatisticsEntityPK;
+import com.example.livescore.models.*;
 import com.example.livescore.repository.PlayerStatisticsRepository;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
@@ -70,6 +69,19 @@ public class DefaultPlayerStatisticsService
     @Override
     public PlayerStatisticsEntity saveAndFlush(PlayerStatisticsEntity playerStatistics) {
         return repository.saveAndFlush(playerStatistics);
+    }
+
+    @Override
+    public PlayerStatisticsEntity saveDefault(PlayerEntity player, GroupEntity group) {
+        PlayerStatisticsEntityPK pk = new PlayerStatisticsEntityPK(group, player);
+        return repository.save(new PlayerStatisticsEntity(
+                pk,
+                0L,
+                0L,
+                0L,
+                0L,
+                0L
+        ));
     }
 
     @Override

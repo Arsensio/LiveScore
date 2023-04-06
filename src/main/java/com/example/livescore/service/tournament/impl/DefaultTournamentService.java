@@ -26,7 +26,8 @@ public class DefaultTournamentService
         return repository.save(new TournamentEntity(
                 null,
                 dto.getTournamentName(),
-                dto.getTournamentType()
+                dto.getTournamentType(),
+                dto.getTournamentLogo()
         )).toDTO();
     }
 
@@ -48,6 +49,11 @@ public class DefaultTournamentService
                 .stream()
                 .map(TournamentEntity::toDTO)
                 .toList();
+    }
+
+    @Override
+    public List<TournamentEntity> findAllEntity() {
+        return repository.findAll();
     }
 
     @Override

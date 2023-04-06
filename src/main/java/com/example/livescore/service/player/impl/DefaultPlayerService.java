@@ -3,13 +3,18 @@ package com.example.livescore.service.player.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
+import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.PlayerEntity;
 import com.example.livescore.repository.PlayerRepository;
 import com.example.livescore.repository.TeamRepository;
+import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.player.PlayerService;
+import com.example.livescore.service.player_statistics.PlayerStatisticsService;
+import com.example.livescore.web.players.MinPlayerDto;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,22 +25,30 @@ public class DefaultPlayerService
         implements PlayerService {
 
     private final TeamRepository teamRepository;
+    private final PlayerStatisticsService playerStatisticsService;
+    private final GroupService groupService;
 
-    public DefaultPlayerService(PlayerRepository playerRepository, TeamRepository teamRepository) {
+    public DefaultPlayerService(PlayerRepository playerRepository, TeamRepository teamRepository, PlayerStatisticsService playerStatisticsService, GroupService groupService) {
         super(playerRepository);
         this.teamRepository = teamRepository;
+        this.playerStatisticsService = playerStatisticsService;
+        this.groupService = groupService;
     }
 
     @Override
+    @Transactional
     public PlayerDTO save(SavePlayerDTO savePlayerDTO) {
-        return repository.save(new PlayerEntity(
+        PlayerEntity save = repository.save(new PlayerEntity(
                 null,
                 teamRepository.findById(savePlayerDTO.getTeamId()).get(),
                 savePlayerDTO.getName(),
                 savePlayerDTO.getSurname(),
                 savePlayerDTO.getPlayerNumber(),
                 savePlayerDTO.getRole()
-        )).toDTO();
+        ));
+        GroupEntity group = groupService.findEntityById(1);
+        playerStatisticsService.saveDefault(save, group);
+        return save.toDTO();
     }
 
     @Override
@@ -69,5 +82,10 @@ public class DefaultPlayerService
         } else {
             return player.get();
         }
+    }
+
+    @Override
+    public List<MinPlayerDto> findAllPlayersOfTeam(Long teamId) {
+        return repository.findAllPlayersOfTeam(teamId);
     }
 }

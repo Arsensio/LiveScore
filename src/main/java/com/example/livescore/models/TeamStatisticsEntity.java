@@ -60,7 +60,8 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
                 this.loseCount,
                 this.goalCount,
                 this.goalMissed,
-                this.points
+                this.points,
+                id.getTeam().getTeamLogo()
         );
     }
 
@@ -77,6 +78,7 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
             distinctTeamStatisticsDTO.setTotal(goalCount);
             distinctTeamStatisticsDTO.setPerGame(df.format(goal / game));
         }
+        distinctTeamStatisticsDTO.setTeamLogo(id.getTeam().getTeamLogo());
         return distinctTeamStatisticsDTO;
     }
 
