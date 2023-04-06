@@ -10,11 +10,9 @@ import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
-import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.games.GameDTO;
 import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
-import com.example.livescore.web.tournaments.TournamentDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,11 +89,31 @@ public class DefaultGameService
     }
 
     @Override
-    public List<GameDTO> findAllLiveMatches() {
-        return repository.findAllLiveGame()
-                .stream()
-                .map(GameEntity::toDTO)
-                .toList();
+    public List<NewGameDTO> findAllLiveMatches() {
+        List<GameEntity> allLiveGame = repository.findAllLiveGame();
+        List<GroupEntity> allGroups = groupService.findAllEntity();
+        List<NewGameDTO> returnGameByDate = new ArrayList<>();
+
+        for (GroupEntity group : allGroups) {
+            NewGameDTO newGame = new NewGameDTO();
+            newGame.setTournamentName(group.getTournament().getTournamentName());
+            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
+            newGame.setGroupName(group.getGroupName());
+
+            List<GameDTO> games = new ArrayList<>();
+            for (GameEntity game : allLiveGame) {
+                if (group.equals(game.getGroup())) {
+                    games.add(game.toDTO());
+                }
+            }
+            newGame.setGames(games);
+
+            if (!games.isEmpty()) {
+                returnGameByDate.add(newGame);
+            }
+        }
+        return returnGameByDate;
+
     }
 
     @Override

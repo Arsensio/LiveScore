@@ -38,7 +38,7 @@ public class DefaultGameController
 
     @GetMapping("/live")
     @Override
-    public ResponseEntity<List<GameDTO>> findAllLiveMatches() {
+    public ResponseEntity<List<NewGameDTO>> findAllLiveMatches() {
         return new ResponseEntity<>(service.findAllLiveMatches(), OK);
     }
 

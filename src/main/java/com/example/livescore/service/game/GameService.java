@@ -13,7 +13,7 @@ public interface GameService extends FootballService<GameDTO, SaveGameDTO, Long>
     List<GameDTO> findAllByDate(String date);
     List<NewGameDTO> newFindAllByDate(String date);
 
-    List<GameDTO> findAllLiveMatches();
+    List<NewGameDTO> findAllLiveMatches();
 
     GameDTO startMatch(Long gameId);
 

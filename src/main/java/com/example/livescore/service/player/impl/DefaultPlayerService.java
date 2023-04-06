@@ -14,6 +14,7 @@ import com.example.livescore.web.players.MinPlayerDto;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class DefaultPlayerService
     }
 
     @Override
+    @Transactional
     public PlayerDTO save(SavePlayerDTO savePlayerDTO) {
         PlayerEntity save = repository.save(new PlayerEntity(
                 null,
