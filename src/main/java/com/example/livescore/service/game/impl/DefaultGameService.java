@@ -65,54 +65,16 @@ public class DefaultGameService
         List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
-        List<NewGameDTO> returnGameByDate = new ArrayList<>();
-        for (GroupEntity group : allGroups) {
-            NewGameDTO newGame = new NewGameDTO();
-            newGame.setTournamentName(group.getTournament().getTournamentName());
-            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
-            newGame.setGroupName(group.getGroupName());
-
-            List<GameDTO> games = new ArrayList<>();
-            for (GameEntity game : allGameByDate) {
-                if (group.equals(game.getGroup())) {
-                    games.add(game.toDTO());
-                }
-            }
-            newGame.setGames(games);
-
-            if (!games.isEmpty()) {
-                returnGameByDate.add(newGame);
-            }
-        }
-
-        return returnGameByDate;
+        return findGameByGroup(allGroups, allGameByDate);
     }
+
 
     @Override
     public List<NewGameDTO> findAllLiveMatches() {
         List<GameEntity> allLiveGame = repository.findAllLiveGame();
         List<GroupEntity> allGroups = groupService.findAllEntity();
-        List<NewGameDTO> returnGameByDate = new ArrayList<>();
 
-        for (GroupEntity group : allGroups) {
-            NewGameDTO newGame = new NewGameDTO();
-            newGame.setTournamentName(group.getTournament().getTournamentName());
-            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
-            newGame.setGroupName(group.getGroupName());
-
-            List<GameDTO> games = new ArrayList<>();
-            for (GameEntity game : allLiveGame) {
-                if (group.equals(game.getGroup())) {
-                    games.add(game.toDTO());
-                }
-            }
-            newGame.setGames(games);
-
-            if (!games.isEmpty()) {
-                returnGameByDate.add(newGame);
-            }
-        }
-        return returnGameByDate;
+        return findGameByGroup(allGroups, allLiveGame);
 
     }
 
@@ -154,9 +116,6 @@ public class DefaultGameService
         List<TeamStatisticsEntity> allByGroupIdOrderByWinCount = teamStatisticsService.findAllByGroupIdOrderByWinCount(group.getGroupId());
         List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
 
-        TeamEntity team1 = gameEntity.getProtocol().getTeam1();
-        TeamEntity team2 = gameEntity.getProtocol().getTeam2();
-
         for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
             for (ProtocolEntity protocolEntity : allByGameStateStarted) {
                 int team1Score = protocolEntity.getTeam1Score();
@@ -171,6 +130,7 @@ public class DefaultGameService
                 }
             }
         }
+
         gameEntity.setGameState(ENDED);
         repository.save(gameEntity);
 
@@ -235,5 +195,30 @@ public class DefaultGameService
         } else {
             teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
         }
+    }
+
+    private List<NewGameDTO> findGameByGroup(List<GroupEntity> allGroups, List<GameEntity> allGameByDate) {
+        List<NewGameDTO> returnGameByDate = new ArrayList<>();
+        for (GroupEntity group : allGroups) {
+            NewGameDTO newGame = new NewGameDTO();
+            newGame.setTournamentName(group.getTournament().getTournamentName());
+            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
+            newGame.setGroupName(group.getGroupName());
+            newGame.setGroupId(group.getGroupId());
+            newGame.setTournamentId(group.getTournament().getTournamentId());
+
+            List<GameDTO> games = new ArrayList<>();
+            for (GameEntity game : allGameByDate) {
+                if (group.equals(game.getGroup())) {
+                    games.add(game.toDTO());
+                }
+            }
+            newGame.setGames(games);
+
+            if (!games.isEmpty()) {
+                returnGameByDate.add(newGame);
+            }
+        }
+        return returnGameByDate;
     }
 }

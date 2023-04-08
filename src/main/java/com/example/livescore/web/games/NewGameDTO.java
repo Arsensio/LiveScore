@@ -11,8 +11,10 @@ import java.util.List;
 @ToString
 public class NewGameDTO {
 
+    private Long tournamentId;
     private String tournamentName;
     private String tournamentLogo;
     private String groupName;
+    private Long groupId;
     private List<GameDTO> games;
 }
