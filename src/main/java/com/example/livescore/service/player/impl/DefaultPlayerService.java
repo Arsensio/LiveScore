@@ -100,7 +100,11 @@ public class DefaultPlayerService
         for (UpdatePlayerDTO p : playersToUpdate) {
             PlayerEntity player = findEntityById(p.getPlayerId());
             TeamEntity newTeam = teamFootballService.findEntityById(p.getNewTeamId());
-            Integer newNumber = generateRandomNumExcludeList(findAllPlayerNumberByTeamId(newTeam.getTeamId()));
+            List<Integer> allPlayerNumber = findAllPlayerNumberByTeamId(newTeam.getTeamId());
+            Integer newNumber = player.getPlayerNumber();
+            if (allPlayerNumber.contains(newNumber)) {
+                newNumber = generateRandomNumExcludeList(allPlayerNumber);
+            }
 
             player.setTeam(newTeam);
             player.setPlayerNumber(newNumber);
