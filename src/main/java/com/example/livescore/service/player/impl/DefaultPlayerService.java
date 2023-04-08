@@ -5,32 +5,36 @@ import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.PlayerEntity;
+import com.example.livescore.models.TeamEntity;
 import com.example.livescore.repository.PlayerRepository;
-import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
+import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.web.players.MinPlayerDto;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
+import com.example.livescore.web.players.UpdatePlayerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class DefaultPlayerService
         extends AbstractFootballService<PlayerEntity, PlayerDTO, SavePlayerDTO, Long, PlayerRepository>
         implements PlayerService {
 
-    private final TeamRepository teamRepository;
+    private final TeamFootballService teamFootballService;
     private final PlayerStatisticsService playerStatisticsService;
     private final GroupService groupService;
 
-    public DefaultPlayerService(PlayerRepository playerRepository, TeamRepository teamRepository, PlayerStatisticsService playerStatisticsService, GroupService groupService) {
+    public DefaultPlayerService(PlayerRepository playerRepository, TeamFootballService teamFootballService, PlayerStatisticsService playerStatisticsService, GroupService groupService) {
         super(playerRepository);
-        this.teamRepository = teamRepository;
+        this.teamFootballService = teamFootballService;
         this.playerStatisticsService = playerStatisticsService;
         this.groupService = groupService;
     }
@@ -40,7 +44,7 @@ public class DefaultPlayerService
     public PlayerDTO save(SavePlayerDTO savePlayerDTO) {
         PlayerEntity save = repository.save(new PlayerEntity(
                 null,
-                teamRepository.findById(savePlayerDTO.getTeamId()).get(),
+                teamFootballService.findEntityById(savePlayerDTO.getTeamId()),
                 savePlayerDTO.getName(),
                 savePlayerDTO.getSurname(),
                 savePlayerDTO.getPlayerNumber(),
@@ -57,7 +61,7 @@ public class DefaultPlayerService
             playerEntity.setName(savePlayerDTO.getName());
             playerEntity.setSurname(savePlayerDTO.getSurname());
             playerEntity.setRole(savePlayerDTO.getRole());
-            playerEntity.setTeam(teamRepository.findById(savePlayerDTO.getPlayerId()).get());
+            playerEntity.setTeam(teamFootballService.findEntityById(savePlayerDTO.getTeamId()));
             playerEntity.setPlayerNumber(savePlayerDTO.getPlayerNumber());
             repository.saveAndFlush(playerEntity);
         }, () -> {
@@ -87,5 +91,51 @@ public class DefaultPlayerService
     @Override
     public List<MinPlayerDto> findAllPlayersOfTeam(Long teamId) {
         return repository.findAllPlayersOfTeam(teamId);
+    }
+
+    @Override
+    public List<PlayerDTO> transferPlayers(List<UpdatePlayerDTO> playersToUpdate) {
+        List<PlayerDTO> updatedPlayers = new ArrayList<>();
+
+        for (UpdatePlayerDTO p : playersToUpdate) {
+            PlayerEntity player = findEntityById(p.getPlayerId());
+            TeamEntity newTeam = teamFootballService.findEntityById(p.getNewTeamId());
+            Integer newNumber = generateRandomNumExcludeList(findAllPlayerNumberByTeamId(newTeam.getTeamId()));
+
+            player.setTeam(newTeam);
+            player.setPlayerNumber(newNumber);
+
+            PlayerEntity updatedPlayer = repository.saveAndFlush(player);
+            updatedPlayers.add(updatedPlayer.toDTO());
+        }
+
+        return updatedPlayers;
+    }
+
+
+    private PlayerEntity findEntityById(Long id) {
+        Optional<PlayerEntity> foundEntity = repository.findById(id);
+        if (foundEntity.isEmpty()) {
+            throw ResourceNotFoundException.build(id, "TeamEntity");
+        } else
+            return foundEntity.get();
+    }
+
+    private List<Integer> findAllPlayerNumberByTeamId(Long teamId) {
+        List<PlayerEntity> allByTeamId = repository.findAllByTeamId(teamId);
+
+        return allByTeamId.stream()
+                .map(PlayerEntity::getPlayerNumber)
+                .toList();
+    }
+
+    private Integer generateRandomNumExcludeList(List<Integer> excludedValues) {
+        Random rand = new Random();
+        int randomNum;
+        do {
+            randomNum = rand.nextInt(99) + 1;
+        } while (excludedValues.contains(randomNum));
+
+        return randomNum;
     }
 }
