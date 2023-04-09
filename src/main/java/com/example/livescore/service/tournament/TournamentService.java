@@ -2,6 +2,7 @@ package com.example.livescore.service.tournament;
 
 import com.example.core.service.FootballService;
 import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.web.tournaments.SaveCupTournamentDTO;
 import com.example.livescore.web.tournaments.SaveTournamentDTO;
 import com.example.livescore.web.tournaments.TournamentDTO;
 
@@ -14,4 +15,8 @@ public interface TournamentService extends FootballService<TournamentDTO, SaveTo
     List<TournamentEntity> findAllEntity();
 
     TournamentEntity findEntityById(long id);
+
+    TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO);
+
+    TournamentDTO createCup(SaveCupTournamentDTO saveCupTournamentDTO);
 }

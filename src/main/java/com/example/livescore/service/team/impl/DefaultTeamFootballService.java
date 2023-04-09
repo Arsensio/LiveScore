@@ -5,7 +5,6 @@ import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TeamRepository;
-import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.service.tournament.TournamentService;
@@ -24,14 +23,12 @@ public class DefaultTeamFootballService
         extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long, TeamRepository>
         implements TeamFootballService {
 
-    private final GroupService groupService;
     private final TeamStatisticsService teamStatisticsService;
     private final TournamentService tournamentService;
 
-    public DefaultTeamFootballService(TeamRepository repository, GroupService groupService, TeamStatisticsService
+    public DefaultTeamFootballService(TeamRepository repository, TeamStatisticsService
             teamStatisticsService, TournamentService tournamentService) {
         super(repository);
-        this.groupService = groupService;
         this.teamStatisticsService = teamStatisticsService;
         this.tournamentService = tournamentService;
     }

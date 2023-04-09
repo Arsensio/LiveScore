@@ -1,4 +1,4 @@
-alter sequence tournaments_tournament_id_seq restart with 3;
+alter sequence tournaments_tournament_id_seq restart with 2;
 alter sequence groups_group_id_seq restart with 2;
 alter sequence teams_team_id_seq restart with 4;
 alter sequence players_player_id_seq restart with 13;

@@ -1,5 +1,6 @@
 package com.example.core.exception;
 
+import com.example.core.exception.exceptions.IllegalCupFormatException;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(value = IllegalCupFormatException.class)
+    protected ResponseEntity<Object> handleIllegalCup(IllegalCupFormatException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
     }
 }

@@ -24,7 +24,7 @@ public class DefaultGroupController extends AbstractFootballController<GroupServ
     }
 
     @Override
-    @GetMapping("/group")
+    @GetMapping("/tournament")
     public ResponseEntity<List<GroupDTO>> findAllByTournamentId(@PathParam("tournament_id") long tournamentId) {
         return new ResponseEntity<>(service.findAllByTournamentId(tournamentId), HttpStatus.OK);
     }

@@ -2,8 +2,6 @@
 
 insert into tournaments
 values (1, 'SFL', 'LEAGUE','https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg');
-insert into tournaments
-values (2, 'SFC', 'CUP','https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg');
 
 insert into groups
 values (1, 'Group A', false, 1);
