@@ -32,7 +32,7 @@ public class DefaultTeamStatisticsService
 
     @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId) {
-        return repository.findAllByGroupIdOrderByGoalCount(groupId)
+        return repository.findAllByTournamentIdOrderByGoalCount(groupId)
                 .stream()
                 .map(team -> team.toDistinctStatisticsDTO(EventNames.GOAL.getEventName()))
                 .toList();
@@ -40,11 +40,11 @@ public class DefaultTeamStatisticsService
 
     @Override
     public List<TeamStatisticsDTO> findTeamsSortedByPoints(long groupId) {
-        List<TeamStatisticsEntity> allByGroupIdOrderByWinCount = repository.findAllByGroupIdOrderByWinCount(groupId);
+        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(groupId);
         List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
         List<TeamStatisticsDTO> orderedByPointList = new ArrayList<>();
 
-        for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
+        for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
             for (ProtocolEntity protocolEntity : allByGameStateStarted) {
                 int team1Score = protocolEntity.getTeam1Score();
                 int team2Score = protocolEntity.getTeam2Score();
@@ -67,9 +67,9 @@ public class DefaultTeamStatisticsService
 
     @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByRedCards(long groupId) {
-        List<StatisticDTO> allByGroupIdOrderByRedCard = repository.findAllByGroupIdOrderByRedCard(groupId);
+        List<StatisticDTO> allByTournamentIdOrderByRedCard = repository.findAllByTournamentIdOrderByRedCard(groupId);
 
-        return allByGroupIdOrderByRedCard
+        return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
                         statisticDTO.toDistinctTeamStatisticsDTO(EventNames.RED_CARD))
@@ -78,9 +78,9 @@ public class DefaultTeamStatisticsService
 
     @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByYellowCard(long groupId) {
-        List<StatisticDTO> allByGroupIdOrderByRedCard = repository.findAllByGroupIdOrderByYellowCard(groupId);
+        List<StatisticDTO> allByTournamentIdOrderByRedCard = repository.findAllByTournamentIdOrderByYellowCard(groupId);
 
-        return allByGroupIdOrderByRedCard
+        return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
                         statisticDTO.toDistinctTeamStatisticsDTO(EventNames.YELLOW_CARD))
@@ -98,7 +98,8 @@ public class DefaultTeamStatisticsService
                 0,
                 0,
                 0,
-                0
+                0,
+                null
         ));
 
         return saved.toDTO();
@@ -110,8 +111,8 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public List<TeamDTO> findAllTeamByGroupId(long groupId) {
-        return repository.findAllTeamByGroupId(groupId);
+    public List<TeamDTO> findAllTeamByTournamentId(long groupId) {
+        return repository.findAllTeamByTournamentId(groupId);
     }
 
     @Override
@@ -140,8 +141,8 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public List<TeamStatisticsEntity> findAllByGroupIdOrderByWinCount(Long groupId) {
-        return repository.findAllByGroupIdOrderByWinCount(groupId);
+    public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long groupId) {
+        return repository.findAllByTournamentIdOrderByWinCount(groupId);
     }
 
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {

@@ -62,8 +62,8 @@ public class DefaultTeamFootballService
     }
 
     @Override
-    public List<TeamDTO> findAllTeamByGroupId(long groupId) {
-        return teamStatisticsService.findAllTeamByGroupId(groupId);
+    public List<TeamDTO> findAllTeamByTournamentId(long groupId) {
+        return teamStatisticsService.findAllTeamByTournamentId(groupId);
     }
 
     @Override

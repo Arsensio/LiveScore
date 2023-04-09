@@ -8,10 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -48,6 +45,10 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
 
     @Column(name = "points")
     private Integer points;
+
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    private GroupEntity group;
 
     @Override
     public TeamStatisticsDTO toDTO() {

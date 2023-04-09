@@ -113,10 +113,10 @@ public class DefaultGameService
             return gameEntity.toDTO();
         }
         GroupEntity group = gameEntity.getGroup();
-        List<TeamStatisticsEntity> allByGroupIdOrderByWinCount = teamStatisticsService.findAllByGroupIdOrderByWinCount(group.getGroupId());
+        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = teamStatisticsService.findAllByTournamentIdOrderByWinCount(group.getGroupId());
         List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
 
-        for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
+        for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
             for (ProtocolEntity protocolEntity : allByGameStateStarted) {
                 int team1Score = protocolEntity.getTeam1Score();
                 int team2Score = protocolEntity.getTeam2Score();

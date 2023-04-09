@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface TeamFootballController extends FootballController<TeamDTO, SaveTeamDTO, Long> {
 
-    ResponseEntity<List<TeamDTO>> findAllTeamByGroupId(long groupId);
+    ResponseEntity<List<TeamDTO>> findAllTeamByTournamentId(long tournamentId);
 
     ResponseEntity<List<TeamWithPlayersDto>> findAllTeamsAndItsPlayers();
 }
