@@ -79,40 +79,40 @@ create table players
 
 create table player_statistics
 (
-    assists      bigint,
-    goals        bigint,
-    match_played bigint,
-    red_card     bigint,
-    yellow_card  bigint,
-    group_id     bigint not null,
-    player_id    bigint not null,
+    assists       bigint,
+    goals         bigint,
+    match_played  bigint,
+    red_card      bigint,
+    yellow_card   bigint,
+    tournament_id bigint not null,
+    player_id     bigint not null,
     constraint fk_group
-        foreign key (group_id)
-            references groups (group_id),
+        foreign key (tournament_id)
+            references tournaments (tournament_id),
     constraint fk_player
         foreign key (player_id)
             references players (player_id),
-    primary key (group_id, player_id)
+    primary key (tournament_id, player_id)
 );
 
 create table team_statistics
 (
-    draw_count  integer,
-    game_played integer,
-    goal_count  integer,
-    goal_missed integer,
-    lose_count  integer,
-    points      integer,
-    win_count   integer,
-    group_id    bigint not null,
-    team_id     bigint not null,
+    draw_count    integer,
+    game_played   integer,
+    goal_count    integer,
+    goal_missed   integer,
+    lose_count    integer,
+    points        integer,
+    win_count     integer,
+    tournament_id bigint not null,
+    team_id       bigint not null,
     constraint fk_group
-        foreign key (group_id)
-            references groups (group_id),
+        foreign key (tournament_id)
+            references tournaments (tournament_id),
     constraint fk_teams
         foreign key (team_id)
             references teams (team_id),
-    primary key (group_id, team_id)
+    primary key (tournament_id, team_id)
 );
 
 create table events

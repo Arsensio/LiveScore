@@ -1,10 +1,7 @@
 package com.example.livescore.service.player_statistics;
 
 import com.example.core.service.FootballService;
-import com.example.livescore.models.GroupEntity;
-import com.example.livescore.models.PlayerEntity;
-import com.example.livescore.models.PlayerStatisticsEntity;
-import com.example.livescore.models.PlayerStatisticsEntityPK;
+import com.example.livescore.models.*;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.playerStatistics.SavePlayerStatisticsDTO;
 import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
@@ -26,7 +23,7 @@ public interface PlayerStatisticsService extends FootballService<PlayerStatistic
 
     PlayerStatisticsEntity saveAndFlush(PlayerStatisticsEntity player);
 
-    PlayerStatisticsEntity saveDefault(PlayerEntity player, GroupEntity group);
+    PlayerStatisticsEntity saveDefault(PlayerEntity player, TournamentEntity tournament);
 
     void incrementGamePlayed(PlayerStatisticsEntityPK id);
 }

@@ -1,10 +1,7 @@
 package com.example.livescore.service.team_statistics;
 
 import com.example.core.service.FootballService;
-import com.example.livescore.models.GroupEntity;
-import com.example.livescore.models.TeamEntity;
-import com.example.livescore.models.TeamStatisticsEntity;
-import com.example.livescore.models.TeamStatisticsEntityPK;
+import com.example.livescore.models.*;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
@@ -23,7 +20,7 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
 
     List<DistinctTeamStatisticsDTO> findTeamsSortedByYellowCard(long groupId);
 
-    TeamStatisticsDTO save(GroupEntity group, TeamEntity team);
+    TeamStatisticsDTO save(TournamentEntity tournament, TeamEntity team);
 
     TeamStatisticsEntity save(TeamStatisticsEntity teamStatistics);
 

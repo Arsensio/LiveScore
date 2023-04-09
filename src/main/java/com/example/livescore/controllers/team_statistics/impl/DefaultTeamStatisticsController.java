@@ -25,25 +25,25 @@ public class DefaultTeamStatisticsController extends AbstractFootballController<
 
     @Override
     @GetMapping("/goals")
-    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByGoals(@RequestParam("groupId") long groupId) {
-        return new ResponseEntity<>(service.findTeamsSortedByGoals(groupId), HttpStatus.OK);
+    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByGoals(@RequestParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findTeamsSortedByGoals(tournament_id), HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/points")
-    public ResponseEntity<List<TeamStatisticsDTO>> findAllSortedByPoints(@RequestParam("groupId") long groupId) {
-        return new ResponseEntity<>(service.findTeamsSortedByPoints(groupId), HttpStatus.OK);
+    public ResponseEntity<List<TeamStatisticsDTO>> findAllSortedByPoints(@RequestParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findTeamsSortedByPoints(tournament_id), HttpStatus.OK);
     }
 
     @Override
-    @GetMapping("/red_cards/{groupId}")
-    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByRedCards(@PathVariable long groupId) {
-        return new ResponseEntity<>(service.findTeamsSortedByRedCards(groupId), HttpStatus.OK);
+    @GetMapping("/red_cards/{tournament_id}")
+    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByRedCards(@PathVariable long tournament_id) {
+        return new ResponseEntity<>(service.findTeamsSortedByRedCards(tournament_id), HttpStatus.OK);
     }
 
     @Override
-    @GetMapping("/yellow_cards/{groupId}")
-    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByYellowCards(@PathVariable long groupId) {
-        return new ResponseEntity<>(service.findTeamsSortedByYellowCard(groupId), HttpStatus.OK);
+    @GetMapping("/yellow_cards/{tournament_id}")
+    public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByYellowCards(@PathVariable long tournament_id) {
+        return new ResponseEntity<>(service.findTeamsSortedByYellowCard(tournament_id), HttpStatus.OK);
     }
 }

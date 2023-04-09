@@ -52,7 +52,7 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     @Override
     public TeamStatisticsDTO toDTO() {
         return new TeamStatisticsDTO(
-                this.id.getGroup().getGroupName(),
+                this.id.getTournament().getTournamentName(),
                 this.id.getTeam().getTeamName(),
                 this.gamePlayed,
                 this.winCount,
@@ -68,7 +68,7 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     public DistinctTeamStatisticsDTO toDistinctStatisticsDTO(String statName) {
         DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(
                 statName,
-                id.getGroup().getGroupName(),
+                id.getTournament().getTournamentName(),
                 id.getTeam().getTeamName()
         );
         if (statName.equals(GOAL.getEventName())) {

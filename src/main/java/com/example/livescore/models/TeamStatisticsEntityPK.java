@@ -20,8 +20,8 @@ import java.io.Serializable;
 public class TeamStatisticsEntityPK implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
-    private GroupEntity group;
+    @JoinColumn(name = "tournament_id")
+    private TournamentEntity tournament;
 
     @OneToOne
     @JoinColumn(name = "team_id")

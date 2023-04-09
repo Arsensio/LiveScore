@@ -49,15 +49,15 @@ public class DefaultEventService
     @Transactional
     public EventDTO saveGoal(SaveGoalEventDTO dto) {
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
-        GroupEntity group = protocol.getGame().getGroup();
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
         PlayerEntity goalPlayer = playerService.findEntityById(dto.getPlayerId());
 
-        increasePlayerStatistic(group, goalPlayer, GOAL, protocol);
+        increasePlayerStatistic(tournament, goalPlayer, GOAL, protocol);
         EventEntity save = repository.save(getNewGoalEvent(dto, protocol, goalPlayer));
 
         if (dto.getAssistId() != null) {
             PlayerEntity assistPlayer = playerService.findEntityById(dto.getAssistId());
-            increasePlayerStatistic(group, assistPlayer, ASSIST, protocol);
+            increasePlayerStatistic(tournament, assistPlayer, ASSIST, protocol);
             goalInfoService.saveAssist(assistPlayer, save);
         } else if (dto.getIsPenalty()) {
             goalInfoService.savePenalty(null, save);
@@ -80,14 +80,14 @@ public class DefaultEventService
         EventEntity event = foundEvent.get();
         GoalInfoEntity goalInfo = goalInfoService.findEntityById(id);
         ProtocolEntity protocol = event.getProtocol();
-        GroupEntity group = protocol.getGame().getGroup();
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
 
-        rollBackPlayerStatistics(group, event.getPlayer(), EventNames.valueOf(event.getEventName()), protocol);
+        rollBackPlayerStatistics(tournament, event.getPlayer(), EventNames.valueOf(event.getEventName()), protocol);
 
         if (goalInfo != null) {
             if (goalInfo.getName().equals(ASSIST.getEventName())) {
                 PlayerEntity assistPlayer = goalInfo.getPlayer();
-                rollBackPlayerStatistics(group, assistPlayer, ASSIST, protocol);
+                rollBackPlayerStatistics(tournament, assistPlayer, ASSIST, protocol);
             }
 
             goalInfoService.delete(goalInfo.getId());
@@ -96,12 +96,12 @@ public class DefaultEventService
         event.setPlayer(playerService.findEntityById(dto.getPlayerId()));
         event.setMinute(dto.getMinute());
 
-        increasePlayerStatistic(group, event.getPlayer(), GOAL, protocol);
+        increasePlayerStatistic(tournament, event.getPlayer(), GOAL, protocol);
         returnDto = repository.saveAndFlush(event).toDTO();
 
         if (dto.getAssistId() != null) {
             PlayerEntity assistPlayer = playerService.findEntityById(dto.getAssistId());
-            increasePlayerStatistic(group, assistPlayer, ASSIST, protocol);
+            increasePlayerStatistic(tournament, assistPlayer, ASSIST, protocol);
             GoalInfoEntity saveAssist = goalInfoService.saveAssist(assistPlayer, event);
             returnDto.setAssist(saveAssist.toDTO());
         } else if (dto.getIsPenalty()) {
@@ -119,9 +119,9 @@ public class DefaultEventService
 
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
         PlayerEntity player = playerService.findEntityById(dto.getPlayerId());
-        GroupEntity group = protocol.getGame().getGroup();
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
 
-        increasePlayerStatistic(group, player, event, protocol);
+        increasePlayerStatistic(tournament, player, event, protocol);
         EventEntity save = repository.save(getNewGoalEvent(dto, event, protocol, player));
         log.info("CREATE NEW EVENT {}", save);
 
@@ -139,13 +139,13 @@ public class DefaultEventService
 
         EventEntity event = foundEvent.get();
         ProtocolEntity protocol = event.getProtocol();
-        GroupEntity group = protocol.getGame().getGroup();
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
 
-        rollBackPlayerStatistics(group, event.getPlayer(), EventNames.valueOf(event.getEventName()), protocol);
+        rollBackPlayerStatistics(tournament, event.getPlayer(), EventNames.valueOf(event.getEventName()), protocol);
 
         EventNames newEventName = getEventById(dto.getEventEnumId());
         PlayerEntity newPlayer = playerService.findEntityById(dto.getPlayerId());
-        increasePlayerStatistic(group, newPlayer, newEventName, protocol);
+        increasePlayerStatistic(tournament, newPlayer, newEventName, protocol);
 
         event.setPlayer(newPlayer);
         event.setEventName(getEventNameById(dto.getEventEnumId()));
@@ -180,13 +180,13 @@ public class DefaultEventService
     }
 
 
-    private void increasePlayerStatistic(GroupEntity group, PlayerEntity player, EventNames eventName, ProtocolEntity protocol) {
-        PlayerStatisticsEntityPK playerStatisticsEntityPK = new PlayerStatisticsEntityPK(group, player);
+    private void increasePlayerStatistic(TournamentEntity tournament, PlayerEntity player, EventNames eventName, ProtocolEntity protocol) {
+        PlayerStatisticsEntityPK playerStatisticsEntityPK = new PlayerStatisticsEntityPK(tournament, player);
         PlayerStatisticsEntity foundPlayerStat = playerStatisticsService.findEntityById(playerStatisticsEntityPK);
 
         log.info(foundPlayerStat.toString());
         if (eventName == GOAL) {
-            postGoalCount(group, player, protocol, foundPlayerStat);
+            postGoalCount(tournament, player, protocol, foundPlayerStat);
         } else if (eventName == ASSIST) {
             foundPlayerStat.setAssists(foundPlayerStat.getAssists() + 1);
         } else if (eventName == RED_CARD) {
@@ -194,7 +194,7 @@ public class DefaultEventService
         } else if (eventName == YELLOW_CARD) {
             foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() + 1);
         } else if (eventName == SCORE_PENALTY) {
-            postGoalCount(group, player, protocol, foundPlayerStat);
+            postGoalCount(tournament, player, protocol, foundPlayerStat);
         }
 
         log.info("UPDATE PLAYER STATISTICS");
@@ -202,12 +202,12 @@ public class DefaultEventService
         playerStatisticsService.saveAndFlush(foundPlayerStat);
     }
 
-    private void rollBackPlayerStatistics(GroupEntity group, PlayerEntity player, EventNames eventName, ProtocolEntity protocol) {
-        PlayerStatisticsEntityPK playerStatisticsEntityPK = new PlayerStatisticsEntityPK(group, player);
+    private void rollBackPlayerStatistics(TournamentEntity tournament, PlayerEntity player, EventNames eventName, ProtocolEntity protocol) {
+        PlayerStatisticsEntityPK playerStatisticsEntityPK = new PlayerStatisticsEntityPK(tournament, player);
         PlayerStatisticsEntity foundPlayerStat = playerStatisticsService.findEntityById(playerStatisticsEntityPK);
 
         if (eventName == GOAL) {
-            rollbackGoalCount(group, player, protocol, foundPlayerStat);
+            rollbackGoalCount(tournament, player, protocol, foundPlayerStat);
         } else if (eventName == ASSIST) {
             foundPlayerStat.setAssists(foundPlayerStat.getAssists() - 1);
         } else if (eventName == RED_CARD) {
@@ -215,22 +215,22 @@ public class DefaultEventService
         } else if (eventName == YELLOW_CARD) {
             foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() - 1);
         } else if (eventName == SCORE_PENALTY) {
-            rollbackGoalCount(group, player, protocol, foundPlayerStat);
+            rollbackGoalCount(tournament, player, protocol, foundPlayerStat);
         }
 
         playerStatisticsService.saveAndFlush(foundPlayerStat);
     }
 
-    private void postGoalCount(GroupEntity group, PlayerEntity player, ProtocolEntity protocol, PlayerStatisticsEntity foundPlayerStat) {
+    private void postGoalCount(TournamentEntity tournament, PlayerEntity player, ProtocolEntity protocol, PlayerStatisticsEntity foundPlayerStat) {
         foundPlayerStat.setGoals(foundPlayerStat.getGoals() + 1);
         TeamEntity team1 = protocol.getTeam1();
         TeamEntity team2 = protocol.getTeam2();
 
         if (player.getTeam().equals(team1)) {
-            updateTeamStat(group, team1, team2);
+            updateTeamStat(tournament, team1, team2);
             protocol.setTeam1Score(protocol.getTeam1Score() + 1);
         } else {
-            updateTeamStat(group, team2, team1);
+            updateTeamStat(tournament, team2, team1);
             protocol.setTeam2Score(protocol.getTeam2Score() + 1);
         }
 
@@ -238,31 +238,31 @@ public class DefaultEventService
         log.info("UPDATE PROTOCOL SCORE " + protocol.getTeam1() + " " + protocol.getTeam1Score() + " : " + protocol.getTeam2Score() + " " + protocol.getTeam2());
     }
 
-    private void rollbackGoalCount(GroupEntity group, PlayerEntity player, ProtocolEntity protocol, PlayerStatisticsEntity foundPlayerStat) {
+    private void rollbackGoalCount(TournamentEntity tournament, PlayerEntity player, ProtocolEntity protocol, PlayerStatisticsEntity foundPlayerStat) {
         foundPlayerStat.setGoals(foundPlayerStat.getGoals() - 1);
         TeamEntity team1 = protocol.getTeam1();
         TeamEntity team2 = protocol.getTeam2();
 
         if (player.getTeam().equals(team1)) {
-            rollbackTeamStat(group, team1, team2);
+            rollbackTeamStat(tournament, team1, team2);
             protocol.setTeam1Score(protocol.getTeam1Score() - 1);
         } else {
-            rollbackTeamStat(group, team2, team1);
+            rollbackTeamStat(tournament, team2, team1);
             protocol.setTeam2Score(protocol.getTeam2Score() - 1);
         }
     }
 
-    private void updateTeamStat(GroupEntity group, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
-        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(group, goalScoredTeam);
+    private void updateTeamStat(TournamentEntity tournament, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
+        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalScoredTeam);
         teamStatisticsService.incrementGoalCount(teamStatisticsEntityPK);
-        TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(group, goalMissedTeam);
+        TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalMissedTeam);
         teamStatisticsService.incrementGoalMissedCount(team2StatisticsEntityPK);
     }
 
-    private void rollbackTeamStat(GroupEntity group, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
-        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(group, goalScoredTeam);
+    private void rollbackTeamStat(TournamentEntity tournament, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
+        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalScoredTeam);
         teamStatisticsService.decrementGoalCount(teamStatisticsEntityPK);
-        TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(group, goalMissedTeam);
+        TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalMissedTeam);
         teamStatisticsService.decrementGoalMissedCount(team2StatisticsEntityPK);
     }
 

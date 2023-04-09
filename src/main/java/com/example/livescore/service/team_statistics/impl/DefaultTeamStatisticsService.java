@@ -88,8 +88,8 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public TeamStatisticsDTO save(GroupEntity group, TeamEntity team) {
-        TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(group, team);
+    public TeamStatisticsDTO save(TournamentEntity tournament, TeamEntity team) {
+        TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(tournament, team);
         TeamStatisticsEntity saved = repository.save(new TeamStatisticsEntity(
                 pk,
                 0,

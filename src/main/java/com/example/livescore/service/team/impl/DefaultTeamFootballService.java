@@ -2,12 +2,13 @@ package com.example.livescore.service.team.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.TeamEntity;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TeamRepository;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
+import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.teams.SaveTeamDTO;
 import com.example.livescore.web.teams.TeamDTO;
 import com.example.livescore.web.teams.TeamWithPlayersDto;
@@ -25,12 +26,14 @@ public class DefaultTeamFootballService
 
     private final GroupService groupService;
     private final TeamStatisticsService teamStatisticsService;
+    private final TournamentService tournamentService;
 
     public DefaultTeamFootballService(TeamRepository repository, GroupService groupService, TeamStatisticsService
-            teamStatisticsService) {
+            teamStatisticsService, TournamentService tournamentService) {
         super(repository);
         this.groupService = groupService;
         this.teamStatisticsService = teamStatisticsService;
+        this.tournamentService = tournamentService;
     }
 
     @Override
@@ -43,8 +46,8 @@ public class DefaultTeamFootballService
                         null
                 )
         );
-        GroupEntity group = groupService.findEntityById(saveTeamDTO.getGroupId());
-        teamStatisticsService.save(group, savedTeam);
+        TournamentEntity tournament = tournamentService.findEntityById(saveTeamDTO.getGroupId());
+        teamStatisticsService.save(tournament, savedTeam);
 
         return savedTeam.toDTO();
     }

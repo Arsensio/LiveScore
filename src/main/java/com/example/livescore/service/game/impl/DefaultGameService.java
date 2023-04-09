@@ -82,16 +82,16 @@ public class DefaultGameService
     @Transactional
     public GameDTO startMatch(Long gameId) {
         GameEntity gameEntity = findEntityById(gameId);
-        if (gameEntity.getGameState() == STARTED) {
+        if (gameEntity.getGameState() == STARTED || gameEntity.getGameState() == ENDED) {
             return gameEntity.toDTO();
         }
-        GroupEntity group = gameEntity.getGroup();
+        TournamentEntity tournament = gameEntity.getGroup().getTournament();
         TeamEntity team1 = gameEntity.getProtocol().getTeam1();
         TeamEntity team2 = gameEntity.getProtocol().getTeam2();
 
         repository.updateIsPlayed(gameId);
-        increaseGameCount(group, team1);
-        increaseGameCount(group, team2);
+        increaseGameCount(tournament, team1);
+        increaseGameCount(tournament, team2);
         gameEntity.setGameState(STARTED);
 
         return gameEntity.toDTO();
@@ -172,16 +172,16 @@ public class DefaultGameService
         return protocolService.saveAndFlush(protocol);
     }
 
-    private void increaseGameCount(GroupEntity group, TeamEntity team) {
-        TeamStatisticsEntityPK teamPK = new TeamStatisticsEntityPK(group, team);
+    private void increaseGameCount(TournamentEntity tournament, TeamEntity team) {
+        TeamStatisticsEntityPK teamPK = new TeamStatisticsEntityPK(tournament, team);
         teamStatisticsService.incrementGameCount(teamPK);
 
         team.getPlayers()
-                .forEach(player -> increaseGamePlayed(group, player));
+                .forEach(player -> increaseGamePlayed(tournament, player));
     }
 
-    private void increaseGamePlayed(GroupEntity group, PlayerEntity player) {
-        PlayerStatisticsEntityPK playerPk = new PlayerStatisticsEntityPK(group, player);
+    private void increaseGamePlayed(TournamentEntity tournament, PlayerEntity player) {
+        PlayerStatisticsEntityPK playerPk = new PlayerStatisticsEntityPK(tournament, player);
         playerStatisticsService.incrementGamePlayed(playerPk);
     }
 
