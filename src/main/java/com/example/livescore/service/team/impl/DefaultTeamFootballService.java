@@ -83,7 +83,11 @@ public class DefaultTeamFootballService
 
     @Override
     public TeamDTO findTeamByName(String teamName) {
-        return repository.findTeamEntityByTeamName(teamName).toDTO();
+        TeamEntity team = repository.findTeamEntityByTeamName(teamName);
+        if (team == null) {
+            throw new RuntimeException("Команды с названием " + teamName + " не существует!");
+        }
+        return team.toDTO();
     }
 
     @Override

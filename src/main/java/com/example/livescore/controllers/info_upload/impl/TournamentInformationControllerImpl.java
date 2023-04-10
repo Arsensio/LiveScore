@@ -24,23 +24,28 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
     private final GoogleSheets googleSheets;
 
     @Override
-    @PostMapping("/upload/playerInfo/file")
+    @PostMapping("/upload/player_info/file")
     public ResponseEntity<String> uploadPlayerInfoFile(@RequestParam("file") MultipartFile file) {
         if (!hasExcelFormat(file)) {
             return ResponseEntity.badRequest().body("Please upload an excel (.xlsx) format!");
         }
 
         try {
-            playerInfoParserService.savePlayers(file.getInputStream());
-            return ResponseEntity.ok().body("Successfully saved all players!");
+            return ResponseEntity.ok()
+                    .body(
+                            playerInfoParserService.savePlayers(file.getInputStream())
+                    );
         } catch (IOException e) {
-            return ResponseEntity.badRequest().body("An error happened while parsing excel file, " +
-                    "please make sure it don't contain errors!");
+            return ResponseEntity.badRequest()
+                    .body("An error happened while parsing excel file, please make sure it don't contain errors!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
         }
     }
 
     @Override
-    @PostMapping("/upload/playerInfo/link")
+    @PostMapping("/upload/player_info/link")
     public ResponseEntity<String> uploadPlayerInfoLink(@RequestParam("url") String url) {
         googleSheets.printSheet(url);
         return ResponseEntity.ok("success!");

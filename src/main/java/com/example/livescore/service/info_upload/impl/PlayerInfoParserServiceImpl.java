@@ -1,5 +1,7 @@
 package com.example.livescore.service.info_upload.impl;
 
+import com.example.core.exception.exceptions.EqualPlayersException;
+import com.example.core.exception.exceptions.PlayerNullFieldsException;
 import com.example.livescore.service.info_upload.PlayerInfoParserService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.team.TeamFootballService;
@@ -30,16 +32,17 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     private final TeamFootballService teamService;
 
     @Override
-    public void savePlayers(InputStream inputStream) {
+    public String savePlayers(InputStream inputStream) throws IOException, RuntimeException {
         List<SavePlayerDTO> players = excelToPlayers(inputStream);
         for (SavePlayerDTO playerDTO : players) {
             playerService.save(playerDTO);
         }
+        return "Successfully saved all players!";
     }
 
     @Override
-    public void savePlayers(String url) {
-
+    public String savePlayers(String url) throws IOException, RuntimeException {
+        return null;
     }
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -49,44 +52,56 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     /**
      * This method will work only with certain format of an Excel file, any changes to file structure may cause errors
      */
-    private List<SavePlayerDTO> excelToPlayers(InputStream inputStream) {
-        try {
-            Workbook workbook = new XSSFWorkbook(inputStream);
-            Sheet sheet = workbook.getSheet(SHEET_NAME);
-            Iterator<Row> rows = sheet.iterator();
-            List<SavePlayerDTO> players = new ArrayList<>();
-
-            int rowNumber = 0;
-            while (rows.hasNext()) {
-                Row currentRow = rows.next();
-                if (rowNumber == 0) { // skipping first row with headers
-                    rowNumber++;
-                    continue;
-                }
-                Iterator<Cell> cellsInRow = currentRow.iterator();
-                SavePlayerDTO playerDTO = new SavePlayerDTO();
-
-                int cellId = 0;
-                while (cellsInRow.hasNext()) {
-                    Cell currentCell = cellsInRow.next();
-                    switch (cellId) {
-                        case 1 -> playerDTO.setName(beautifyName(currentCell.getStringCellValue()));
-                        case 2 -> playerDTO.setSurname(beautifyName(currentCell.getStringCellValue()));
-                        case 3 -> playerDTO.setTeamId(
-                                teamService.findTeamByName(
-                                        beautifyName(currentCell.getStringCellValue())
-                                ).getTeamId());
-                        case 4 -> playerDTO.setPlayerNumber((int) currentCell.getNumericCellValue());
-                        case 5 -> playerDTO.setRole(resolveRole(currentCell.getStringCellValue()));
-                    }
-                    cellId++;
-                }
-                players.add(playerDTO);
-            }
-            workbook.close();
-            return players;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private List<SavePlayerDTO> excelToPlayers(InputStream inputStream) throws IOException, RuntimeException {
+        List<SavePlayerDTO> players = new ArrayList<>();
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+        Iterator<Row> rows = sheet.iterator();
+        if (rows.hasNext()) {
+            rows.next(); // skipping the first header line
         }
+        while (rows.hasNext()) {
+            Row currentRow = rows.next();
+            Iterator<Cell> cellsInRow = currentRow.iterator();
+            SavePlayerDTO playerDTO = new SavePlayerDTO();
+
+            int cellId = 0;
+            while (cellsInRow.hasNext()) {
+                Cell currentCell = cellsInRow.next();
+                switch (cellId) {
+                    case 1 -> playerDTO.setName(beautifyName(currentCell.getStringCellValue()));
+                    case 2 -> playerDTO.setSurname(beautifyName(currentCell.getStringCellValue()));
+                    case 3 -> playerDTO.setTeamId(getTeamIdOrThrowNull(
+                                    beautifyName(currentCell.getStringCellValue())
+                            )
+                    );
+                    case 4 -> playerDTO.setPlayerNumber((int) currentCell.getNumericCellValue());
+                    case 5 -> playerDTO.setRole(resolveRole(currentCell.getStringCellValue()));
+                }
+                cellId++;
+            }
+            if (alreadyPresents(playerDTO, players)) {
+                throw EqualPlayersException.withEqualPlayersData(playerDTO);
+            }
+            if (playerDTO.isThereNullFields()) {
+                throw PlayerNullFieldsException.withPlayerData(playerDTO);
+            }
+            players.add(playerDTO);
+        }
+        workbook.close();
+        return players;
+    }
+
+    private boolean alreadyPresents(SavePlayerDTO playerDTO, List<SavePlayerDTO> playerList) {
+        for (SavePlayerDTO player : playerList) {
+            if (player.equals(playerDTO)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Long getTeamIdOrThrowNull(String teamName) {
+        return teamService.findTeamByName(teamName).getTeamId();
     }
 }
