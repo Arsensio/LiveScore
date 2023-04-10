@@ -57,6 +57,16 @@ public class DefaultGroupInfoService
     }
 
     @Override
+    public GroupInfoEntity findEntityByGroupAndTeamId(GroupEntity group, TeamEntity team) {
+        return repository.findEntityByGroupAndTeamId(group, team);
+    }
+
+    @Override
+    public GroupInfoEntity saveAndFlash(GroupInfoEntity groupInfoEntity) {
+        return repository.saveAndFlush(groupInfoEntity);
+    }
+
+    @Override
     public void incrementGameCount(GroupEntity group, TeamEntity team) {
         repository.incrementGameCount(group.getGroupId(), team.getTeamId());
     }

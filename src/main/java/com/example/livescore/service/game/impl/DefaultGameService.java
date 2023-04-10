@@ -6,6 +6,7 @@ import com.example.livescore.models.*;
 import com.example.livescore.repository.GameRepository;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.service.group.GroupService;
+import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
@@ -35,13 +36,16 @@ public class DefaultGameService
     private final TeamStatisticsService teamStatisticsService;
     private final PlayerStatisticsService playerStatisticsService;
 
-    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService) {
+    private final GroupInfoService groupInfoService;
+
+    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService) {
         super(repository);
         this.teamFootballService = teamFootballService;
         this.groupService = groupService;
         this.protocolService = protocolService;
         this.teamStatisticsService = teamStatisticsService;
         this.playerStatisticsService = playerStatisticsService;
+        this.groupInfoService = groupInfoService;
     }
 
     @Override
@@ -86,12 +90,13 @@ public class DefaultGameService
             return gameEntity.toDTO();
         }
         TournamentEntity tournament = gameEntity.getGroup().getTournament();
+        GroupEntity group = gameEntity.getGroup();
         TeamEntity team1 = gameEntity.getProtocol().getTeam1();
         TeamEntity team2 = gameEntity.getProtocol().getTeam2();
 
         repository.updateIsPlayed(gameId);
-        increaseGameCount(tournament, team1);
-        increaseGameCount(tournament, team2);
+        increaseGameCount(tournament, team1, group);
+        increaseGameCount(tournament, team2, group);
         gameEntity.setGameState(STARTED);
 
         return gameEntity.toDTO();
@@ -122,10 +127,16 @@ public class DefaultGameService
                 int team2Score = protocolEntity.getTeam2Score();
 
                 if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
+                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup(), protocolEntity.getTeam1());
+                    updatePointsAndStatistic(team1Score, team2Score,teamStatistics,groupInfo);
+
+                    groupInfoService.saveAndFlash(groupInfo);
                     teamStatisticsService.save(teamStatistics);
                 } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
+                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup(), protocolEntity.getTeam2());
+                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics,groupInfo);
+
+                    groupInfoService.saveAndFlash(groupInfo);
                     teamStatisticsService.save(teamStatistics);
                 }
             }
@@ -172,9 +183,10 @@ public class DefaultGameService
         return protocolService.saveAndFlush(protocol);
     }
 
-    private void increaseGameCount(TournamentEntity tournament, TeamEntity team) {
+    private void increaseGameCount(TournamentEntity tournament, TeamEntity team, GroupEntity group) {
         TeamStatisticsEntityPK teamPK = new TeamStatisticsEntityPK(tournament, team);
         teamStatisticsService.incrementGameCount(teamPK);
+        groupInfoService.incrementGameCount(group,team);
 
         team.getPlayers()
                 .forEach(player -> increaseGamePlayed(tournament, player));
@@ -185,16 +197,25 @@ public class DefaultGameService
         playerStatisticsService.incrementGamePlayed(playerPk);
     }
 
-    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {
+    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics,GroupInfoEntity groupInfoEntity) {
+
         if (foundTeam > rivalTeam) {
+            groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
+            groupInfoEntity.setPoints(teamStatistics.getPoints() + 3);
+
             teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 3);
         } else if (foundTeam == rivalTeam) {
+            groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
+            groupInfoEntity.setPoints(teamStatistics.getPoints() + 1);
+
             teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 1);
         } else {
+            groupInfoEntity.setLoseCount(teamStatistics.getLoseCount() + 1);
             teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
         }
+
     }
 
     private List<NewGameDTO> findGameByGroup(List<GroupEntity> allGroups, List<GameEntity> allGameByDate) {

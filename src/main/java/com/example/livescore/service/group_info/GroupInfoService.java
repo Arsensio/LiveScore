@@ -11,6 +11,11 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
 
     GroupInfoEntity saveAfterDraw(GroupEntity group, TournamentEntity tournament, TeamEntity team);
 
+    GroupInfoEntity findEntityByGroupAndTeamId(GroupEntity group, TeamEntity team);
+
+    GroupInfoEntity saveAndFlash(GroupInfoEntity groupInfoEntity);
+
+
     //    void incrementGoalCount(GroupEntity group, TournamentEntity tournament, TeamEntity team);
 //
 //    void incrementGoalMissedCount(GroupEntity group, TournamentEntity tournament, TeamEntity team);
