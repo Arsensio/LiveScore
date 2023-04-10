@@ -1,5 +1,6 @@
 package com.example.livescore.service.team_statistics.impl;
 
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventNames;
 import com.example.livescore.models.*;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DefaultTeamStatisticsService
@@ -143,6 +145,16 @@ public class DefaultTeamStatisticsService
     @Override
     public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long groupId) {
         return repository.findAllByTournamentIdOrderByWinCount(groupId);
+    }
+
+    @Override
+    public TeamStatisticsEntity findEntityById(TournamentEntity tournament, TeamEntity team) {
+        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament,team);
+        Optional<TeamStatisticsEntity> byId = repository.findById(teamStatisticsEntityPK);
+        if (byId.isEmpty()){
+            throw ResourceNotFoundException.build(teamStatisticsEntityPK,"TeamStatisticsEntity");
+        }
+        return byId.get();
     }
 
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {

@@ -53,7 +53,7 @@ public class DefaultPlayerService
                 savePlayerDTO.getPlayerNumber(),
                 savePlayerDTO.getRole()
         ));
-        TournamentEntity tournament = tournamentService.findEntityById(1);
+        TournamentEntity tournament = tournamentService.findEntityById(savePlayerDTO.getTournamentId());
         playerStatisticsService.saveDefault(save, tournament);
         return save.toDTO();
     }

@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SavePlayerDTO {
 
-    private Long playerId;
     private Long teamId;
     private String name;
     private String surname;
     private Integer playerNumber;
     private String role;
+    private Long tournamentId;
 }

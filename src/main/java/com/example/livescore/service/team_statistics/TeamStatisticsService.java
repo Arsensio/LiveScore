@@ -37,4 +37,6 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
     void incrementGameCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
 
     List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long groupId);
+
+    TeamStatisticsEntity findEntityById(TournamentEntity tournament,TeamEntity team);
 }
