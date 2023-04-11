@@ -3,9 +3,11 @@ package com.example.livescore.service.team_statistics.impl;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventNames;
-import com.example.livescore.models.*;
+import com.example.livescore.models.TeamEntity;
+import com.example.livescore.models.TeamStatisticsEntity;
+import com.example.livescore.models.TeamStatisticsEntityPK;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TeamStatisticsRepository;
-import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
@@ -14,7 +16,6 @@ import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +25,8 @@ public class DefaultTeamStatisticsService
         SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
         implements TeamStatisticsService {
 
-    private final ProtocolService protocolService;
-
-
-    public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolService protocolService) {
+    public DefaultTeamStatisticsService(TeamStatisticsRepository repository) {
         super(repository);
-        this.protocolService = protocolService;
     }
 
     @Override
@@ -38,33 +35,6 @@ public class DefaultTeamStatisticsService
                 .stream()
                 .map(team -> team.toDistinctStatisticsDTO(EventNames.GOAL.getEventName()))
                 .toList();
-    }
-
-    @Override
-    public List<TeamStatisticsDTO> findTeamsSortedByPoints(long groupId) {
-        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(groupId);
-        List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
-        List<TeamStatisticsDTO> orderedByPointList = new ArrayList<>();
-
-        for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
-            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
-                int team1Score = protocolEntity.getTeam1Score();
-                int team2Score = protocolEntity.getTeam2Score();
-
-                if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
-                } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
-                }
-            }
-            orderedByPointList.add(teamStatistics.toDTO());
-        }
-
-        orderedByPointList.sort((o1, o2) ->
-                o2.getPoints().compareTo(o1.getPoints())
-        );
-
-        return orderedByPointList;
     }
 
     @Override
@@ -149,23 +119,11 @@ public class DefaultTeamStatisticsService
 
     @Override
     public TeamStatisticsEntity findEntityById(TournamentEntity tournament, TeamEntity team) {
-        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament,team);
+        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, team);
         Optional<TeamStatisticsEntity> byId = repository.findById(teamStatisticsEntityPK);
-        if (byId.isEmpty()){
-            throw ResourceNotFoundException.build(teamStatisticsEntityPK,"TeamStatisticsEntity");
+        if (byId.isEmpty()) {
+            throw ResourceNotFoundException.build(teamStatisticsEntityPK, "TeamStatisticsEntity");
         }
         return byId.get();
-    }
-
-    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {
-        if (foundTeam > rivalTeam) {
-            teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
-            teamStatistics.setPoints(teamStatistics.getPoints() + 3);
-        } else if (foundTeam == rivalTeam) {
-            teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
-            teamStatistics.setPoints(teamStatistics.getPoints() + 1);
-        } else {
-            teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
-        }
     }
 }

@@ -6,10 +6,7 @@ import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.web.group_info.GroupInfoDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/group_info")
 public class DefaultGroupInfoController
-        extends AbstractFootballController<GroupInfoService, GroupInfoDTO,SaveGroupInfoDTO,Long>
+        extends AbstractFootballController<GroupInfoService, GroupInfoDTO, SaveGroupInfoDTO, Long>
         implements GroupInfoController {
 
     public DefaultGroupInfoController(GroupInfoService service) {
@@ -30,5 +27,11 @@ public class DefaultGroupInfoController
     @PostMapping("/create_draw_in_cup")
     public ResponseEntity<List<GroupInfoDTO>> createDrawInCup(@RequestBody List<SaveGroupInfoDTO> list) {
         return new ResponseEntity<>(service.createDrawInCup(list), OK);
+    }
+
+    @Override
+    @GetMapping("/points")
+    public ResponseEntity<List<GroupInfoDTO>> findAllSortedByPoints(long tournament_id, long group_id) {
+        return new ResponseEntity<>(service.findTeamsSortedByPoints(tournament_id, group_id), OK);
     }
 }

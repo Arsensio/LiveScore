@@ -73,9 +73,11 @@ public class GroupInfoEntity extends AbstractEntity<GroupInfoDTO> {
     @Override
     public GroupInfoDTO toDTO() {
         return new GroupInfoDTO(
-                this.groupIntoId,
+                this.tournament.getTournamentName(),
+                this.tournamentLogo,
                 this.groupName,
                 this.teamName,
+                this.teamLogo,
                 this.gamePlayed,
                 this.winCount,
                 this.drawCount,

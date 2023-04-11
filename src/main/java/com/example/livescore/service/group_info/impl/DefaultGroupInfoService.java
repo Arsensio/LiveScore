@@ -1,13 +1,11 @@
 package com.example.livescore.service.group_info.impl;
 
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.models.GroupEntity;
-import com.example.livescore.models.GroupInfoEntity;
-import com.example.livescore.models.TeamEntity;
-import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.models.*;
 import com.example.livescore.repository.GroupInfoRepository;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.group_info.GroupInfoService;
+import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.web.group_info.GroupInfoDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
@@ -27,11 +25,13 @@ public class DefaultGroupInfoService
 
     private final TeamFootballService teamFootballService;
     private final GroupService groupService;
+    private final ProtocolService protocolService;
 
-    public DefaultGroupInfoService(GroupInfoRepository repository, TeamFootballService teamFootballService, GroupService groupService) {
+    public DefaultGroupInfoService(GroupInfoRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService) {
         super(repository);
         this.teamFootballService = teamFootballService;
         this.groupService = groupService;
+        this.protocolService = protocolService;
     }
 
     @Override
@@ -72,6 +72,11 @@ public class DefaultGroupInfoService
     }
 
     @Override
+    public List<GroupInfoEntity> findAllByTournamentIdOrderByWinCount(Long tournament, Long group) {
+        return repository.findAllByTournamentIdOrderByWinCount(tournament, group);
+    }
+
+    @Override
     public List<GroupInfoDTO> createDrawInCup(List<SaveGroupInfoDTO> list) {
         List<GroupInfoDTO> returnList = new ArrayList<>();
 
@@ -85,5 +90,61 @@ public class DefaultGroupInfoService
         }
 
         return returnList;
+    }
+
+    @Override
+    public List<GroupInfoDTO> findTeamsSortedByPoints(long tournamentId, long group) {
+//        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(tournamentId);
+        List<GroupInfoEntity> allByTournamentIdOrderByWinCount1 = findAllByTournamentIdOrderByWinCount(tournamentId, group);
+
+        List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
+        List<GroupInfoDTO> orderedByPointList = new ArrayList<>();
+
+//        for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
+//            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
+//                int team1Score = protocolEntity.getTeam1Score();
+//                int team2Score = protocolEntity.getTeam2Score();
+//
+//                if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
+//                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
+//                } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
+//                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
+//                }
+//            }
+//            orderedByPointList.add(teamStatistics.toDTO());
+//        }
+
+        for (GroupInfoEntity groupInfo : allByTournamentIdOrderByWinCount1) {
+            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
+                int team1Score = protocolEntity.getTeam1Score();
+                int team2Score = protocolEntity.getTeam2Score();
+
+                if (groupInfo.getTeam() == protocolEntity.getTeam1()) {
+                    updatePointsAndStatistic(team1Score, team2Score, groupInfo);
+                } else if (groupInfo.getTeam() == protocolEntity.getTeam2()) {
+                    updatePointsAndStatistic(team2Score, team1Score, groupInfo);
+                }
+            }
+            orderedByPointList.add(groupInfo.toDTO());
+        }
+
+
+        orderedByPointList.sort((o1, o2) ->
+                o2.getPoints().compareTo(o1.getPoints())
+        );
+
+        return orderedByPointList;
+    }
+
+    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, GroupInfoEntity groupInfoEntity) {
+        if (foundTeam > rivalTeam) {
+            groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
+            groupInfoEntity.setPoints(groupInfoEntity.getPoints() + 3);
+        } else if (foundTeam == rivalTeam) {
+            groupInfoEntity.setDrawCount(groupInfoEntity.getDrawCount() + 1);
+            groupInfoEntity.setPoints(groupInfoEntity.getPoints() + 1);
+        } else {
+            groupInfoEntity.setLoseCount(groupInfoEntity.getLoseCount() + 1);
+        }
     }
 }

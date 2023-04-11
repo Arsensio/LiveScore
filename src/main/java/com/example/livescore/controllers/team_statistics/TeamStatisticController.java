@@ -14,8 +14,6 @@ public interface TeamStatisticController extends FootballController<TeamStatisti
 
     ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByGoals(long tournament_id);
 
-    ResponseEntity<List<TeamStatisticsDTO>> findAllSortedByPoints(long tournament_id);
-
     ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByRedCards(long tournament_id);
 
     ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByYellowCards(long tournament_id);

@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface GroupInfoController extends FootballController<GroupInfoDTO, SaveGroupInfoDTO,Long> {
+public interface GroupInfoController extends FootballController<GroupInfoDTO, SaveGroupInfoDTO, Long> {
 
     ResponseEntity<List<GroupInfoDTO>> createDrawInCup(List<SaveGroupInfoDTO> list);
+
+    ResponseEntity<List<GroupInfoDTO>> findAllSortedByPoints(long tournament_id, long group_id);
+
 }

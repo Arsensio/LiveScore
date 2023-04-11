@@ -30,12 +30,6 @@ public class DefaultTeamStatisticsController extends AbstractFootballController<
     }
 
     @Override
-    @GetMapping("/points")
-    public ResponseEntity<List<TeamStatisticsDTO>> findAllSortedByPoints(@RequestParam("tournament_id") long tournament_id) {
-        return new ResponseEntity<>(service.findTeamsSortedByPoints(tournament_id), HttpStatus.OK);
-    }
-
-    @Override
     @GetMapping("/red_cards/{tournament_id}")
     public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByRedCards(@PathVariable long tournament_id) {
         return new ResponseEntity<>(service.findTeamsSortedByRedCards(tournament_id), HttpStatus.OK);
