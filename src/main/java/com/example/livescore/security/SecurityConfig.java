@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -28,13 +29,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-//                .antMatchers(LOGIN_ENDPOINT).permitAll()
-//                .antMatchers(SWAGGER_ENDPOINTS).permitAll()
-//                .antMatchers(GET, pathArr).permitAll()
-//                .antMatchers(POST, pathArr).hasAuthority("ADMIN")
-//                .antMatchers(PUT, pathArr).hasAuthority("ADMIN")
-//                .antMatchers(DELETE, pathArr).hasAuthority("ADMIN")
+                .antMatchers(LOGIN_ENDPOINT).permitAll()
+                .antMatchers(SWAGGER_ENDPOINTS).permitAll()
+                .antMatchers(GET, pathArr).permitAll()
+                .antMatchers(POST, pathArr).hasAuthority("ADMIN")
+                .antMatchers(PUT, pathArr).hasAuthority("ADMIN")
+                .antMatchers(DELETE, pathArr).hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS)
