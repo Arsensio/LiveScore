@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import static com.example.livescore.service.info_upload.impl.PlayerInfoParserServiceImpl.hasExcelFormat;
 
@@ -47,7 +48,17 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
     @Override
     @PostMapping("/upload/player_info/link")
     public ResponseEntity<String> uploadPlayerInfoLink(@RequestParam("url") String url) {
-        googleSheets.printSheet(url);
-        return ResponseEntity.ok("success!");
+        try {
+            return ResponseEntity.ok()
+                    .body(
+                            playerInfoParserService.savePlayers(url)
+                    );
+        } catch (GeneralSecurityException e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.badRequest()
+                    .body("An error happened while parsing excel file, please make sure it don't contain errors!");
+        }
     }
 }
