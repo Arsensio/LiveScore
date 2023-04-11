@@ -5,14 +5,14 @@ import com.example.livescore.controllers.player.PlayerController;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
-import org.springframework.http.HttpStatus;
+import com.example.livescore.web.players.UpdatePlayerDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
+
 
 @RestController
 @RequestMapping("/player")
@@ -26,6 +26,12 @@ public class DefaultPlayerController extends AbstractFootballController<PlayerSe
     @GetMapping("/team/{team_id}")
     @Override
     public ResponseEntity<List<PlayerDTO>> allPlayerByTeamId(@PathVariable("team_id") long teamId) {
-        return new ResponseEntity<>(service.findAllByTeamId(teamId), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllByTeamId(teamId), OK);
+    }
+
+    @Override
+    @PutMapping("/update/players")
+    public ResponseEntity<List<PlayerDTO>> transferPlayers(@RequestBody List<UpdatePlayerDTO> updatedPlayers) {
+        return new ResponseEntity<>(service.transferPlayers(updatedPlayers), OK);
     }
 }
