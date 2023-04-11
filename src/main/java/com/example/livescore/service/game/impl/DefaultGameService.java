@@ -127,14 +127,14 @@ public class DefaultGameService
                 int team2Score = protocolEntity.getTeam2Score();
 
                 if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup(), protocolEntity.getTeam1());
-                    updatePointsAndStatistic(team1Score, team2Score,teamStatistics,groupInfo);
+                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup().getTournament(), protocolEntity.getGame().getGroup(), protocolEntity.getTeam1());
+                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics, groupInfo);
 
                     groupInfoService.saveAndFlash(groupInfo);
                     teamStatisticsService.save(teamStatistics);
                 } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup(), protocolEntity.getTeam2());
-                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics,groupInfo);
+                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup().getTournament(), protocolEntity.getGame().getGroup(), protocolEntity.getTeam2());
+                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics, groupInfo);
 
                     groupInfoService.saveAndFlash(groupInfo);
                     teamStatisticsService.save(teamStatistics);
@@ -186,7 +186,7 @@ public class DefaultGameService
     private void increaseGameCount(TournamentEntity tournament, TeamEntity team, GroupEntity group) {
         TeamStatisticsEntityPK teamPK = new TeamStatisticsEntityPK(tournament, team);
         teamStatisticsService.incrementGameCount(teamPK);
-        groupInfoService.incrementGameCount(group,team);
+        groupInfoService.incrementGameCount(group, team);
 
         team.getPlayers()
                 .forEach(player -> increaseGamePlayed(tournament, player));
@@ -197,7 +197,7 @@ public class DefaultGameService
         playerStatisticsService.incrementGamePlayed(playerPk);
     }
 
-    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics,GroupInfoEntity groupInfoEntity) {
+    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics, GroupInfoEntity groupInfoEntity) {
 
         if (foundTeam > rivalTeam) {
             groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);

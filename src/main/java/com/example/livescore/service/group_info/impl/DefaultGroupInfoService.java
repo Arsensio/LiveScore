@@ -57,8 +57,8 @@ public class DefaultGroupInfoService
     }
 
     @Override
-    public GroupInfoEntity findEntityByGroupAndTeamId(GroupEntity group, TeamEntity team) {
-        return repository.findEntityByGroupAndTeamId(group, team);
+    public GroupInfoEntity findEntityByGroupAndTeamId(TournamentEntity tournament, GroupEntity group, TeamEntity team) {
+        return repository.findEntityByGroupAndTeamId(group, team, tournament);
     }
 
     @Override
@@ -134,6 +134,26 @@ public class DefaultGroupInfoService
         );
 
         return orderedByPointList;
+    }
+
+    @Override
+    public void incrementGoalCount(GroupEntity group, TeamEntity team) {
+        repository.incrementGoalCount(group.getGroupId(), team.getTeamId());
+    }
+
+    @Override
+    public void incrementGoalMissedCount(GroupEntity group, TeamEntity team) {
+        repository.incrementGoalMissed(group.getGroupId(), team.getTeamId());
+    }
+
+    @Override
+    public void decrementGoalCount(GroupEntity group, TeamEntity team) {
+        repository.decrementGoalCount(group.getGroupId(), team.getTeamId());
+    }
+
+    @Override
+    public void decrementGoalMissedCount(GroupEntity group, TeamEntity team) {
+        repository.decrementGoalMissedCount(group.getGroupId(), team.getTeamId());
     }
 
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, GroupInfoEntity groupInfoEntity) {

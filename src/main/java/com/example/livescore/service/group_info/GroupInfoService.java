@@ -14,21 +14,20 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
 
     GroupInfoEntity saveAfterDraw(GroupEntity group, TournamentEntity tournament, TeamEntity team);
 
-    GroupInfoEntity findEntityByGroupAndTeamId(GroupEntity group, TeamEntity team);
+    GroupInfoEntity findEntityByGroupAndTeamId(TournamentEntity tournament, GroupEntity group, TeamEntity team);
 
     GroupInfoEntity saveAndFlash(GroupInfoEntity groupInfoEntity);
 
     List<GroupInfoDTO> findTeamsSortedByPoints(long tournament, long group);
 
+    void incrementGoalCount(GroupEntity group, TeamEntity team);
 
-    //    void incrementGoalCount(GroupEntity group, TournamentEntity tournament, TeamEntity team);
-//
-//    void incrementGoalMissedCount(GroupEntity group, TournamentEntity tournament, TeamEntity team);
-//
-//    void decrementGoalCount(GroupEntity group, TournamentEntity tournament, TeamEntity team);
-//
-//    void decrementGoalMissedCount(GroupEntity group, TournamentEntity tournament, TeamEntity team);
-//
+    void incrementGoalMissedCount(GroupEntity group, TeamEntity team);
+
+    void decrementGoalCount(GroupEntity group, TeamEntity team);
+
+    void decrementGoalMissedCount(GroupEntity group, TeamEntity team);
+
     void incrementGameCount(GroupEntity group, TeamEntity team);
 
     List<GroupInfoEntity> findAllByTournamentIdOrderByWinCount(Long tournament, Long group);

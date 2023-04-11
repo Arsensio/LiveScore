@@ -7,6 +7,7 @@ import com.example.livescore.models.*;
 import com.example.livescore.repository.EventRepository;
 import com.example.livescore.service.event.EventService;
 import com.example.livescore.service.goal_info.GoalInfoService;
+import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.protocol.ProtocolService;
@@ -33,15 +34,17 @@ public class DefaultEventService
     private final PlayerStatisticsService playerStatisticsService;
     private final TeamStatisticsService teamStatisticsService;
     private final GoalInfoService goalInfoService;
+    private final GroupInfoService groupInfoService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public DefaultEventService(EventRepository repository, PlayerService playerService, ProtocolService protocolService, PlayerStatisticsService playerStatisticsService, TeamStatisticsService teamStatisticsService, GoalInfoService goalInfoService) {
+    public DefaultEventService(EventRepository repository, PlayerService playerService, ProtocolService protocolService, PlayerStatisticsService playerStatisticsService, TeamStatisticsService teamStatisticsService, GoalInfoService goalInfoService, GroupInfoService groupInfoService) {
         super(repository);
         this.playerService = playerService;
         this.protocolService = protocolService;
         this.playerStatisticsService = playerStatisticsService;
         this.teamStatisticsService = teamStatisticsService;
         this.goalInfoService = goalInfoService;
+        this.groupInfoService = groupInfoService;
     }
 
 
@@ -227,10 +230,10 @@ public class DefaultEventService
         TeamEntity team2 = protocol.getTeam2();
 
         if (player.getTeam().equals(team1)) {
-            updateTeamStat(tournament, team1, team2);
+            updateTeamStat(protocol.getGame().getGroup(), tournament, team1, team2);
             protocol.setTeam1Score(protocol.getTeam1Score() + 1);
         } else {
-            updateTeamStat(tournament, team2, team1);
+            updateTeamStat(protocol.getGame().getGroup(), tournament, team2, team1);
             protocol.setTeam2Score(protocol.getTeam2Score() + 1);
         }
 
@@ -244,26 +247,32 @@ public class DefaultEventService
         TeamEntity team2 = protocol.getTeam2();
 
         if (player.getTeam().equals(team1)) {
-            rollbackTeamStat(tournament, team1, team2);
+            rollbackTeamStat(protocol.getGame().getGroup(), tournament, team1, team2);
             protocol.setTeam1Score(protocol.getTeam1Score() - 1);
         } else {
-            rollbackTeamStat(tournament, team2, team1);
+            rollbackTeamStat(protocol.getGame().getGroup(), tournament, team2, team1);
             protocol.setTeam2Score(protocol.getTeam2Score() - 1);
         }
     }
 
-    private void updateTeamStat(TournamentEntity tournament, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
+    private void updateTeamStat(GroupEntity group, TournamentEntity tournament, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
         TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalScoredTeam);
         teamStatisticsService.incrementGoalCount(teamStatisticsEntityPK);
         TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalMissedTeam);
         teamStatisticsService.incrementGoalMissedCount(team2StatisticsEntityPK);
+
+        groupInfoService.incrementGoalCount(group, goalScoredTeam);
+        groupInfoService.incrementGoalMissedCount(group, goalMissedTeam);
     }
 
-    private void rollbackTeamStat(TournamentEntity tournament, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
+    private void rollbackTeamStat(GroupEntity group, TournamentEntity tournament, TeamEntity goalScoredTeam, TeamEntity goalMissedTeam) {
         TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalScoredTeam);
         teamStatisticsService.decrementGoalCount(teamStatisticsEntityPK);
         TeamStatisticsEntityPK team2StatisticsEntityPK = new TeamStatisticsEntityPK(tournament, goalMissedTeam);
         teamStatisticsService.decrementGoalMissedCount(team2StatisticsEntityPK);
+
+        groupInfoService.decrementGoalCount(group, goalScoredTeam);
+        groupInfoService.decrementGoalMissedCount(group, goalMissedTeam);
     }
 
 }
