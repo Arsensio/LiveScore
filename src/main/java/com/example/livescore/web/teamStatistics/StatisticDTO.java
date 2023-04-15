@@ -1,6 +1,6 @@
 package com.example.livescore.web.teamStatistics;
 
-import com.example.livescore.enums.EventNames;
+import com.example.livescore.enums.EventEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.Setter;
 
 import java.text.DecimalFormat;
 
-import static com.example.livescore.enums.EventNames.RED_CARD;
-import static com.example.livescore.enums.EventNames.YELLOW_CARD;
+import static com.example.livescore.enums.EventEnum.RED_CARD;
+import static com.example.livescore.enums.EventEnum.YELLOW_CARD;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,16 +32,16 @@ public class StatisticDTO {
         this.teamLogo = teamLogo;
     }
 
-    public DistinctTeamStatisticsDTO toDistinctTeamStatisticsDTO(EventNames eventNames) {
-        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(eventNames.getEventName(),
+    public DistinctTeamStatisticsDTO toDistinctTeamStatisticsDTO(EventEnum eventEnum) {
+        DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(eventEnum.getEventName(),
                 groupName, teamName, teamLogo);
 
-        setStatAndPerGame(eventNames, distinctTeamStatisticsDTO);
+        setStatAndPerGame(eventEnum, distinctTeamStatisticsDTO);
 
         return distinctTeamStatisticsDTO;
     }
 
-    private void setStatAndPerGame(EventNames eventName, DistinctTeamStatisticsDTO distinctTeamStatisticsDTO) {
+    private void setStatAndPerGame(EventEnum eventName, DistinctTeamStatisticsDTO distinctTeamStatisticsDTO) {
         if (eventName.equals(RED_CARD)) {
             DecimalFormat df = new DecimalFormat("0.00");
             double redCard = this.statCount;

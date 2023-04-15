@@ -1,7 +1,7 @@
 -- sql script to populate database with some data for testing purposes
 
 insert into tournaments
-values (1, 'SFL', 'LEAGUE','https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg');
+values (1, 'SFL', 'LEAGUE', 'https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg');
 
 insert into groups
 values (1, 'Group A', false, 1);
@@ -53,19 +53,16 @@ insert into protocols
 values (1, 1, '2022-12-07 14:43:07.000000', 1, 2, 1, 2);
 
 insert into events
-values (1, 'GOAL', '0:1', 11, 8, 1, false);
+values (1, '0:1', 11, 1);
 insert into events
-values (2, 'ASSIST', '0:1', 11, 2, 1, false);
+values (2, '0:1', 30, 1);
 insert into events
-values (3, 'YELLOW_CARD', '0:1', 30, 8, 1, false);
+values (3, '0:1', 43, 1);
 insert into events
-values (4, 'RED_CARD','0:1',43, 8, 1,false);
+values (4, '0:2', 49, 1);
 insert into events
-values (5, 'GOAL','0:2', 49, 6, 1,false);
-insert into events
-values (6, 'GOAL','1:2', 67, 5, 1,false);
-insert into events
-values (7, 'ASSIST','1:2', 67, 7, 1,false);
+values (5, '1:2', 67, 1);
+
 
 insert into player_statistics
 values (0, 0, 1, 0, 0, 1, 1);

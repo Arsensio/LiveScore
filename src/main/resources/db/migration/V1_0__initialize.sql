@@ -119,15 +119,9 @@ create table events
 (
     event_id    bigserial
         primary key,
-    event_name  varchar(255),
     game_score  varchar(255),
     minute      integer,
-    player_id   bigint,
     protocol_id bigint,
-    penalty boolean,
-    constraint fk_player
-        foreign key (player_id)
-            references players (player_id),
     constraint fk_protocol
         foreign key (protocol_id)
             references protocols (protocol_id)

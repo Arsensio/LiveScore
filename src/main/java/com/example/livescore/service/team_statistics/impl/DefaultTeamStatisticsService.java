@@ -2,7 +2,7 @@ package com.example.livescore.service.team_statistics.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.enums.EventNames;
+import com.example.livescore.enums.EventEnum;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
@@ -33,7 +33,7 @@ public class DefaultTeamStatisticsService
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId) {
         return repository.findAllByTournamentIdOrderByGoalCount(groupId)
                 .stream()
-                .map(team -> team.toDistinctStatisticsDTO(EventNames.GOAL.getEventName()))
+                .map(team -> team.toDistinctStatisticsDTO(EventEnum.GOAL.getEventName()))
                 .toList();
     }
 
@@ -44,7 +44,7 @@ public class DefaultTeamStatisticsService
         return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
-                        statisticDTO.toDistinctTeamStatisticsDTO(EventNames.RED_CARD))
+                        statisticDTO.toDistinctTeamStatisticsDTO(EventEnum.RED_CARD))
                 .toList();
     }
 
@@ -55,7 +55,7 @@ public class DefaultTeamStatisticsService
         return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
-                        statisticDTO.toDistinctTeamStatisticsDTO(EventNames.YELLOW_CARD))
+                        statisticDTO.toDistinctTeamStatisticsDTO(EventEnum.YELLOW_CARD))
                 .toList();
     }
 

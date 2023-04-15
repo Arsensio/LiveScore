@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveEventDTO extends AbstractSaveEventDTO {
-
-    private Long eventEnumId;
+public class AbstractSaveEventDTO {
+    private Long protocolId;
+    private Long playerId;
+    private Integer minute;
 }

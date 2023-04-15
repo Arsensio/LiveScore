@@ -94,25 +94,11 @@ public class DefaultGroupInfoService
 
     @Override
     public List<GroupInfoDTO> findTeamsSortedByPoints(long tournamentId, long group) {
-//        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(tournamentId);
         List<GroupInfoEntity> allByTournamentIdOrderByWinCount1 = findAllByTournamentIdOrderByWinCount(tournamentId, group);
 
         List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
         List<GroupInfoDTO> orderedByPointList = new ArrayList<>();
 
-//        for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
-//            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
-//                int team1Score = protocolEntity.getTeam1Score();
-//                int team2Score = protocolEntity.getTeam2Score();
-//
-//                if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-//                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
-//                } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-//                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
-//                }
-//            }
-//            orderedByPointList.add(teamStatistics.toDTO());
-//        }
 
         for (GroupInfoEntity groupInfo : allByTournamentIdOrderByWinCount1) {
             for (ProtocolEntity protocolEntity : allByGameStateStarted) {

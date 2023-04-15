@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import static com.example.livescore.enums.EventNames.GOAL;
+import static com.example.livescore.enums.EventEnum.GOAL;
 
 @Entity
 @Table(name = "team_statistics")
