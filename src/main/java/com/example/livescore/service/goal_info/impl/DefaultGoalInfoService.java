@@ -46,5 +46,4 @@ public class DefaultGoalInfoService
     private GoalInfoEntity getGoalInfoEntity(PlayerEntity assistPlayer, EventEntity event, long eventId) {
         return new GoalInfoEntity(assistPlayer, EventNames.getEventNameById(eventId), event);
     }
-
 }

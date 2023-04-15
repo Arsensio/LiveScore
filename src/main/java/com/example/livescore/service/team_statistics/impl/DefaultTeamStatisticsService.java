@@ -24,7 +24,6 @@ public class DefaultTeamStatisticsService
 
     private final ProtocolService protocolService;
 
-
     public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolService protocolService) {
         super(repository);
         this.protocolService = protocolService;

@@ -42,6 +42,7 @@ public class DefaultPlayerService
     @Override
     @Transactional
     public PlayerDTO save(SavePlayerDTO savePlayerDTO) {
+        checkPlayerNumberForExistence(savePlayerDTO.getPlayerNumber(), savePlayerDTO.getTeamId());
         PlayerEntity save = repository.save(new PlayerEntity(
                 null,
                 teamFootballService.findEntityById(savePlayerDTO.getTeamId()),
@@ -57,6 +58,7 @@ public class DefaultPlayerService
 
     @Override
     public PlayerDTO update(Long id, SavePlayerDTO savePlayerDTO) {
+        checkPlayerNumberForExistence(savePlayerDTO.getPlayerNumber(), savePlayerDTO.getTeamId());
         repository.findById(id).ifPresentOrElse(playerEntity -> {
             playerEntity.setName(savePlayerDTO.getName());
             playerEntity.setSurname(savePlayerDTO.getSurname());
@@ -67,7 +69,9 @@ public class DefaultPlayerService
         }, () -> {
             throw ResourceNotFoundException.build(id, "Player");
         });
-        return repository.findById(id).get().toDTO();
+        return repository.findById(id)
+                .get()
+                .toDTO();
     }
 
     @Override
@@ -116,6 +120,19 @@ public class DefaultPlayerService
         return updatedPlayers;
     }
 
+    @Override
+    public List<Integer> findAllPlayerNumbersInTeam(Long teamId) {
+        return repository.findAllPlayerNumbersInTeam(teamId);
+    }
+
+    @Override
+    public void checkPlayerNumberForExistence(Integer playerNumber, Long teamId) {
+        List<Integer> allNumbersInPlayerTeam = findAllPlayerNumbersInTeam(teamId);
+        if (allNumbersInPlayerTeam.contains(playerNumber)) {
+            throw new RuntimeException("Игрок с номером: " + playerNumber + " в команде: "
+                    + teamFootballService.getTeamNameById(teamId) + " уже существует!");
+        }
+    }
 
     private PlayerEntity findEntityById(Long id) {
         Optional<PlayerEntity> foundEntity = repository.findById(id);

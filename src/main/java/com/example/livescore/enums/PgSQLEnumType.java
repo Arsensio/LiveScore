@@ -17,5 +17,4 @@ public class PgSQLEnumType extends EnumType {
 
         ps.setObject(index, value != null ? ((Enum) value).name() : null, Types.OTHER);
     }
-
 }

@@ -1,9 +1,9 @@
 package com.example.livescore.controllers.info_upload.impl;
 
 import com.example.livescore.controllers.info_upload.TournamentInformationController;
-import com.example.livescore.service.info_upload.GoogleSheets;
 import com.example.livescore.service.info_upload.PlayerInfoParserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,17 +16,18 @@ import java.security.GeneralSecurityException;
 
 import static com.example.livescore.service.info_upload.impl.PlayerInfoParserServiceImpl.hasExcelFormat;
 
+@Slf4j
 @RestController
 @RequestMapping("/info")
 @RequiredArgsConstructor
 public class TournamentInformationControllerImpl implements TournamentInformationController {
 
     private final PlayerInfoParserService playerInfoParserService;
-    private final GoogleSheets googleSheets;
 
     @Override
     @PostMapping("/upload/player_info/file")
-    public ResponseEntity<String> uploadPlayerInfoFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadPlayerInfoFile(@RequestParam("file") MultipartFile file,
+                                                       @RequestParam("tournamentId") Long tournamentId) {
         if (!hasExcelFormat(file)) {
             return ResponseEntity.badRequest().body("Please upload an excel (.xlsx) format!");
         }
@@ -34,7 +35,7 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
         try {
             return ResponseEntity.ok()
                     .body(
-                            playerInfoParserService.savePlayers(file.getInputStream())
+                            playerInfoParserService.savePlayers(file.getInputStream(), tournamentId)
                     );
         } catch (IOException e) {
             return ResponseEntity.badRequest()
@@ -47,13 +48,14 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
 
     @Override
     @PostMapping("/upload/player_info/link")
-    public ResponseEntity<String> uploadPlayerInfoLink(@RequestParam("url") String url) {
+    public ResponseEntity<String> uploadPlayerInfoLink(@RequestParam("link") String link,
+                                                       @RequestParam("tournamentId") Long tournamentId) {
         try {
             return ResponseEntity.ok()
                     .body(
-                            playerInfoParserService.savePlayers(url)
+                            playerInfoParserService.savePlayers(link, tournamentId)
                     );
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | RuntimeException e) {
             return ResponseEntity.badRequest()
                     .body(e.getMessage());
         } catch (IOException e) {

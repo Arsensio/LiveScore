@@ -82,5 +82,4 @@ public class ProtocolEntity extends AbstractEntity<ProtocolDTO> {
     private String gameScore() {
         return this.team1Score + ":" + this.team2Score;
     }
-
 }

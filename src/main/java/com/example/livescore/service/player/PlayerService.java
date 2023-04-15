@@ -18,4 +18,8 @@ public interface PlayerService extends FootballService<PlayerDTO, SavePlayerDTO,
     List<MinPlayerDto> findAllPlayersOfTeam(Long teamId);
 
     List<PlayerDTO> transferPlayers(List<UpdatePlayerDTO> updatedPlayers);
+
+    List<Integer> findAllPlayerNumbersInTeam(Long teamId);
+
+    void checkPlayerNumberForExistence(Integer playerNumber, Long teamId);
 }

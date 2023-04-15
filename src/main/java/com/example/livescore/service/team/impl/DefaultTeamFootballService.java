@@ -76,14 +76,19 @@ public class DefaultTeamFootballService
         }
     }
 
-
+    // todo: искать не только по тим нейм но и по турнаменту
     @Override
-    public TeamDTO findTeamByName(String teamName) {
+    public TeamDTO findTeamByNameInTournament(String teamName, Long tournamentId) {
         TeamEntity team = repository.findTeamEntityByTeamName(teamName);
         if (team == null) {
             throw new RuntimeException("Команды с названием " + teamName + " не существует!");
         }
         return team.toDTO();
+    }
+
+    @Override
+    public String getTeamNameById(Long teamId) {
+        return repository.getTeamNameById(teamId);
     }
 
     @Override

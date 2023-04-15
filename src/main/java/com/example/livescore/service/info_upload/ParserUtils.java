@@ -9,7 +9,10 @@ public final class ParserUtils {
     private ParserUtils() {
     }
 
-    public static String beautifyName(String sheetName) {
+    public static String beautifyName(String sheetName) throws RuntimeException {
+        if (sheetName == null || sheetName.length() == 0) {
+            throw new RuntimeException("Файл не должен содержать пустых полей!");
+        }
         char[] nameChars = sheetName.toCharArray();
         nameChars[0] = Character.toUpperCase(nameChars[0]);
         for (int n = nameChars.length, i = 1; i < n; i++) {

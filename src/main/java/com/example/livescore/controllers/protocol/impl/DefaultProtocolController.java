@@ -17,5 +17,4 @@ public class DefaultProtocolController extends AbstractFootballController<Protoc
     public DefaultProtocolController(ProtocolService service) {
         super(service);
     }
-
 }

@@ -38,22 +38,23 @@ import static com.example.livescore.service.info_upload.ParserUtils.*;
 public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
 
     private static final String APPLICATION_NAME = "SDUFootballLive";
+    private static final String SUCCESS_MESSAGE = "Все игроки успешно сохранены!";
     private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private final PlayerService playerService;
     private final TeamFootballService teamService;
 
     @Override
-    public String savePlayers(InputStream inputStream) throws IOException, RuntimeException {
-        List<SavePlayerDTO> players = excelToPlayers(inputStream);
+    public String savePlayers(InputStream inputStream, Long tournamentId) throws IOException, RuntimeException {
+        List<SavePlayerDTO> players = excelToPlayers(inputStream, tournamentId);
         save(players);
-        return "Successfully saved all players!";
+        return SUCCESS_MESSAGE;
     }
 
     @Override
-    public String savePlayers(String url) throws IOException, RuntimeException, GeneralSecurityException {
-        List<SavePlayerDTO> players = googleSheetToPlayers(url);
+    public String savePlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException {
+        List<SavePlayerDTO> players = googleSheetToPlayers(link, tournamentId);
         save(players);
-        return "Successfully saved all players!";
+        return SUCCESS_MESSAGE;
     }
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -63,7 +64,8 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     /**
      * This method will work only with certain format of an Excel file, any changes to file structure may cause errors
      */
-    private List<SavePlayerDTO> excelToPlayers(InputStream inputStream) throws IOException, RuntimeException {
+    private List<SavePlayerDTO> excelToPlayers(InputStream inputStream, Long tournamentId) throws IOException,
+            RuntimeException {
         List<SavePlayerDTO> players = new ArrayList<>();
         Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
@@ -80,14 +82,23 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
             while (cellsInRow.hasNext()) {
                 Cell currentCell = cellsInRow.next();
                 switch (cellId) {
-                    case 1 -> playerDTO.setName(beautifyName(currentCell.getStringCellValue()));
-                    case 2 -> playerDTO.setSurname(beautifyName(currentCell.getStringCellValue()));
-                    case 3 -> playerDTO.setTeamId(getTeamIdOrThrowNull(
-                                    beautifyName(currentCell.getStringCellValue())
+                    case 1 -> playerDTO.setName(
+                            beautifyName(currentCell.getStringCellValue())
+                    );
+                    case 2 -> playerDTO.setSurname(
+                            beautifyName(currentCell.getStringCellValue())
+                    );
+                    case 3 -> playerDTO.setTeamId(
+                            getTeamIdOrThrowNull(
+                                    beautifyName(currentCell.getStringCellValue()), tournamentId
                             )
                     );
-                    case 4 -> playerDTO.setPlayerNumber((int) currentCell.getNumericCellValue());
-                    case 5 -> playerDTO.setRole(resolveRole(currentCell.getStringCellValue()));
+                    case 4 -> playerDTO.setPlayerNumber(
+                            (int) currentCell.getNumericCellValue()
+                    );
+                    case 5 -> playerDTO.setRole(
+                            resolveRole(currentCell.getStringCellValue())
+                    );
                 }
                 cellId++;
             }
@@ -97,36 +108,64 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
             if (playerDTO.isThereNullFields()) {
                 throw PlayerNullFieldsException.withPlayerData(playerDTO);
             }
+
+            playerService.checkPlayerNumberForExistence(playerDTO.getPlayerNumber(), playerDTO.getTeamId());
+
             players.add(playerDTO);
         }
         workbook.close();
         return players;
     }
 
-    public List<SavePlayerDTO> googleSheetToPlayers(String url) throws GeneralSecurityException, IOException {
+    private List<SavePlayerDTO> googleSheetToPlayers(String link, Long tournamentId) throws GeneralSecurityException,
+            IOException, RuntimeException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetId = getSheetId(url);
-        final String range = "Form Responses 1!A2:F";  // todo: захардкоденный шит нейм, поменять на гет чтоль
+        final String spreadsheetId = getSheetId(link);
         List<SavePlayerDTO> players = new ArrayList<>();
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleSheets.getCredentials(HTTP_TRANSPORT))
+        Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleSheets.getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-        ValueRange response = service.spreadsheets()
+
+        String title = sheets.spreadsheets()
+                .get(spreadsheetId)
+                .execute()
+                .getSheets()
+                .get(0)
+                .getProperties()
+                .getTitle();
+
+        String range = title + "!A2:F";  // захардкоденный вариант, может поменятся
+
+        ValueRange response = sheets.spreadsheets()
                 .values()
                 .get(spreadsheetId, range)
                 .execute();
+
         List<List<Object>> values = response.getValues();
+
         if (values == null || values.isEmpty()) {
-            log.info("No data found.");
+            throw new RuntimeException("Данные отсутствуют в таблице, или таблица пуста!");
         } else {
             for (List row : values) {
                 SavePlayerDTO playerDTO = SavePlayerDTO.builder()
-                        .name(beautifyName(row.get(1).toString()))
-                        .surname(beautifyName(row.get(2).toString()))
-                        .teamId(getTeamIdOrThrowNull(beautifyName(row.get(3).toString())))
-                        .playerNumber(Integer.parseInt(row.get(4).toString()))
-                        .role(resolveRole(row.get(5).toString()))
+                        .name(
+                                beautifyName(row.get(1).toString())
+                        )
+                        .surname(
+                                beautifyName(row.get(2).toString())
+                        )
+                        .teamId(
+                                getTeamIdOrThrowNull(
+                                        beautifyName(row.get(3).toString()), tournamentId
+                                )
+                        )
+                        .playerNumber(
+                                Integer.parseInt(row.get(4).toString())
+                        )
+                        .role(
+                                resolveRole(row.get(5).toString())
+                        )
                         .build();
                 if (alreadyPresents(playerDTO, players)) {
                     throw EqualPlayersException.withEqualPlayersData(playerDTO);
@@ -134,6 +173,9 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
                 if (playerDTO.isThereNullFields()) {
                     throw PlayerNullFieldsException.withPlayerData(playerDTO);
                 }
+
+                playerService.checkPlayerNumberForExistence(playerDTO.getPlayerNumber(), playerDTO.getTeamId());
+
                 players.add(playerDTO);
             }
         }
@@ -155,7 +197,8 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
         return false;
     }
 
-    private Long getTeamIdOrThrowNull(String teamName) {
-        return teamService.findTeamByName(teamName).getTeamId();
+    // todo: искать команды по турнаменту, не только по названиям
+    private Long getTeamIdOrThrowNull(String teamName, Long tournamentId) {
+        return teamService.findTeamByNameInTournament(teamName, tournamentId).getTeamId();
     }
 }

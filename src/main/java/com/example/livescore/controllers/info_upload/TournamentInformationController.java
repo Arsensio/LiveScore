@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface TournamentInformationController {
 
-    ResponseEntity<String> uploadPlayerInfoFile(MultipartFile file);
+    ResponseEntity<String> uploadPlayerInfoFile(MultipartFile file, Long tournamentId);
 
-    ResponseEntity<String> uploadPlayerInfoLink(String url);
+    ResponseEntity<String> uploadPlayerInfoLink(String link, Long tournamentId);
 }
