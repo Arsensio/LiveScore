@@ -2,6 +2,7 @@ package com.example.livescore.controllers.group_info;
 
 import com.example.core.controller.FootballController;
 import com.example.livescore.web.group_info.GroupInfoDTO;
+import com.example.livescore.web.group_info.GroupInfoListDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -11,6 +12,8 @@ public interface GroupInfoController extends FootballController<GroupInfoDTO, Sa
 
     ResponseEntity<List<GroupInfoDTO>> createDrawInCup(List<SaveGroupInfoDTO> list);
 
-    ResponseEntity<List<GroupInfoDTO>> findAllSortedByPoints(long tournament_id, long group_id);
+    ResponseEntity<List<GroupInfoListDTO>> findAllGroupsSortedByPoints(long tournamentId);
+
+    ResponseEntity<List<GroupInfoListDTO>> findGroupSortedByPoint(long tournamentId, long groupId);
 
 }

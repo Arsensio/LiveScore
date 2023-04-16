@@ -108,6 +108,16 @@ public class DefaultGroupService
         );
     }
 
+    @Override
+    public List<GroupEntity> findAllGroupInGroupStageByTournamentId(Long tournamentId) {
+        List<GroupEntity> allByTournamentIdAndPlayoffFalse = repository.findAllByTournamentIdAndPlayoffFalse(tournamentId);
+        for (GroupEntity g : allByTournamentIdAndPlayoffFalse) {
+            System.out.println(g.getGroupId());
+        }
+        return allByTournamentIdAndPlayoffFalse;
+    }
+
+
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();
         if (teamNum == 16) {

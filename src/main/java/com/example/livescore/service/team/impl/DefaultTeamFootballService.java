@@ -43,7 +43,7 @@ public class DefaultTeamFootballService
                         null
                 )
         );
-        TournamentEntity tournament = tournamentService.findEntityById(saveTeamDTO.getGroupId());
+        TournamentEntity tournament = tournamentService.findEntityById(saveTeamDTO.getTournamentId());
         teamStatisticsService.save(tournament, savedTeam);
 
         return savedTeam.toDTO();

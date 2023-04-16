@@ -21,4 +21,7 @@ public interface GroupService extends FootballService<GroupDTO, SaveGroupDTO, Lo
     List<GroupEntity> createPlayOfGroupsByTournament(TournamentEntity tournament, Integer groupNum);
 
     GroupEntity createGroupBYTournament(TournamentEntity tournament, String leagueNameOrLocation);
+
+    List<GroupEntity> findAllGroupInGroupStageByTournamentId(Long tournamentId);
+
 }

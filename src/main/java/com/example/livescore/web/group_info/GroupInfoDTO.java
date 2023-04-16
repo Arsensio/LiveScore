@@ -11,9 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GroupInfoDTO {
 
-    private String tournamentName;
-    private String tournamentLogo;
-    private String groupName;
     private String teamName;
     private String teamLogo;
     private Integer gamePlayed;

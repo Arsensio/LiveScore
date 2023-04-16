@@ -12,4 +12,10 @@ public interface GroupRepository extends JpaRepository<GroupEntity, Long> {
 
     @Query(value = "SELECT * FROM groups where tournament_id = ?1 order by group_id", nativeQuery = true)
     List<GroupEntity> findAllByTournamentId(long tournamentId);
+
+    @Query(value = "FROM GroupEntity g where (g.tournament.tournamentId = ?1 AND g.isPlayoff = false AND g.tournament.tournamentType = 'CUP') OR (g.tournament.tournamentId = ?1 AND g.tournament.tournamentType = 'LEAGUE')")
+    List<GroupEntity> findAllByTournamentIdAndPlayoffFalse(long tournamentId);
+
+    @Query(value = "SELECT * FROM groups where tournament_id = ?1 AND group_id = ?2 order by group_id", nativeQuery = true)
+    List<GroupEntity> findGroupByTournamentIdAndGroupId(long tournamentId, long group);
 }

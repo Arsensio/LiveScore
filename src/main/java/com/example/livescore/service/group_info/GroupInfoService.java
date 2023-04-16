@@ -6,6 +6,7 @@ import com.example.livescore.models.GroupInfoEntity;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.web.group_info.GroupInfoDTO;
+import com.example.livescore.web.group_info.GroupInfoListDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
 
 import java.util.List;
@@ -18,7 +19,12 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
 
     GroupInfoEntity saveAndFlash(GroupInfoEntity groupInfoEntity);
 
-    List<GroupInfoDTO> findTeamsSortedByPoints(long tournament, long group);
+    List<GroupInfoListDTO> findAllTeamsFromTournamentSortedByPoints(long tournament);
+
+    List<GroupInfoListDTO> findGroupSortedByPoints(long tournament, long group);
+
+
+    List<GroupInfoDTO> createDrawInCup(List<SaveGroupInfoDTO> list);
 
     void incrementGoalCount(GroupEntity group, TeamEntity team);
 
@@ -29,8 +35,4 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
     void decrementGoalMissedCount(GroupEntity group, TeamEntity team);
 
     void incrementGameCount(GroupEntity group, TeamEntity team);
-
-    List<GroupInfoEntity> findAllByTournamentIdOrderByWinCount(Long tournament, Long group);
-
-    List<GroupInfoDTO> createDrawInCup(List<SaveGroupInfoDTO> list);
 }
