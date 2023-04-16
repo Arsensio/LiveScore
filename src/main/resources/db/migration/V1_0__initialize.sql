@@ -14,6 +14,7 @@ create table groups
     group_id      bigserial
         primary key,
     group_name    varchar(255),
+    group_order   bigint,
     is_playoff    boolean,
     tournament_id bigint,
     constraint fk_tournament

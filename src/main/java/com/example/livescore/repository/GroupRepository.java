@@ -18,4 +18,7 @@ public interface GroupRepository extends JpaRepository<GroupEntity, Long> {
 
     @Query(value = "SELECT * FROM groups where tournament_id = ?1 AND group_id = ?2 order by group_id", nativeQuery = true)
     List<GroupEntity> findGroupByTournamentIdAndGroupId(long tournamentId, long group);
+
+    @Query(value = "SELECT * FROM groups where tournament_id =?1 AND group_order = ?2", nativeQuery = true)
+    GroupEntity findNextStage(Long tournament, Integer groupOrder);
 }

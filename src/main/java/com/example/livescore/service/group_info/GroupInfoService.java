@@ -8,6 +8,7 @@ import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.web.group_info.GroupInfoDTO;
 import com.example.livescore.web.group_info.GroupInfoListDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
+import com.example.livescore.web.teams.TeamDTO;
 
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
     void decrementGoalMissedCount(GroupEntity group, TeamEntity team);
 
     void incrementGameCount(GroupEntity group, TeamEntity team);
+
+    List<TeamDTO> finishGroupStage(long tournamentId);
 }

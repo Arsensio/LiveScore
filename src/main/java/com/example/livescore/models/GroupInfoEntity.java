@@ -2,10 +2,7 @@ package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.group_info.GroupInfoDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "group_info")
 public class GroupInfoEntity extends AbstractEntity<GroupInfoDTO> {
 
@@ -24,6 +22,7 @@ public class GroupInfoEntity extends AbstractEntity<GroupInfoDTO> {
 
     @Column(name = "tournament_logo")
     private String tournamentLogo;
+
     @Column(name = "group_name")
     private String groupName;
 

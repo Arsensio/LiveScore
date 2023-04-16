@@ -113,8 +113,13 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long groupId) {
-        return repository.findAllByTournamentIdOrderByWinCount(groupId);
+    public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long tournamentId) {
+        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(tournamentId);
+        for (TeamStatisticsEntity ts : allByTournamentIdOrderByWinCount) {
+            System.out.println(ts.getId().getTeam().getTeamId());
+        }
+
+        return allByTournamentIdOrderByWinCount;
     }
 
     @Override

@@ -17,8 +17,8 @@ public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEn
     @Query(value = "SELECT * FROM team_statistics WHERE tournament_id = ?1 AND goal_count >= 1 ORDER BY goal_count DESC", nativeQuery = true)
     List<TeamStatisticsEntity> findAllByTournamentIdOrderByGoalCount(Long group);
 
-    @Query(value = "SELECT * FROM team_statistics WHERE tournament_id = ?1 ORDER BY points DESC", nativeQuery = true)
-    List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long group);
+    @Query(value = "FROM TeamStatisticsEntity ts WHERE ts.id.tournament.tournamentId = ?1 ORDER BY ts.points DESC")
+    List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long tournament);
 
     @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.tournament.tournamentName,t.teamName,sum(ps.redCard),ts.gamePlayed,ts.id.team.teamLogo)" +
             "FROM TeamEntity t inner join PlayerEntity p on t.teamId= p.team.teamId " +

@@ -71,7 +71,7 @@ public class DefaultTournamentService
     @Override
     public TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO) {
         TournamentEntity savedTournament = saveEntity(saveTournamentDTO);
-        groupService.createGroupBYTournament(savedTournament, saveTournamentDTO.getLocation());
+        groupService.createGroupBYTournament(savedTournament, saveTournamentDTO.getLocation(), 0);
         return savedTournament.toDTO();
     }
 

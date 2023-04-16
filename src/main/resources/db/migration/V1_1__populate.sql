@@ -4,7 +4,7 @@ insert into tournaments
 values (1, 'SFL', 'LEAGUE', 'https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg');
 
 insert into groups
-values (1, 'Group A', false, 1);
+values (1, 'Group A', 0, false, 1);
 
 insert into teams
 values (1, 'https://upload.wikimedia.org/wikipedia/ru/9/98/Real_Madrid.png', 'Avangar');

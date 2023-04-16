@@ -48,6 +48,7 @@ public class DefaultGroupService
                         null,
                         null,
                         dto.getGroupName(),
+                        0,
                         null,
                         dto.isPlayoff()
                 )
@@ -65,6 +66,11 @@ public class DefaultGroupService
     }
 
     @Override
+    public GroupEntity findNextStage(GroupEntity group) {
+        return repository.findNextStage(group.getTournament().getTournamentId(), group.getGroupOrder() + 1);
+    }
+
+    @Override
     public List<GroupEntity> createGroupsByTournament(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> createdGroups = new ArrayList<>();
         int groupNum = teamNum / 4;
@@ -75,6 +81,7 @@ public class DefaultGroupService
                                 null,
                                 tournament,
                                 "Group " + letter,
+                                0,
                                 null,
                                 false
                         )
@@ -97,11 +104,12 @@ public class DefaultGroupService
 
 
     @Override
-    public GroupEntity createGroupBYTournament(TournamentEntity tournament, String leagueNameOrLocation) {
+    public GroupEntity createGroupBYTournament(TournamentEntity tournament, String leagueNameOrLocation, Integer order) {
         return repository.save(new GroupEntity(
                         null,
                         tournament,
                         leagueNameOrLocation,
+                        order,
                         null,
                         false
                 )
@@ -111,9 +119,6 @@ public class DefaultGroupService
     @Override
     public List<GroupEntity> findAllGroupInGroupStageByTournamentId(Long tournamentId) {
         List<GroupEntity> allByTournamentIdAndPlayoffFalse = repository.findAllByTournamentIdAndPlayoffFalse(tournamentId);
-        for (GroupEntity g : allByTournamentIdAndPlayoffFalse) {
-            System.out.println(g.getGroupId());
-        }
         return allByTournamentIdAndPlayoffFalse;
     }
 
@@ -121,28 +126,29 @@ public class DefaultGroupService
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();
         if (teamNum == 16) {
-            playOfGroups.add(createPlayOf(tournament, ROUND_OF_16));
-            playOfGroups.add(createPlayOf(tournament, QUARTER_FINAL));
-            playOfGroups.add(createPlayOf(tournament, SEMI_FINAL));
-            playOfGroups.add(createPlayOf(tournament, FINAL));
+            playOfGroups.add(createPlayOf(tournament, ROUND_OF_16, 1));
+            playOfGroups.add(createPlayOf(tournament, QUARTER_FINAL, 2));
+            playOfGroups.add(createPlayOf(tournament, SEMI_FINAL, 3));
+            playOfGroups.add(createPlayOf(tournament, FINAL, 4));
         } else if (teamNum == 8) {
-            playOfGroups.add(createPlayOf(tournament, QUARTER_FINAL));
-            playOfGroups.add(createPlayOf(tournament, SEMI_FINAL));
-            playOfGroups.add(createPlayOf(tournament, FINAL));
+            playOfGroups.add(createPlayOf(tournament, QUARTER_FINAL, 1));
+            playOfGroups.add(createPlayOf(tournament, SEMI_FINAL, 2));
+            playOfGroups.add(createPlayOf(tournament, FINAL, 3));
         } else if (teamNum == 4) {
-            playOfGroups.add(createPlayOf(tournament, SEMI_FINAL));
-            playOfGroups.add(createPlayOf(tournament, FINAL));
+            playOfGroups.add(createPlayOf(tournament, SEMI_FINAL, 1));
+            playOfGroups.add(createPlayOf(tournament, FINAL, 2));
         } else if (teamNum == 2) {
-            playOfGroups.add(createPlayOf(tournament, FINAL));
+            playOfGroups.add(createPlayOf(tournament, FINAL, 1));
         }
         return playOfGroups;
     }
 
-    private GroupEntity createPlayOf(TournamentEntity tournament, PlayOffEnum playOffEnum) {
+    private GroupEntity createPlayOf(TournamentEntity tournament, PlayOffEnum playOffEnum, Integer order) {
         return repository.save(new GroupEntity(
                         null,
                         tournament,
                         playOffEnum.toString(),
+                        order,
                         null,
                         true
                 )

@@ -117,8 +117,10 @@ public class DefaultGameService
         if (gameEntity.getGameState() == ENDED) {
             return gameEntity.toDTO();
         }
+
         GroupEntity group = gameEntity.getGroup();
-        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = teamStatisticsService.findAllByTournamentIdOrderByWinCount(group.getGroupId());
+
+        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = teamStatisticsService.findAllByTournamentIdOrderByWinCount(group.getTournament().getTournamentId());
         List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
 
         for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
@@ -130,18 +132,20 @@ public class DefaultGameService
                     GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup().getTournament(), protocolEntity.getGame().getGroup(), protocolEntity.getTeam1());
                     updatePointsAndStatistic(team1Score, team2Score, teamStatistics, groupInfo);
 
+                    System.out.println(groupInfo.getPoints());
+
                     groupInfoService.saveAndFlash(groupInfo);
                     teamStatisticsService.save(teamStatistics);
                 } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
                     GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup().getTournament(), protocolEntity.getGame().getGroup(), protocolEntity.getTeam2());
                     updatePointsAndStatistic(team2Score, team1Score, teamStatistics, groupInfo);
 
+                    System.out.println(groupInfo.getPoints());
                     groupInfoService.saveAndFlash(groupInfo);
                     teamStatisticsService.save(teamStatistics);
                 }
             }
         }
-
         gameEntity.setGameState(ENDED);
         repository.save(gameEntity);
 
@@ -200,14 +204,20 @@ public class DefaultGameService
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics, GroupInfoEntity groupInfoEntity) {
 
         if (foundTeam > rivalTeam) {
+            System.out.println("before update point" + groupInfoEntity.getPoints());
             groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
             groupInfoEntity.setPoints(teamStatistics.getPoints() + 3);
+
+            System.out.println("after update point" + groupInfoEntity.getPoints());
 
             teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 3);
         } else if (foundTeam == rivalTeam) {
+            System.out.println("before update point" + groupInfoEntity.getPoints());
             groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
             groupInfoEntity.setPoints(teamStatistics.getPoints() + 1);
+            System.out.println("after update point" + groupInfoEntity.getPoints());
+
 
             teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 1);

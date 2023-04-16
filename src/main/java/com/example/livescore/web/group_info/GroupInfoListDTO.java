@@ -17,11 +17,13 @@ public class GroupInfoListDTO {
     private String tournamentName;
     private String tournamentLogo;
     private String groupName;
+    private Long groupId;
     List<GroupInfoDTO> sortedByPointTeams;
 
     public GroupInfoListDTO(GroupEntity group) {
         this.tournamentName = group.getTournament().getTournamentName();
         this.tournamentLogo = group.getTournament().getTournamentLogo();
         this.groupName = group.getGroupName();
+        this.groupId = group.getGroupId();
     }
 }
