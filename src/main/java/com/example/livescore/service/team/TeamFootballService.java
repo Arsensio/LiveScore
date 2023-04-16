@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface TeamFootballService extends FootballService<TeamDTO, SaveTeamDTO, Long> {
 
-    List<TeamDTO> findAllTeamByGroupId(long groupId);
+    List<TeamDTO> findAllTeamByTournamentId(long groupId);
 
     TeamEntity findEntityById(long id);
 

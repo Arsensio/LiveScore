@@ -13,11 +13,11 @@ import java.util.List;
 public interface PlayerStatisticsController extends FootballController<PlayerStatisticsDTO, SavePlayerStatisticsDTO,
         PlayerStatisticsEntityPK> {
 
-    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByGoals(long groupId);
+    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByGoals(long tournament_id);
 
-    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByYellowCard(long groupId);
+    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByYellowCard(long tournament_id);
 
-    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByRedCard(long groupId);
+    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByRedCard(long tournament_id);
 
-    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(long groupId);
+    ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(long tournament_id);
 }

@@ -3,14 +3,15 @@ package com.example.livescore.service.player.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.PlayerEntity;
 import com.example.livescore.models.TeamEntity;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.PlayerRepository;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.team.TeamFootballService;
+import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.players.MinPlayerDto;
 import com.example.livescore.web.players.PlayerDTO;
 import com.example.livescore.web.players.SavePlayerDTO;
@@ -31,12 +32,14 @@ public class DefaultPlayerService
     private final TeamFootballService teamFootballService;
     private final PlayerStatisticsService playerStatisticsService;
     private final GroupService groupService;
+    private final TournamentService tournamentService;
 
-    public DefaultPlayerService(PlayerRepository playerRepository, TeamFootballService teamFootballService, PlayerStatisticsService playerStatisticsService, GroupService groupService) {
+    public DefaultPlayerService(PlayerRepository playerRepository, TeamFootballService teamFootballService, PlayerStatisticsService playerStatisticsService, GroupService groupService, TournamentService tournamentService) {
         super(playerRepository);
         this.teamFootballService = teamFootballService;
         this.playerStatisticsService = playerStatisticsService;
         this.groupService = groupService;
+        this.tournamentService = tournamentService;
     }
 
     @Override
@@ -51,8 +54,8 @@ public class DefaultPlayerService
                 savePlayerDTO.getPlayerNumber(),
                 savePlayerDTO.getRole()
         ));
-        GroupEntity group = groupService.findEntityById(1);
-        playerStatisticsService.saveDefault(save, group);
+        TournamentEntity tournament = tournamentService.findEntityById(savePlayerDTO.getTournamentId());
+        playerStatisticsService.saveDefault(save, tournament);
         return save.toDTO();
     }
 

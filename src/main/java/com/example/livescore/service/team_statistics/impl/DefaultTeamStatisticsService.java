@@ -1,10 +1,13 @@
 package com.example.livescore.service.team_statistics.impl;
 
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.enums.EventNames;
-import com.example.livescore.models.*;
+import com.example.livescore.enums.EventEnum;
+import com.example.livescore.models.TeamEntity;
+import com.example.livescore.models.TeamStatisticsEntity;
+import com.example.livescore.models.TeamStatisticsEntityPK;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TeamStatisticsRepository;
-import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
@@ -13,8 +16,8 @@ import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DefaultTeamStatisticsService
@@ -22,73 +25,43 @@ public class DefaultTeamStatisticsService
         SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
         implements TeamStatisticsService {
 
-    private final ProtocolService protocolService;
-
-    public DefaultTeamStatisticsService(TeamStatisticsRepository repository, ProtocolService protocolService) {
+    public DefaultTeamStatisticsService(TeamStatisticsRepository repository) {
         super(repository);
-        this.protocolService = protocolService;
     }
 
     @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId) {
-        return repository.findAllByGroupIdOrderByGoalCount(groupId)
+        return repository.findAllByTournamentIdOrderByGoalCount(groupId)
                 .stream()
-                .map(team -> team.toDistinctStatisticsDTO(EventNames.GOAL.getEventName()))
+                .map(team -> team.toDistinctStatisticsDTO(EventEnum.GOAL.getEventName()))
                 .toList();
     }
 
     @Override
-    public List<TeamStatisticsDTO> findTeamsSortedByPoints(long groupId) {
-        List<TeamStatisticsEntity> allByGroupIdOrderByWinCount = repository.findAllByGroupIdOrderByWinCount(groupId);
-        List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
-        List<TeamStatisticsDTO> orderedByPointList = new ArrayList<>();
-
-        for (TeamStatisticsEntity teamStatistics : allByGroupIdOrderByWinCount) {
-            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
-                int team1Score = protocolEntity.getTeam1Score();
-                int team2Score = protocolEntity.getTeam2Score();
-
-                if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics);
-                } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics);
-                }
-            }
-            orderedByPointList.add(teamStatistics.toDTO());
-        }
-
-        orderedByPointList.sort((o1, o2) ->
-                o2.getPoints().compareTo(o1.getPoints())
-        );
-
-        return orderedByPointList;
-    }
-
-    @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByRedCards(long groupId) {
-        List<StatisticDTO> allByGroupIdOrderByRedCard = repository.findAllByGroupIdOrderByRedCard(groupId);
+        List<StatisticDTO> allByTournamentIdOrderByRedCard = repository.findAllByTournamentIdOrderByRedCard(groupId);
 
-        return allByGroupIdOrderByRedCard
+        return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
-                        statisticDTO.toDistinctTeamStatisticsDTO(EventNames.RED_CARD))
+                        statisticDTO.toDistinctTeamStatisticsDTO(EventEnum.RED_CARD))
                 .toList();
     }
 
     @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByYellowCard(long groupId) {
-        List<StatisticDTO> allByGroupIdOrderByRedCard = repository.findAllByGroupIdOrderByYellowCard(groupId);
+        List<StatisticDTO> allByTournamentIdOrderByRedCard = repository.findAllByTournamentIdOrderByYellowCard(groupId);
 
-        return allByGroupIdOrderByRedCard
+        return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
-                        statisticDTO.toDistinctTeamStatisticsDTO(EventNames.YELLOW_CARD))
+                        statisticDTO.toDistinctTeamStatisticsDTO(EventEnum.YELLOW_CARD))
                 .toList();
     }
 
     @Override
-    public TeamStatisticsDTO save(GroupEntity group, TeamEntity team) {
-        TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(group, team);
+    public TeamStatisticsDTO save(TournamentEntity tournament, TeamEntity team) {
+        TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(tournament, team);
         TeamStatisticsEntity saved = repository.save(new TeamStatisticsEntity(
                 pk,
                 0,
@@ -97,7 +70,8 @@ public class DefaultTeamStatisticsService
                 0,
                 0,
                 0,
-                0
+                0,
+                null
         ));
 
         return saved.toDTO();
@@ -109,8 +83,8 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public List<TeamDTO> findAllTeamByGroupId(long groupId) {
-        return repository.findAllTeamByGroupId(groupId);
+    public List<TeamDTO> findAllTeamByTournamentId(long groupId) {
+        return repository.findAllTeamByTournamentId(groupId);
     }
 
     @Override
@@ -139,19 +113,22 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
-    public List<TeamStatisticsEntity> findAllByGroupIdOrderByWinCount(Long groupId) {
-        return repository.findAllByGroupIdOrderByWinCount(groupId);
+    public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long tournamentId) {
+        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(tournamentId);
+        for (TeamStatisticsEntity ts : allByTournamentIdOrderByWinCount) {
+            System.out.println(ts.getId().getTeam().getTeamId());
+        }
+
+        return allByTournamentIdOrderByWinCount;
     }
 
-    private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics) {
-        if (foundTeam > rivalTeam) {
-            teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
-            teamStatistics.setPoints(teamStatistics.getPoints() + 3);
-        } else if (foundTeam == rivalTeam) {
-            teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
-            teamStatistics.setPoints(teamStatistics.getPoints() + 1);
-        } else {
-            teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
+    @Override
+    public TeamStatisticsEntity findEntityById(TournamentEntity tournament, TeamEntity team) {
+        TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, team);
+        Optional<TeamStatisticsEntity> byId = repository.findById(teamStatisticsEntityPK);
+        if (byId.isEmpty()) {
+            throw ResourceNotFoundException.build(teamStatisticsEntityPK, "TeamStatisticsEntity");
         }
+        return byId.get();
     }
 }

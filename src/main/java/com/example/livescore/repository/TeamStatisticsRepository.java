@@ -14,59 +14,41 @@ import java.util.List;
 @Repository
 public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEntity, TeamStatisticsEntityPK> {
 
-    @Query(value = "SELECT * FROM team_statistics WHERE group_id = ?1 AND goal_count >= 1 ORDER BY goal_count DESC", nativeQuery = true)
-    List<TeamStatisticsEntity> findAllByGroupIdOrderByGoalCount(Long group);
+    @Query(value = "SELECT * FROM team_statistics WHERE tournament_id = ?1 AND goal_count >= 1 ORDER BY goal_count DESC", nativeQuery = true)
+    List<TeamStatisticsEntity> findAllByTournamentIdOrderByGoalCount(Long group);
 
-    @Query(value = "SELECT * FROM team_statistics WHERE group_id = ?1 ORDER BY points DESC", nativeQuery = true)
-    List<TeamStatisticsEntity> findAllByGroupIdOrderByWinCount(Long group);
+    @Query(value = "FROM TeamStatisticsEntity ts WHERE ts.id.tournament.tournamentId = ?1 ORDER BY ts.points DESC")
+    List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long tournament);
 
-    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.group.groupName,t.teamName,sum(ps.redCard),ts.gamePlayed,ts.id.team.teamLogo)" +
+    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.tournament.tournamentName,t.teamName,sum(ps.redCard),ts.gamePlayed,ts.id.team.teamLogo)" +
             "FROM TeamEntity t inner join PlayerEntity p on t.teamId= p.team.teamId " +
             "inner join PlayerStatisticsEntity ps on ps.id.player.playerId = p.playerId " +
             "inner join TeamStatisticsEntity ts on ts.id.team.teamId = t.teamId " +
-            "WHERE ps.id.group.groupId = ?1 AND ps.redCard >=1" +
-            "group by t.teamName,ts.gamePlayed,ts.id.group.groupName,ts.id.team.teamLogo " +
+            "WHERE ps.id.tournament.tournamentId = ?1 AND ps.redCard >=1" +
+            "group by t.teamName,ts.gamePlayed,ts.id.tournament.tournamentName,ts.id.team.teamLogo " +
             "ORDER BY sum(ps.redCard) DESC")
-    List<StatisticDTO> findAllByGroupIdOrderByRedCard(long group);
+    List<StatisticDTO> findAllByTournamentIdOrderByRedCard(long tournament);
 
-    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.group.groupName,t.teamName,sum(ps.yellowCard),ts.gamePlayed,ts.id.team.teamLogo)" +
-            "FROM TeamEntity t inner join PlayerEntity p on t.teamId= p.team.teamId " +
+    @Query(value = "SELECT new com.example.livescore.web.teamStatistics.StatisticDTO(ts.id.tournament.tournamentName,t.teamName,sum(ps.yellowCard),ts.gamePlayed,ts.id.team.teamLogo)" +
+            "FROM TeamEntity t " +
+            "inner join PlayerEntity p on t.teamId= p.team.teamId " +
             "inner join PlayerStatisticsEntity ps on ps.id.player.playerId = p.playerId " +
             "inner join TeamStatisticsEntity ts on ts.id.team.teamId = t.teamId " +
-            "WHERE ps.id.group.groupId = ?1 AND ps.yellowCard >=1" +
-            "group by t.teamName,ts.gamePlayed,ts.id.group.groupName,ts.id.team.teamLogo " +
+            "WHERE ps.id.tournament.tournamentId = ?1 AND ps.yellowCard >=1" +
+            "group by t.teamName,ts.gamePlayed,ts.id.tournament.tournamentName,ts.id.team.teamLogo " +
             "ORDER BY sum(ps.yellowCard) DESC")
-    List<StatisticDTO> findAllByGroupIdOrderByYellowCard(long group);
+    List<StatisticDTO> findAllByTournamentIdOrderByYellowCard(long tournament);
 
     @Query("SELECT new com.example.livescore.web.teams.TeamDTO(t.teamId, t.teamName, t.teamLogo)" +
-            "FROM TeamEntity t inner join TeamStatisticsEntity ts on t.teamId = ts.id.team.teamId " +
-            "inner join GroupEntity g on g.groupId = ts.id.group.groupId " +
-            "WHERE g.groupId = ?1")
-    List<TeamDTO> findAllTeamByGroupId(long groupId);
+            "FROM TeamEntity t " +
+            "inner join TeamStatisticsEntity ts on t.teamId = ts.id.team.teamId " +
+            "inner join TournamentEntity te on te.tournamentId = ts.id.tournament.tournamentId " +
+            "WHERE te.tournamentId = ?1")
+    List<TeamDTO> findAllTeamByTournamentId(long groupId);
 
     @Modifying
     @Query("update TeamStatisticsEntity t set t.gamePlayed = t.gamePlayed + 1 where t.id = ?1")
     Integer incrementGameCount(TeamStatisticsEntityPK firstTeam);
-
-    @Modifying
-    @Query("update TeamStatisticsEntity t set t.points = t.points+3 where t.id =?1")
-    Integer incrementPoint(TeamStatisticsEntityPK team);
-
-    @Modifying
-    @Query("update TeamStatisticsEntity t set t.points = t.points+1 where t.id =?1")
-    Integer drawPoint(TeamStatisticsEntityPK team);
-
-    @Modifying
-    @Query("update TeamStatisticsEntity t set t.winCount = t.winCount + 1 where t.id = ?1")
-    Integer incrementWinCount(TeamStatisticsEntityPK id);
-
-    @Modifying
-    @Query("update TeamStatisticsEntity t set t.loseCount = t.loseCount + 1 where t.id = ?1")
-    Integer incrementLoseCount(TeamStatisticsEntityPK id);
-
-    @Modifying
-    @Query("update TeamStatisticsEntity t set t.drawCount = t.drawCount + 1 where t.id = ?1")
-    Integer incrementDrawCount(TeamStatisticsEntityPK id);
 
     @Modifying
     @Query("update TeamStatisticsEntity t set t.goalCount = t.goalCount + 1 where t.id = ?1")

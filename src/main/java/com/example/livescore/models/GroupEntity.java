@@ -33,6 +33,9 @@ public class GroupEntity extends AbstractEntity<GroupDTO> {
     @Column(name = "group_name")
     private String groupName;
 
+    @Column(name = "group_order")
+    private Integer groupOrder;
+
     @JsonIgnore
     @OneToMany(mappedBy = "group")
     private List<GameEntity> games;

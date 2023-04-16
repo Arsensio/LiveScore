@@ -11,8 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SaveTournamentDTO {
 
-    private Long tournamentId;
     private String tournamentName;
     private String tournamentType;
     private String tournamentLogo;
+    private String location;
+    private Integer teamsNum;
 }

@@ -13,5 +13,5 @@ public class SaveTeamDTO {
 
     private String teamName;
     private String teamLogo;
-    private long groupId;
+    private long tournamentId;
 }

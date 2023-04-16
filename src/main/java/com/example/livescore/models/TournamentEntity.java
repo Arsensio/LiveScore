@@ -33,6 +33,9 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
     @Column(name = "tournament_logo")
     private String tournamentLogo;
 
+    @Column(name = "teams_num")
+    private Integer teamsNum;
+
     public TournamentDTO toDTO() {
         return new TournamentDTO(
                 this.tournamentId,

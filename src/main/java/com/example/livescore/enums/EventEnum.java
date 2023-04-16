@@ -1,6 +1,6 @@
 package com.example.livescore.enums;
 
-public enum EventNames {
+public enum EventEnum {
 
     // event enum ID = 1
     GOAL("GOAL"),
@@ -23,9 +23,9 @@ public enum EventNames {
     //7
     MISS_PENALTY("MISS_PENALTY");
 
-    private String eventName;
+    private final String eventName;
 
-    EventNames(String eventName) {
+    EventEnum(String eventName) {
         this.eventName = eventName;
     }
 
@@ -42,7 +42,7 @@ public enum EventNames {
         };
     }
 
-    public static EventNames getEventById(Long id) {
+    public static EventEnum getEventById(Long id) {
         return switch (id.intValue()) {
             case 1 -> GOAL;
             case 2 -> ASSIST;

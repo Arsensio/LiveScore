@@ -28,25 +28,25 @@ public class DefaultPlayerStatisticsController extends AbstractFootballControlle
 
     @Override
     @GetMapping("/goals")
-    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByGoals(@RequestParam("groupId") long groupId) {
-        return new ResponseEntity<>(service.findAllByGoals(groupId), HttpStatus.OK);
+    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByGoals(@RequestParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findAllByGoals(tournament_id), HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/assists")
-    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(@RequestParam("groupId") long groupId) {
-        return new ResponseEntity<>(service.findAllByAssists(groupId), HttpStatus.OK);
+    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(@RequestParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findAllByAssists(tournament_id), HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/yellow_card")
-    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByYellowCard(@RequestParam("groupId") long groupId) {
-        return new ResponseEntity<>(service.findAllByYellowCard(groupId), HttpStatus.OK);
+    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByYellowCard(@RequestParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findAllByYellowCard(tournament_id), HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/red_card")
-    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByRedCard(@RequestParam("groupId") long groupId) {
-        return new ResponseEntity<>(service.findAllByRedCard(groupId), HttpStatus.OK);
+    public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByRedCard(@RequestParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findAllByRedCard(tournament_id), HttpStatus.OK);
     }
 }

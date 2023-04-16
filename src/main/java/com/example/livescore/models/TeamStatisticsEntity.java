@@ -8,14 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import static com.example.livescore.enums.EventNames.GOAL;
+import static com.example.livescore.enums.EventEnum.GOAL;
 
 @Entity
 @Table(name = "team_statistics")
@@ -49,10 +46,14 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     @Column(name = "points")
     private Integer points;
 
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    private GroupEntity group;
+
     @Override
     public TeamStatisticsDTO toDTO() {
         return new TeamStatisticsDTO(
-                this.id.getGroup().getGroupName(),
+                this.id.getTournament().getTournamentName(),
                 this.id.getTeam().getTeamName(),
                 this.gamePlayed,
                 this.winCount,
@@ -68,7 +69,7 @@ public class TeamStatisticsEntity extends AbstractEntity<TeamStatisticsDTO> {
     public DistinctTeamStatisticsDTO toDistinctStatisticsDTO(String statName) {
         DistinctTeamStatisticsDTO distinctTeamStatisticsDTO = new DistinctTeamStatisticsDTO(
                 statName,
-                id.getGroup().getGroupName(),
+                id.getTournament().getTournamentName(),
                 id.getTeam().getTeamName()
         );
         if (statName.equals(GOAL.getEventName())) {

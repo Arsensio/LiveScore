@@ -72,8 +72,8 @@ public class DefaultPlayerStatisticsService
     }
 
     @Override
-    public PlayerStatisticsEntity saveDefault(PlayerEntity player, GroupEntity group) {
-        PlayerStatisticsEntityPK pk = new PlayerStatisticsEntityPK(group, player);
+    public PlayerStatisticsEntity saveDefault(PlayerEntity player, TournamentEntity tournament) {
+        PlayerStatisticsEntityPK pk = new PlayerStatisticsEntityPK(tournament, player);
         return repository.save(new PlayerStatisticsEntity(
                 pk,
                 0L,

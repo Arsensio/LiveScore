@@ -2,12 +2,18 @@ package com.example.livescore.models;
 
 
 import com.example.core.dto.AbstractEntity;
-import com.example.livescore.enums.EventNames;
+import com.example.livescore.enums.EventEnum;
+import com.example.livescore.web.assists.AssistDTO;
 import com.example.livescore.web.events.EventDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.livescore.enums.EventEnum.*;
 
 @Entity
 @Getter
@@ -15,7 +21,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "events")
-@ToString
+@Builder
 public class EventEntity extends AbstractEntity<EventDTO> implements Serializable {
 
     @Id
@@ -23,63 +29,89 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
     @Column(name = "event_id")
     private Long eventId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "protocol_id", referencedColumnName = "protocol_id")
-    private ProtocolEntity protocol;
-
-    @Column(name = "event_name")
-    private String eventName;
-
     @Column(name = "game_score")
     private String gameScore;
-
-    @ManyToOne
-    @JoinColumn(name = "player_id", referencedColumnName = "player_id")
-    private PlayerEntity player;
 
     @Column(name = "minute")
     private Integer minute;
 
-    @Column(name = "penalty")
-    private Boolean isPenalty;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "protocol_id", referencedColumnName = "protocol_id")
+    private ProtocolEntity protocol;
 
-    @OneToOne
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
-    private GoalInfoEntity goalInfo;
+    @JsonIgnore
+    @OneToMany(mappedBy = "event")
+    List<EventInfoEntity> eventInfo = new ArrayList<>();
 
-    public EventEntity(Long eventId, ProtocolEntity protocol, String eventName, String gameScore, PlayerEntity player, Integer minute, Boolean isPenalty) {
-        this.eventId = eventId;
-        this.protocol = protocol;
-        this.eventName = eventName;
+    public EventEntity(String gameScore, Integer minute, ProtocolEntity protocol) {
         this.gameScore = gameScore;
-        this.player = player;
         this.minute = minute;
-        this.isPenalty = isPenalty;
+        this.protocol = protocol;
+    }
+
+    public EventEntity(Long eventId, String gameScore, Integer minute, ProtocolEntity protocol) {
+        this.eventId = eventId;
+        this.gameScore = gameScore;
+        this.minute = minute;
+        this.protocol = protocol;
     }
 
     @Override
     public EventDTO toDTO() {
-        EventDTO eventDTO = new EventDTO(
-                this.eventId,
-                this.eventName,
-                this.player.getName() + " " + this.player.getSurname(),
-                this.player.getPlayerId(),
-                this.minute,
-                this.player.getTeam().getTeamId(),
-                this.player.getTeam().getTeamName(),
-                this.gameScore,
-                this.isPenalty
-        );
-        if (goalInfo != null) {
-            if (goalInfo.getName().equals(EventNames.ASSIST.getEventName())) {
-                eventDTO.setAssist(goalInfo.toDTO());
-                eventDTO.setPenalty(false);
-            } else if (goalInfo.getName().equals(EventNames.PENALTY.getEventName())) {
-                eventDTO.setAssist(null);
-                eventDTO.setPenalty(true);
+        EventDTO eventDTO = EventDTO.builder()
+                .eventId(eventId)
+                .minute(minute)
+                .gameScore(gameScore)
+                .build();
+
+        for (EventInfoEntity e : eventInfo) {
+            if (e.getEventName().equals(GOAL.getEventName())) {
+                setEventInfo(eventDTO, e);
+            } else if (e.getEventName().equals(YELLOW_CARD.getEventName())) {
+                setEventInfo(eventDTO, e);
+            } else if (e.getEventName().equals(RED_CARD.getEventName())) {
+                setEventInfo(eventDTO, e);
+            } else if (e.getEventName().equals(PENALTY.getEventName())) {
+                setEventInfo(eventDTO, e);
+            } else if (e.getEventName().equals(MISS_PENALTY.getEventName())) {
+                setEventInfo(eventDTO, e);
+            } else if (e.getEventName().equals(ASSIST.getEventName())) {
+                AssistDTO assist = AssistDTO.builder()
+                        .assistPlayer(e.getPlayerName() + " " + e.getPlayerSurname())
+                        .assistPlayerId(e.getPlayer().getPlayerId())
+                        .build();
+                eventDTO.setAssist(assist);
             }
         }
 
         return eventDTO;
+    }
+
+    public EventInfoEntity getEventInfoByEnum(EventEnum eventEnum) {
+        for (EventInfoEntity e : eventInfo) {
+            if (e.getEventName().equals(eventEnum.getEventName())) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    private void setEventInfo(EventDTO eventDTO, EventInfoEntity e) {
+        eventDTO.setEventName(e.getEventName());
+        eventDTO.setPlayerName(e.getPlayerName() + " " + e.getPlayerSurname());
+        eventDTO.setPlayerId(e.getPlayer().getPlayerId());
+        eventDTO.setTeamId(e.getTeam().getTeamId());
+        eventDTO.setTeamName(e.getTeamName());
+    }
+
+    @Override
+    public String toString() {
+
+        return "EventEntity{" +
+                "eventId=" + eventId +
+                ", gameScore='" + gameScore + '\'' +
+                ", minute=" + minute +
+                ", protocol=" + protocol +
+                '}';
     }
 }

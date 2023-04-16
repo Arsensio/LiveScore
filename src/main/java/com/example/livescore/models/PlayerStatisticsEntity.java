@@ -42,7 +42,7 @@ public class PlayerStatisticsEntity extends AbstractEntity<PlayerStatisticsDTO> 
     public PlayerStatisticsDTO toDTO() {
         return new PlayerStatisticsDTO(
                 id.getPlayer().getPlayerId(),
-                id.getGroup().getGroupId(),
+                id.getTournament().getTournamentId(),
                 matchPlayed,
                 goals,
                 assists,
@@ -56,7 +56,7 @@ public class PlayerStatisticsEntity extends AbstractEntity<PlayerStatisticsDTO> 
 
         DistinctPlayerStatisticsDTO distinctPlayerStatisticsDTO = new DistinctPlayerStatisticsDTO(
                 statName,
-                this.id.getGroup().getGroupName(),
+//                this.id.getGroup().getGroupName(),
                 this.id.getPlayer().getTeam().getTeamName(),
                 this.id.getPlayer().getTeam().getTeamLogo(),
                 this.id.getPlayer().getName() + " " + this.id.getPlayer().getSurname()

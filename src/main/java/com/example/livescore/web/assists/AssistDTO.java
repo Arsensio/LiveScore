@@ -1,15 +1,13 @@
 package com.example.livescore.web.assists;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoalInfoDTO {
+@Builder
+public class AssistDTO {
 
     String assistPlayer;
     Long assistPlayerId;
