@@ -18,4 +18,10 @@ public interface PlayerRepository extends JpaRepository<PlayerEntity, Long> {
             "from PlayerEntity p " +
             "where p.team.teamId = ?1")
     List<MinPlayerDto> findAllPlayersOfTeam(Long teamId);
+
+    @Query(value = "select player_number " +
+            "from players " +
+            "join teams on players.team_id = teams.team_id " +
+            "where teams.team_id = ?1", nativeQuery = true)
+    List<Integer> findAllPlayerNumbersInTeam(Long teamId);
 }
