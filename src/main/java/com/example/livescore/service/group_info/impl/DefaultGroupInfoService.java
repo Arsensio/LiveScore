@@ -7,7 +7,6 @@ import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
-import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.group_info.GroupInfoDTO;
 import com.example.livescore.web.group_info.GroupInfoListDTO;
@@ -29,15 +28,13 @@ public class DefaultGroupInfoService
 
     private final TournamentService tournamentService;
     private final TeamFootballService teamFootballService;
-    private final TeamStatisticsService teamStatisticsService;
     private final GroupService groupService;
     private final ProtocolService protocolService;
 
-    public DefaultGroupInfoService(GroupInfoRepository repository, TournamentService tournamentService, TeamFootballService teamFootballService, TeamStatisticsService teamStatisticsService, GroupService groupService, ProtocolService protocolService) {
+    public DefaultGroupInfoService(GroupInfoRepository repository, TournamentService tournamentService, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService) {
         super(repository);
         this.tournamentService = tournamentService;
         this.teamFootballService = teamFootballService;
-        this.teamStatisticsService = teamStatisticsService;
         this.groupService = groupService;
         this.protocolService = protocolService;
     }

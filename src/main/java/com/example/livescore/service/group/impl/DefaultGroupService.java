@@ -122,6 +122,11 @@ public class DefaultGroupService
         return allByTournamentIdAndPlayoffFalse;
     }
 
+    @Override
+    public List<GroupEntity> findAllByTournamentID(Long tournamentId) {
+        return repository.findAllByTournamentId(tournamentId);
+    }
+
 
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();

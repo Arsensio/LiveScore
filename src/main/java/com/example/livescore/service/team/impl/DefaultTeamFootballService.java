@@ -2,9 +2,13 @@ package com.example.livescore.service.team.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
+import com.example.livescore.models.GroupEntity;
+import com.example.livescore.models.GroupInfoEntity;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.repository.GroupInfoRepository;
 import com.example.livescore.repository.TeamRepository;
+import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.service.tournament.TournamentService;
@@ -18,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.livescore.enums.GroupStatusEnum.IN_PROGRESS;
+
 @Service
 public class DefaultTeamFootballService
         extends AbstractFootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long, TeamRepository>
@@ -25,12 +31,16 @@ public class DefaultTeamFootballService
 
     private final TeamStatisticsService teamStatisticsService;
     private final TournamentService tournamentService;
+    private final GroupInfoRepository groupInfoRepository;
+    private final GroupService groupService;
 
     public DefaultTeamFootballService(TeamRepository repository, TeamStatisticsService
-            teamStatisticsService, TournamentService tournamentService) {
+            teamStatisticsService, TournamentService tournamentService, GroupInfoRepository groupInfoRepository, GroupService groupService) {
         super(repository);
         this.teamStatisticsService = teamStatisticsService;
         this.tournamentService = tournamentService;
+        this.groupInfoRepository = groupInfoRepository;
+        this.groupService = groupService;
     }
 
     @Override
@@ -46,8 +56,13 @@ public class DefaultTeamFootballService
         TournamentEntity tournament = tournamentService.findEntityById(saveTeamDTO.getTournamentId());
         teamStatisticsService.save(tournament, savedTeam);
 
+        if (tournament.getTournamentType().equals("LEAGUE")) {
+            groupInfoRepository.saveAndFlush(getDefaultGroupInfoForLeague(savedTeam, tournament));
+        }
+
         return savedTeam.toDTO();
     }
+
 
     @Override
     public TeamDTO update(Long id, SaveTeamDTO saveTeamDTO) {
@@ -109,5 +124,27 @@ public class DefaultTeamFootballService
 //                            .build());
 //        }
         return teamWithPlayersDto;
+    }
+
+
+    private GroupInfoEntity getDefaultGroupInfoForLeague(TeamEntity savedTeam, TournamentEntity tournament) {
+        GroupEntity group = groupService.findAllByTournamentID(tournament.getTournamentId()).get(0);
+        return GroupInfoEntity.builder()
+                .tournamentLogo(tournament.getTournamentLogo())
+                .groupName(group.getGroupName())
+                .teamName(savedTeam.getTeamName())
+                .teamLogo(savedTeam.getTeamLogo())
+                .gamePlayed(0)
+                .winCount(0)
+                .drawCount(0)
+                .loseCount(0)
+                .goalCount(0)
+                .goalMissed(0)
+                .points(0)
+                .status(IN_PROGRESS.toString())
+                .group(group)
+                .team(savedTeam)
+                .tournament(tournament)
+                .build();
     }
 }
