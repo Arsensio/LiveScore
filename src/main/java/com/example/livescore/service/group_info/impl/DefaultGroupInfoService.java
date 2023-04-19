@@ -8,12 +8,14 @@ import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.tournament.TournamentService;
+import com.example.livescore.web.group_info.FinishStageDTO;
 import com.example.livescore.web.group_info.GroupInfoDTO;
 import com.example.livescore.web.group_info.GroupInfoListDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -77,6 +79,7 @@ public class DefaultGroupInfoService
     }
 
     @Override
+    @Transactional
     public List<TeamDTO> finishGroupStage(long tournamentId) {
         TournamentEntity tournament = tournamentService.findEntityById(tournamentId);
         List<GroupEntity> groupEntities = groupService.findAllGroupInGroupStageByTournamentId(tournamentId);
@@ -107,23 +110,7 @@ public class DefaultGroupInfoService
                 TeamEntity nextStageTeam = groupInfoEntity.getTeam();
                 GroupEntity nextStage = groupService.findNextStage(groupInfoEntity.getGroup());
 
-                GroupInfoEntity newGroupInfo = GroupInfoEntity.builder()
-                        .tournamentLogo(nextStage.getTournament().getTournamentLogo())
-                        .groupName(nextStage.getGroupName())
-                        .teamName(nextStageTeam.getTeamName())
-                        .teamLogo(nextStageTeam.getTeamLogo())
-                        .gamePlayed(groupInfoEntity.getGamePlayed())
-                        .winCount(groupInfoEntity.getWinCount())
-                        .drawCount(groupInfoEntity.getDrawCount())
-                        .loseCount(groupInfoEntity.getLoseCount())
-                        .goalCount(groupInfoEntity.getGoalCount())
-                        .goalMissed(groupInfoEntity.getGoalMissed())
-                        .status(IN_PROGRESS.toString())
-                        .group(nextStage)
-                        .team(nextStageTeam)
-                        .tournament(tournament)
-                        .points(0)
-                        .build();
+                GroupInfoEntity newGroupInfo = nextStageEntity(tournament, groupInfoEntity, nextStageTeam, nextStage);
 
                 repository.saveAndFlush(newGroupInfo);
                 nextStageTeams.add(nextStageTeam.toDTO());
@@ -135,6 +122,39 @@ public class DefaultGroupInfoService
     }
 
     @Override
+    @Transactional
+    public List<TeamDTO> finishStage(long tournamentId, FinishStageDTO finishStageDTO) {
+        List<TeamDTO> nextStageTeams = new ArrayList<>();
+        GroupEntity currentGroup = groupService.findEntityById(finishStageDTO.getGroupId());
+        TournamentEntity tournament = tournamentService.findEntityById(tournamentId);
+        List<Long> teamIds = finishStageDTO.getTeamIds();
+
+        List<GroupInfoEntity> allByTournamentIdAndGroupId = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournamentId, currentGroup.getGroupId());
+
+        for (GroupInfoEntity g : allByTournamentIdAndGroupId) {
+            g.setStatus(FINISHED.toString());
+            repository.saveAndFlush(g);
+        }
+        GroupEntity nextGroup = groupService.findNextStage(currentGroup);
+
+        System.out.println(currentGroup.getGroupId());
+        System.out.println(nextGroup.getGroupId());
+        for (long id : teamIds) {
+            TeamEntity nextStageTeam = teamFootballService.findEntityById(id);
+
+            System.out.println(nextGroup);
+            GroupInfoEntity currentGroupInfo = repository.findEntityByGroupAndTeamId(currentGroup, nextStageTeam, tournament);
+
+            GroupInfoEntity newGroupInfo = nextStageEntity(tournament, currentGroupInfo, nextStageTeam, nextGroup);
+            repository.saveAndFlush(newGroupInfo);
+            nextStageTeams.add(nextStageTeam.toDTO());
+        }
+
+        return nextStageTeams;
+    }
+
+    @Override
+    @Transactional
     public List<GroupInfoDTO> createDrawInCup(List<SaveGroupInfoDTO> list) {
         List<GroupInfoDTO> returnList = new ArrayList<>();
 
@@ -272,5 +292,25 @@ public class DefaultGroupInfoService
                 .reversed()
                 .thenComparing((p1, p2) ->
                         Integer.compare(p1.getGoalCount() - p1.getGoalMissed(), p2.getGoalCount() + p2.getGoalMissed()));
+    }
+
+    private static GroupInfoEntity nextStageEntity(TournamentEntity tournament, GroupInfoEntity groupInfoEntity, TeamEntity nextStageTeam, GroupEntity nextStage) {
+        return GroupInfoEntity.builder()
+                .tournamentLogo(nextStage.getTournament().getTournamentLogo())
+                .groupName(nextStage.getGroupName())
+                .teamName(nextStageTeam.getTeamName())
+                .teamLogo(nextStageTeam.getTeamLogo())
+                .gamePlayed(groupInfoEntity.getGamePlayed())
+                .winCount(groupInfoEntity.getWinCount())
+                .drawCount(groupInfoEntity.getDrawCount())
+                .loseCount(groupInfoEntity.getLoseCount())
+                .goalCount(groupInfoEntity.getGoalCount())
+                .goalMissed(groupInfoEntity.getGoalMissed())
+                .status(IN_PROGRESS.toString())
+                .group(nextStage)
+                .team(nextStageTeam)
+                .tournament(tournament)
+                .points(0)
+                .build();
     }
 }

@@ -5,6 +5,7 @@ import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.GroupInfoEntity;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.web.group_info.FinishStageDTO;
 import com.example.livescore.web.group_info.GroupInfoDTO;
 import com.example.livescore.web.group_info.GroupInfoListDTO;
 import com.example.livescore.web.group_info.SaveGroupInfoDTO;
@@ -38,4 +39,6 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
     void incrementGameCount(GroupEntity group, TeamEntity team);
 
     List<TeamDTO> finishGroupStage(long tournamentId);
+
+    List<TeamDTO> finishStage(long tournamentId, FinishStageDTO finishStageDTO);
 }
