@@ -43,5 +43,11 @@ public class DefaultTournamentController
         return new ResponseEntity<>(service.createCup(dto), OK);
     }
 
+    @Override
+    @GetMapping("/tournament_name")
+    public ResponseEntity<List<TournamentDTO>> searchByName(@PathParam("") String name) {
+        return new ResponseEntity<>(service.searchByName(name), OK);
+    }
+
 
 }

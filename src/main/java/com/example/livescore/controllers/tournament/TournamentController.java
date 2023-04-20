@@ -16,4 +16,6 @@ public interface TournamentController extends FootballController<TournamentDTO, 
 
     ResponseEntity<TournamentDTO> createCupTournament(SaveCupTournamentDTO saveCupTournamentDTO);
 
+    ResponseEntity<List<TournamentDTO>> searchByName(String name);
+
 }

@@ -99,6 +99,11 @@ public class DefaultTournamentService
         return savedTournament.toDTO();
     }
 
+    @Override
+    public List<TournamentDTO> searchByName(String name) {
+        return repository.searchByName(name).stream().map(TournamentEntity::toDTO).toList();
+    }
+
     private TournamentEntity saveEntity(SaveTournamentDTO dto) {
         return repository.save(new TournamentEntity(
                 null,
