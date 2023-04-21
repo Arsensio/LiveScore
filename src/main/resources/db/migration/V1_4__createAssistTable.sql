@@ -5,7 +5,7 @@ create table event_info
     player_surname varchar,
     player_number  bigint,
     team_name      varchar,
-    team_logo      varchar,
+    team_logo      varchar(3000),
     event_name     varchar,
     player_name    varchar,
     player_id      bigint,
