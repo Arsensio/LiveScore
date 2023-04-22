@@ -6,7 +6,8 @@ create table tournaments
         primary key,
     tournament_name varchar(255),
     tournament_type varchar(255),
-    tournament_logo varchar(255)
+    tournament_logo varchar(3000),
+    tournament_status varchar(255)
 );
 
 create table groups
@@ -26,7 +27,7 @@ create table teams
 (
     team_id   bigserial
         primary key,
-    team_logo varchar(255),
+    team_logo varchar(3000),
     team_name varchar(255)
 );
 

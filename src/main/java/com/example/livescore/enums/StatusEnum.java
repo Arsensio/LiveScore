@@ -1,13 +1,13 @@
 package com.example.livescore.enums;
 
-public enum GroupStatusEnum {
+public enum StatusEnum {
 
     CREATED("CREATED"),
     IN_PROGRESS("IN_PROGRESS"),
     FINISHED("FINISHED");
     private final String status;
 
-    GroupStatusEnum(String s) {
+    StatusEnum(String s) {
         this.status = s;
     }
 

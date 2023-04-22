@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
+
 @Service
 public class DefaultTournamentService
         extends AbstractFootballService<TournamentEntity, TournamentDTO, SaveTournamentDTO, Long, TournamentRepository>
@@ -88,7 +90,8 @@ public class DefaultTournamentService
                 dto.getTournamentName(),
                 dto.getTournamentType(),
                 dto.getTournamentLogo(),
-                dto.getTeamsNum()
+                dto.getTeamsNum(),
+                IN_PROGRESS.toString()
         ));
 
         if (dto.isPlayOf()) {
@@ -110,7 +113,8 @@ public class DefaultTournamentService
                 dto.getTournamentName(),
                 dto.getTournamentType(),
                 dto.getTournamentLogo(),
-                dto.getTeamsNum()
+                dto.getTeamsNum(),
+                IN_PROGRESS.toString()
         ));
     }
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.example.livescore.enums.GroupStatusEnum.*;
+import static com.example.livescore.enums.StatusEnum.*;
 
 
 @Service

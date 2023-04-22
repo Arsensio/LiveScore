@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.livescore.enums.GroupStatusEnum.IN_PROGRESS;
+import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
 
 @Service
 public class DefaultTeamFootballService
