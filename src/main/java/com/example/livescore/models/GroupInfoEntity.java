@@ -83,4 +83,19 @@ public class GroupInfoEntity extends AbstractEntity<GroupInfoDTO> {
                 this.points
         );
     }
+
+    public GroupInfoDTO toDTO(boolean isLive) {
+        return new GroupInfoDTO(
+                this.teamName,
+                this.teamLogo,
+                this.gamePlayed,
+                this.winCount,
+                this.drawCount,
+                this.loseCount,
+                this.goalCount,
+                this.goalMissed,
+                this.points,
+                isLive
+        );
+    }
 }
