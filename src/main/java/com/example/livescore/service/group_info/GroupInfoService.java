@@ -5,10 +5,7 @@ import com.example.livescore.models.GroupEntity;
 import com.example.livescore.models.GroupInfoEntity;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TournamentEntity;
-import com.example.livescore.web.group_info.FinishStageDTO;
-import com.example.livescore.web.group_info.GroupInfoDTO;
-import com.example.livescore.web.group_info.GroupInfoListDTO;
-import com.example.livescore.web.group_info.SaveGroupInfoDTO;
+import com.example.livescore.web.group_info.*;
 import com.example.livescore.web.teams.TeamDTO;
 
 import java.util.List;
@@ -41,4 +38,6 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
     List<TeamDTO> finishGroupStage(long tournamentId);
 
     List<TeamDTO> finishStage(long tournamentId, FinishStageDTO finishStageDTO);
+
+    List<AfterDrawDTO> getTablesAfterDraw(long tournamentId);
 }

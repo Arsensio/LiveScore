@@ -3,10 +3,7 @@ package com.example.livescore.controllers.group_info.impl;
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.group_info.GroupInfoController;
 import com.example.livescore.service.group_info.GroupInfoService;
-import com.example.livescore.web.group_info.FinishStageDTO;
-import com.example.livescore.web.group_info.GroupInfoDTO;
-import com.example.livescore.web.group_info.GroupInfoListDTO;
-import com.example.livescore.web.group_info.SaveGroupInfoDTO;
+import com.example.livescore.web.group_info.*;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +50,12 @@ public class DefaultGroupInfoController
     @Override
     @PostMapping("/finish_stage/{tournament_id}")
     public ResponseEntity<List<TeamDTO>> finishStage(@PathVariable("tournament_id") long tournamentId, @RequestBody FinishStageDTO finishStageDTO) {
-        return new ResponseEntity<>(service.finishStage(tournamentId,finishStageDTO), OK);
+        return new ResponseEntity<>(service.finishStage(tournamentId, finishStageDTO), OK);
+    }
+
+    @Override
+    @GetMapping("/tables_after_draw/{tournamentId}")
+    public ResponseEntity<List<AfterDrawDTO>> getTablesAfterDraw(@PathVariable("tournamentId") long tournamentId) {
+        return new ResponseEntity<>(service.getTablesAfterDraw(tournamentId), OK);
     }
 }

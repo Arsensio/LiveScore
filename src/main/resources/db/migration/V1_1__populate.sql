@@ -1,7 +1,7 @@
 -- sql script to populate database with some data for testing purposes
 
 insert into tournaments
-values (1, 'SFL', 'LEAGUE', 'https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg','IN_PROGRESS');
+values (1, 'SFL', 'LEAGUE', 'https://upload.wikimedia.org/wikipedia/commons/9/9f/New_logo_SDU.jpg', 16, 'IN_PROGRESS');
 
 insert into groups
 values (1, 'Group A', 0, false, 1);

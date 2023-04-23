@@ -8,10 +8,7 @@ import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.tournament.TournamentService;
-import com.example.livescore.web.group_info.FinishStageDTO;
-import com.example.livescore.web.group_info.GroupInfoDTO;
-import com.example.livescore.web.group_info.GroupInfoListDTO;
-import com.example.livescore.web.group_info.SaveGroupInfoDTO;
+import com.example.livescore.web.group_info.*;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
@@ -151,6 +148,27 @@ public class DefaultGroupInfoService
         }
 
         return nextStageTeams;
+    }
+
+    @Override
+    public List<AfterDrawDTO> getTablesAfterDraw(long tournamentId) {
+        List<GroupEntity> allGroups = groupService.findAllGroupInGroupStageByTournamentId(tournamentId);
+        List<AfterDrawDTO> afterDrawList = new ArrayList<>();
+
+        for (GroupEntity g : allGroups) {
+            AfterDrawDTO afterDrawDTO = new AfterDrawDTO();
+            afterDrawDTO.setGroupName(g.getGroupName());
+            List<GroupInfoEntity> allTeams = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournamentId, g.getGroupId());
+            List<TeamDTO> groupTeam = new ArrayList<>();
+            for (GroupInfoEntity gi : allTeams) {
+                TeamEntity team = gi.getTeam();
+                groupTeam.add(team.toDTO());
+            }
+            afterDrawDTO.setTeams(groupTeam);
+            afterDrawList.add(afterDrawDTO);
+        }
+
+        return afterDrawList;
     }
 
     @Override
