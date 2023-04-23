@@ -2,11 +2,12 @@
 
 create table tournaments
 (
-    tournament_id   bigserial
+    tournament_id     bigserial
         primary key,
-    tournament_name varchar(255),
-    tournament_type varchar(255),
-    tournament_logo varchar(3000),
+    tournament_name   varchar(255),
+    tournament_type   varchar(255),
+    tournament_logo   varchar(3000),
+    teams_num         bigint,
     tournament_status varchar(255)
 );
 
