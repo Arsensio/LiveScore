@@ -22,7 +22,6 @@ public class DefaultGroupService
         extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long, GroupRepository>
         implements GroupService {
 
-
     public DefaultGroupService(GroupRepository repository) {
         super(repository);
     }
@@ -102,7 +101,6 @@ public class DefaultGroupService
         return createPlayOfGroups(tournament, teamsNum);
     }
 
-
     @Override
     public GroupEntity createGroupBYTournament(TournamentEntity tournament, String leagueNameOrLocation, Integer order) {
         return repository.save(new GroupEntity(
@@ -126,7 +124,6 @@ public class DefaultGroupService
     public List<GroupEntity> findAllByTournamentID(Long tournamentId) {
         return repository.findAllByTournamentId(tournamentId);
     }
-
 
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();
