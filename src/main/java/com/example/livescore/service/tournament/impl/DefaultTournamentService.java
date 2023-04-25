@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.livescore.enums.StatusEnum.FINISHED;
 import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
 
 @Service
@@ -110,6 +111,12 @@ public class DefaultTournamentService
     @Override
     public List<TournamentDTO> findAllCupTournamentByUser(long userId) {
         return repository.findAllCupByUserId(userId).stream().map(TournamentEntity::toDTO).toList();
+    }
+
+    @Override
+    public TournamentDTO finishTournament(TournamentEntity tournament) {
+        tournament.setTournamentStatus(FINISHED.toString());
+        return repository.saveAndFlush(tournament).toDTO();
     }
 
     private TournamentEntity saveEntity(SaveTournamentDTO dto) {
