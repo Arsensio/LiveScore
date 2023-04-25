@@ -107,6 +107,11 @@ public class DefaultTournamentService
         return repository.searchByName(name).stream().map(TournamentEntity::toDTO).toList();
     }
 
+    @Override
+    public List<TournamentDTO> findAllCupTournamentByUser(long userId) {
+        return repository.findAllCupByUserId(userId).stream().map(TournamentEntity::toDTO).toList();
+    }
+
     private TournamentEntity saveEntity(SaveTournamentDTO dto) {
         return repository.save(new TournamentEntity(
                 null,

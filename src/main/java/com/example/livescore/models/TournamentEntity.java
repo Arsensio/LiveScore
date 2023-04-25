@@ -43,6 +43,7 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
         return new TournamentDTO(
                 this.tournamentId,
                 this.tournamentName,
+                this.tournamentLogo,
                 this.tournamentType
         );
     }
