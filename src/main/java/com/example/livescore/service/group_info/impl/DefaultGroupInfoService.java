@@ -8,10 +8,7 @@ import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.tournament.TournamentService;
-import com.example.livescore.web.group_info.FinishStageDTO;
-import com.example.livescore.web.group_info.GroupInfoDTO;
-import com.example.livescore.web.group_info.GroupInfoListDTO;
-import com.example.livescore.web.group_info.SaveGroupInfoDTO;
+import com.example.livescore.web.group_info.*;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
@@ -154,6 +151,27 @@ public class DefaultGroupInfoService
     }
 
     @Override
+    public List<AfterDrawDTO> getTablesAfterDraw(long tournamentId) {
+        List<GroupEntity> allGroups = groupService.findAllGroupInGroupStageByTournamentId(tournamentId);
+        List<AfterDrawDTO> afterDrawList = new ArrayList<>();
+
+        for (GroupEntity g : allGroups) {
+            AfterDrawDTO afterDrawDTO = new AfterDrawDTO();
+            afterDrawDTO.setGroupName(g.getGroupName());
+            List<GroupInfoEntity> allTeams = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournamentId, g.getGroupId());
+            List<TeamDTO> groupTeam = new ArrayList<>();
+            for (GroupInfoEntity gi : allTeams) {
+                TeamEntity team = gi.getTeam();
+                groupTeam.add(team.toDTO());
+            }
+            afterDrawDTO.setTeams(groupTeam);
+            afterDrawList.add(afterDrawDTO);
+        }
+
+        return afterDrawList;
+    }
+
+    @Override
     @Transactional
     public List<GroupInfoDTO> createDrawInCup(List<SaveGroupInfoDTO> list) {
         List<GroupInfoDTO> returnList = new ArrayList<>();
@@ -186,6 +204,11 @@ public class DefaultGroupInfoService
             }
 
             orderedByPointList.sort(sortGroupAlgorithm());
+            for (int i = 0; i < orderedByPointList.size(); i++) {
+                GroupInfoDTO groupInfoDTO = orderedByPointList.get(i);
+                groupInfoDTO.setPosition(i + 1);
+                orderedByPointList.set(i, groupInfoDTO);
+            }
 
             groupInfoListDTO.setSortedByPointTeams(orderedByPointList);
             returnGroupList.add(groupInfoListDTO);
@@ -209,6 +232,11 @@ public class DefaultGroupInfoService
         }
 
         orderedByPointList.sort(sortGroupAlgorithm());
+        for (int i = 0; i < orderedByPointList.size(); i++) {
+            GroupInfoDTO groupInfoDTO = orderedByPointList.get(i);
+            groupInfoDTO.setPosition(i + 1);
+            orderedByPointList.set(i, groupInfoDTO);
+        }
         groupInfoListDTO.setSortedByPointTeams(orderedByPointList);
         returnGroupList.add(groupInfoListDTO);
 
@@ -249,18 +277,20 @@ public class DefaultGroupInfoService
     }
 
     private void updateIfLiveMatchDTO(List<ProtocolEntity> allByGameStateStarted, List<GroupInfoDTO> orderedByPointList, GroupInfoEntity groupInfo) {
+        boolean isLive = false;
         for (ProtocolEntity protocolEntity : allByGameStateStarted) {
             int team1Score = protocolEntity.getTeam1Score();
             int team2Score = protocolEntity.getTeam2Score();
 
             if (groupInfo.getTeam() == protocolEntity.getTeam1()) {
                 updatePointsAndStatistic(team1Score, team2Score, groupInfo);
+                isLive = true;
             } else if (groupInfo.getTeam() == protocolEntity.getTeam2()) {
                 updatePointsAndStatistic(team2Score, team1Score, groupInfo);
+                isLive = true;
             }
         }
-
-        orderedByPointList.add(groupInfo.toDTO());
+        orderedByPointList.add(groupInfo.toDTO(isLive));
     }
 
     private void updateIfLiveMatch(List<ProtocolEntity> allByGameStateStarted, List<GroupInfoEntity> orderedByPointList, GroupInfoEntity groupInfo) {
