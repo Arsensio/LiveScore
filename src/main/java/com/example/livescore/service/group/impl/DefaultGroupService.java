@@ -127,6 +127,11 @@ public class DefaultGroupService
         return repository.findAllByTournamentId(tournamentId);
     }
 
+    @Override
+    public List<GroupDTO> findAllGroupStageByTournamentId(long tournamentId) {
+        return repository.findAllGroupStageByTournamentId(tournamentId).stream().map(GroupEntity::toDTO).toList();
+    }
+
 
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();
