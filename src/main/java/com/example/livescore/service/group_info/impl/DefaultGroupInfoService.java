@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.example.livescore.enums.PlayOffEnum.FINAL;
 import static com.example.livescore.enums.StatusEnum.*;
 
 
@@ -132,14 +133,21 @@ public class DefaultGroupInfoService
             g.setStatus(FINISHED.toString());
             repository.saveAndFlush(g);
         }
+
+        if (currentGroup.getGroupName().equalsIgnoreCase(FINAL.toString())
+                && !tournament.getTournamentStatus().equals(FINISHED.toString())) {
+            tournamentService.finishTournament(tournament);
+            return nextStageTeams;
+        } else if (tournament.getTournamentStatus().equals(FINISHED.toString())) {
+            return nextStageTeams;
+        }
+
         GroupEntity nextGroup = groupService.findNextStage(currentGroup);
 
-        System.out.println(currentGroup.getGroupId());
-        System.out.println(nextGroup.getGroupId());
+
         for (long id : teamIds) {
             TeamEntity nextStageTeam = teamFootballService.findEntityById(id);
 
-            System.out.println(nextGroup);
             GroupInfoEntity currentGroupInfo = repository.findEntityByGroupAndTeamId(currentGroup, nextStageTeam, tournament);
 
             GroupInfoEntity newGroupInfo = nextStageEntity(tournament, currentGroupInfo, nextStageTeam, nextGroup);
