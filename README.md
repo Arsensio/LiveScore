@@ -12,27 +12,46 @@
 6. Запускаете проект, готово! Приложение работает по адресу localhost:8080. Swagger документацию найдете по
    адресу http://localhost:8080/swagger-ui/
 
-application.yaml
+
+```yaml
 spring:
-datasource:
-url: jdbc:postgresql://localhost:(порт вашей базы данных, по дефолту если оставили то 5432)/(имя вашей базы данных)
-driver-class-name: org.postgresql.Driver
-username: (ваш юсернейм от Postgres)
-password: (ваш пароль, от Postgres, не PgAdmin, не путайте)
-flyway:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/live_score
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway:
     locations: classpath:db/migration
-baseline-on-migrate: true
-url: jdbc:postgresql://localhost:(порт вашей базы данных, по дефолту если оставили то 5432)/(имя вашей базы данных)
-user: (ваш юсернейм от Postgres)
-password: (ваш пароль, от Postgres, не PgAdmin, не путайте)
-baseline-version: 1.0
+    baseline-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/live_score
+    user: postgres
+    password: 123
+    baseline-version: 1.0
+
+server:
+  port : 8081
+
+
 
 logging:
-level:
-org.hibernate.SQL: DEBUG
-org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 jwt:
-token:
-secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
-expired: 10800000
+  token:
+    secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
+    expired: 10800000
+
+gcp:
+  firebase:
+    service-account: classpath:livescoresdu-firebase-adminsdk-6p6r9-e69205f00f.json
