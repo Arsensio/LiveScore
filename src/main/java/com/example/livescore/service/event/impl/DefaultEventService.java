@@ -66,7 +66,7 @@ public class DefaultEventService
         EventInfoEntity goalEventInfo = eventInfoService.saveEventInfo(newEventInfo(save, goalPlayer, GOAL));
         eventInfos.add(goalEventInfo);
 
-        if (dto.getAssistId() != null) {
+        if (dto.getAssistId() != null && dto.getAssistId() != 0) {
             PlayerEntity assistPlayer = playerService.findEntityById(dto.getAssistId());
             increasePlayerStatistic(tournament, assistPlayer, ASSIST, protocol);
 
@@ -116,7 +116,7 @@ public class DefaultEventService
                 )
         ).toDTO();
 
-        if (dto.getAssistId() != null) {
+        if (dto.getAssistId() != null && dto.getAssistId() != 0) {
             PlayerEntity assistPlayer = playerService.findEntityById(dto.getAssistId());
             increasePlayerStatistic(tournament, assistPlayer, ASSIST, protocol);
 
