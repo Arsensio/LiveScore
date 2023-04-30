@@ -30,6 +30,9 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
     @Column(name = "tournament_type")
     private String tournamentType;
 
+    @Column(name = "tournament_location")
+    private String tournamentLocation;
+
     @Column(name = "tournament_logo")
     private String tournamentLogo;
 
@@ -44,7 +47,8 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
                 this.tournamentId,
                 this.tournamentName,
                 this.tournamentLogo,
-                this.tournamentType
+                this.tournamentType,
+                this.tournamentLocation
         );
     }
 

@@ -90,6 +90,7 @@ public class DefaultTournamentService
                 null,
                 dto.getTournamentName(),
                 dto.getTournamentType(),
+                dto.getLocation(),
                 dto.getTournamentLogo(),
                 dto.getTeamsNum(),
                 IN_PROGRESS.toString()
@@ -124,6 +125,7 @@ public class DefaultTournamentService
                 null,
                 dto.getTournamentName(),
                 dto.getTournamentType(),
+                dto.getLocation(),
                 dto.getTournamentLogo(),
                 dto.getTeamsNum(),
                 IN_PROGRESS.toString()

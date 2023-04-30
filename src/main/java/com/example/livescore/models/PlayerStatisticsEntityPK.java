@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -25,4 +26,17 @@ public class PlayerStatisticsEntityPK implements Serializable {
     @OneToOne
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerStatisticsEntityPK that = (PlayerStatisticsEntityPK) o;
+        return Objects.equals(tournament, that.tournament) && Objects.equals(player, that.player);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tournament, player);
+    }
 }
