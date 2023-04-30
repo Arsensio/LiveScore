@@ -63,9 +63,6 @@ spring:
     password: //ваш пароль от БД
     baseline-version: 1.0
 
-server:
-  port : 8081
-
 logging:
   level:
     org.hibernate.SQL: DEBUG
