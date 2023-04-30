@@ -100,9 +100,8 @@ public class DefaultEventService
 
         // start update info about goal and assist
         PlayerEntity newGoalAuthor = playerService.findEntityById(dto.getPlayerId());
-        updateNewAuthorInfo(goalInfo, newGoalAuthor);
-        eventInfoService.saveEventInfo(goalInfo);
-
+        EventInfoEntity newEventInfo = newEventInfo(event, newGoalAuthor, GOAL);
+        eventInfoService.saveEventInfo(newEventInfo);
         event.setMinute(dto.getMinute());
 
         increasePlayerStatistic(tournament, newGoalAuthor, GOAL, protocol);
