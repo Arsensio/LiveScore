@@ -13,6 +13,7 @@ public class SaveCupTournamentDTO {
     private String tournamentName;
     private String tournamentType;
     private String tournamentLogo;
+    private String location;
     private Integer teamsNum;
     private boolean isPlayOf;
 }
