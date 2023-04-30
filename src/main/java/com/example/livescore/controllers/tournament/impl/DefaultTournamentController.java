@@ -54,6 +54,4 @@ public class DefaultTournamentController
     public ResponseEntity<List<TournamentDTO>> searchByName(@PathParam("") String name) {
         return new ResponseEntity<>(service.searchByName(name), OK);
     }
-
-
 }

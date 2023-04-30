@@ -1,6 +1,12 @@
 package com.example.core.config;
 
 import com.example.livescore.repository.UserRepository;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,8 +22,15 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 @Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(FirebaseProperties.class)
 public class ApplicationConfig {
+
+    private final FirebaseProperties firebaseProperties;
 
     @Bean
     public Docket api() {
@@ -53,5 +66,30 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public GoogleCredentials googleCredentials() throws IOException {
+        if (firebaseProperties.getServiceAccount() != null) {
+            try (InputStream is = firebaseProperties.getServiceAccount().getInputStream()) {
+                return GoogleCredentials.fromStream(is);
+            }
+        } else {
+            return GoogleCredentials.getApplicationDefault();
+        }
+    }
+
+    @Bean
+    public FirebaseApp firebaseApp(GoogleCredentials credentials) {
+        FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(credentials)
+                .build();
+
+        return FirebaseApp.initializeApp(options);
+    }
+
+    @Bean
+    public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
+        return FirebaseMessaging.getInstance(firebaseApp);
     }
 }

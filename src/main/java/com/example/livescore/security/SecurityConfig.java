@@ -25,6 +25,7 @@ public class SecurityConfig {
     private final String[] SWAGGER_ENDPOINTS = {"/swagger-ui/**", "/swagger-ui.html", "/webjars/**", "/v2/**",
             "/swagger-resources/**"};
     private final String INFO_UPLOAD_ENDPOINT = "/info/upload/**";
+    private final String NOTIFICATION_ENDPOINTS = "/notification/**";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,6 +38,7 @@ public class SecurityConfig {
                 .antMatchers(PUT, pathArr).hasAuthority("ADMIN")
                 .antMatchers(DELETE, pathArr).hasAuthority("ADMIN")
                 .antMatchers(INFO_UPLOAD_ENDPOINT).hasAuthority("ADMIN")
+                .antMatchers(NOTIFICATION_ENDPOINTS).hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS)

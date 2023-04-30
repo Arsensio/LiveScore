@@ -1,38 +1,77 @@
 # LiveScore
 
-## Как запустить проект?
+Добро пожаловать в LiveScore - веб-приложение для отслеживания результатов спортивных игр в режиме реального времени.
 
-1. Скачать и установить IntelliJ Idea Community edition. (Можно и другие ИДЕшки, этот просто удобнее будет)
-2. Скачать и установить базу данных PostgreSQL, и клиент к нему PgAdmin. (когда будете креды заполнять запишите их куда
-   то, понадобятся)
-3. Откройте PgAdmin, зайдите под своими кредами и создайте базу данных. Мы обычно называем ее live_score
-4. Скачайте наш проект, перейдя по ссылке https://github.com/Arsensio/LiveScore.git (или можете сделать гит клон)
-5. Откройте наш проект в IntelliJ, добавтье в папку \LiveScore\src\main\resources файл application.yaml (пример файла
-   скину, там надо будет свои креды из постгреса написать, и имя базы данных)
-6. Запускаете проект, готово! Приложение работает по адресу localhost:8080. Swagger документацию найдете по
-   адресу http://localhost:8080/swagger-ui/
+## Table of Contents
 
-application.yaml
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Configuration](#configuration)
+  - [application.yaml](#application-yaml)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Prerequisites
+
+Для запуска LiveScore вам понадобится следующее программное обеспечение:
+
+- [IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- [pgAdmin](https://www.pgadmin.org/download/)
+
+## Getting Started
+
+Чтобы начать работу с LiveScore, выполните следующие действия:
+
+1. Клонируйте репозиторий LiveScore с помощью Git: git clone https://github.com/Arsensio/LiveScore.git
+2. Откройте проект в IntelliJ IDEA.
+
+3. Создайте новую базу данных в PostgreSQL с помощью pgAdmin. Мы рекомендуем называть его `live_score`.
+
+4. Скопируйте содержимое файла `application.yaml`, после создайте файл, назовите его `application.yaml` и вставьте содержимое. После разместите этот файл в папку `src/main/resources`. После в файле замените значине `username` и `password` с вашими учетными данными PostgreSQL.
+
+5. Запустите приложение. Вы можете получить к нему доступ по адресу `http://localhost:8080`. Документация Swagger доступна по адресу `http://localhost:8080/swagger-ui/`.
+
+
+## Configuration
+
+### application.yaml
+
+`application.yaml` файл содержить конфигурацию для приложения LiveScore. После разместите этот файл в папку `src/main/resources`. Ниже приведена конфигурация:
+
+```yaml
 spring:
-datasource:
-url: jdbc:postgresql://localhost:(порт вашей базы данных, по дефолту если оставили то 5432)/(имя вашей базы данных)
-driver-class-name: org.postgresql.Driver
-username: (ваш юсернейм от Postgres)
-password: (ваш пароль, от Postgres, не PgAdmin, не путайте)
-flyway:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/live_score
+    driver-class-name: org.postgresql.Driver
+    username: //ваш username от БД
+    password: //ваш пароль от БД
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway:
     locations: classpath:db/migration
-baseline-on-migrate: true
-url: jdbc:postgresql://localhost:(порт вашей базы данных, по дефолту если оставили то 5432)/(имя вашей базы данных)
-user: (ваш юсернейм от Postgres)
-password: (ваш пароль, от Postgres, не PgAdmin, не путайте)
-baseline-version: 1.0
+    baseline-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/live_score
+    username: //ваш username от БД
+    password: //ваш пароль от БД
+    baseline-version: 1.0
+
+server:
+  port : 8081
 
 logging:
-level:
-org.hibernate.SQL: DEBUG
-org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 jwt:
-token:
-secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
-expired: 10800000
+  token:
+    secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
+    expired: 10800000

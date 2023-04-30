@@ -22,7 +22,6 @@ public class DefaultGroupService
         extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long, GroupRepository>
         implements GroupService {
 
-
     public DefaultGroupService(GroupRepository repository) {
         super(repository);
     }
