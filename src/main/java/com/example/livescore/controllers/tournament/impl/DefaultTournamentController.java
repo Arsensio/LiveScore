@@ -32,6 +32,12 @@ public class DefaultTournamentController
     }
 
     @Override
+    @GetMapping("/user/cup")
+    public ResponseEntity<List<TournamentDTO>> findAllCupTournamentByUser(@PathParam("userId") long userId) {
+        return new ResponseEntity<>(service.findAllCupTournamentByUser(userId), OK);
+    }
+
+    @Override
     @PostMapping("/league")
     public ResponseEntity<TournamentDTO> createLeagueTournament(@RequestBody SaveTournamentDTO saveTournamentDTO) {
         return new ResponseEntity<>(service.createLeague(saveTournamentDTO), OK);

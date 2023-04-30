@@ -101,6 +101,7 @@ public class DefaultGroupService
         return createPlayOfGroups(tournament, teamsNum);
     }
 
+
     @Override
     public GroupEntity createGroupBYTournament(TournamentEntity tournament, String leagueNameOrLocation, Integer order) {
         return repository.save(new GroupEntity(
@@ -124,6 +125,12 @@ public class DefaultGroupService
     public List<GroupEntity> findAllByTournamentID(Long tournamentId) {
         return repository.findAllByTournamentId(tournamentId);
     }
+
+    @Override
+    public List<GroupDTO> findAllGroupStageByTournamentId(long tournamentId) {
+        return repository.findAllGroupStageByTournamentId(tournamentId).stream().map(GroupEntity::toDTO).toList();
+    }
+
 
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();
