@@ -107,6 +107,11 @@ public class DefaultTeamFootballService
     }
 
     @Override
+    public List<TeamDTO> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId) {
+        return teamStatisticsService.findAllTeamByGroupIdAndTournamentId(tournamentId, groupId);
+    }
+
+    @Override
     public List<TeamWithPlayersDto> findAllTeamsAndItsPlayers() {
         List<TeamDTO> allTeams = repository.findAll()
                 .stream()

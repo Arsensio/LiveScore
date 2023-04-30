@@ -65,4 +65,12 @@ public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEn
     @Modifying
     @Query("update TeamStatisticsEntity t set t.goalMissed = t.goalMissed - 1 where t.id = ?1")
     Integer decrementGoalMissedCount(TeamStatisticsEntityPK id);
+
+    @Query("SELECT new com.example.livescore.web.teams.TeamDTO(t.teamId, t.teamName, t.teamLogo)" +
+            "FROM TeamEntity t " +
+            "inner join TeamStatisticsEntity ts on t.teamId = ts.id.team.teamId " +
+            "inner join TournamentEntity te on te.tournamentId = ts.id.tournament.tournamentId " +
+            "inner join GroupEntity ge on ge.tournament.tournamentId = te.tournamentId " +
+            "WHERE te.tournamentId = ?1 AND ge.groupId =?2 ")
+    List<TeamDTO> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId);
 }
