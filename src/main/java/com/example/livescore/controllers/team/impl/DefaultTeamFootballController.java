@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/team")
-public class DefaultTeamFootballController extends AbstractFootballController<TeamFootballService, TeamDTO,
-        SaveTeamDTO, Long>
+public class DefaultTeamFootballController
+        extends AbstractFootballController<TeamFootballService, TeamDTO, SaveTeamDTO, Long>
         implements TeamFootballController {
 
     public DefaultTeamFootballController(TeamFootballService service) {
@@ -30,6 +31,12 @@ public class DefaultTeamFootballController extends AbstractFootballController<Te
     @GetMapping("/group/{tournamentId}")
     public ResponseEntity<List<TeamDTO>> findAllTeamByTournamentId(@PathVariable long tournamentId) {
         return new ResponseEntity<>(service.findAllTeamByTournamentId(tournamentId), OK);
+    }
+
+    @Override
+    @GetMapping("/group")
+    public ResponseEntity<List<TeamDTO>> findAllTeamByGroupIdAndTournamentId(@PathParam("tournamentId") long tournamentId, @PathParam("groupId") long groupId) {
+        return new ResponseEntity<>(service.findAllTeamByGroupIdAndTournamentId(tournamentId, groupId), OK);
     }
 
     @Override

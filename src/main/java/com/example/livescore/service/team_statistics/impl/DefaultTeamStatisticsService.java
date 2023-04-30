@@ -88,6 +88,11 @@ public class DefaultTeamStatisticsService
     }
 
     @Override
+    public List<TeamDTO> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId) {
+        return repository.findAllTeamByGroupIdAndTournamentId(tournamentId, groupId);
+    }
+
+    @Override
     public void incrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK) {
         repository.incrementGoalCount(teamStatisticsEntityPK);
     }

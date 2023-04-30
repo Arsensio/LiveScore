@@ -12,5 +12,7 @@ public interface TeamFootballController extends FootballController<TeamDTO, Save
 
     ResponseEntity<List<TeamDTO>> findAllTeamByTournamentId(long tournamentId);
 
+    ResponseEntity<List<TeamDTO>> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId);
+
     ResponseEntity<List<TeamWithPlayersDto>> findAllTeamsAndItsPlayers();
 }

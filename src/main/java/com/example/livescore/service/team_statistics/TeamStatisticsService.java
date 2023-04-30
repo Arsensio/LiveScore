@@ -27,6 +27,8 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
 
     List<TeamDTO> findAllTeamByTournamentId(long groupId);
 
+    List<TeamDTO> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId);
+
     void incrementGoalCount(TeamStatisticsEntityPK teamStatisticsEntityPK);
 
     void incrementGoalMissedCount(TeamStatisticsEntityPK teamStatisticsEntityPK);

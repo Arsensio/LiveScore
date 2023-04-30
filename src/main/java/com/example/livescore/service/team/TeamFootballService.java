@@ -19,4 +19,6 @@ public interface TeamFootballService extends FootballService<TeamDTO, SaveTeamDT
     List<TeamWithPlayersDto> findAllTeamsAndItsPlayers();
 
     String getTeamNameById(Long teamId);
+
+    List<TeamDTO> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId);
 }
