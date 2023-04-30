@@ -75,3 +75,7 @@ jwt:
   token:
     secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
     expired: 10800000
+    
+gcp:
+  firebase:
+    service-account: classpath:livescoresdu-firebase-adminsdk-6p6r9-e69205f00f.json
