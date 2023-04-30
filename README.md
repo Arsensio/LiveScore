@@ -19,8 +19,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/live_score
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 123
+    username: //ваше имя пользевателя БД
+    password: //ваш пароль от БД
   jpa:
     hibernate:
       ddl-auto: update
@@ -34,8 +34,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     url: jdbc:postgresql://localhost:5432/live_score
-    user: postgres
-    password: 123
+    username: //ваше имя пользевателя БД
+    password: //ваш пароль от БД
     baseline-version: 1.0
 
 server:
