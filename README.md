@@ -66,8 +66,6 @@ spring:
 server:
   port : 8081
 
-
-
 logging:
   level:
     org.hibernate.SQL: DEBUG
