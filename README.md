@@ -9,7 +9,6 @@
 - [Configuration](#configuration)
   - [application.yaml](#application-yaml)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Prerequisites
 
