@@ -41,41 +41,39 @@
 
 ```yaml
 spring:
-datasource:
- url: jdbc:postgresql://localhost:5432/live_score
- driver-class-name: org.postgresql.Driver
- username: // your username for the database
- password: // your password for the database
-jpa:
- hibernate:
-   ddl-auto: update
- properties:
-   hibernate:
-     dialect: org.hibernate.dialect.PostgreSQLDialect
-     jdbc:
-       lob:
-         non_contextual_creation: true
-flyway:
- locations: classpath:db/migration
- baseline-on-migrate: true
- url: jdbc:postgresql://localhost:5432/live_score
- username: // your username for the database
- password: // your password for the database
- baseline-version: 1.0
+  datasource:
+    url: jdbc:postgresql://localhost:5432/live_score
+    driver-class-name: org.postgresql.Driver
+    username: //ваш username от БД
+    password: //ваш пароль от БД
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    url: jdbc:postgresql://localhost:5432/live_score
+    username: //ваш username от БД
+    password: //ваш пароль от БД
+    baseline-version: 1.0
 
 server:
-port: 8081
+  port : 8081
+
+
 
 logging:
-level:
- org.hibernate.SQL: DEBUG
- org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 jwt:
-token:
- secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
- expired: 10800000
-
-gcp:
-firebase:
- service-account: classpath:livescoresdu-firebase-adminsdk-6p6r9-e69205f00f.json
+  token:
+    secret: 26452948404D6351655468576D5A7134743777217A25432A462D4A614E645267
+    expired: 10800000
