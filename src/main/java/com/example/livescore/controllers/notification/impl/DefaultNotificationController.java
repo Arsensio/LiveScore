@@ -100,11 +100,11 @@ public class DefaultNotificationController implements NotificationController {
         }
     }
 
-    @GetMapping("/topic/{tournamentId}")
+    @GetMapping("/topic/{protocolId}")
     @Override
-    public ResponseEntity<String> getTopicName(@PathVariable Long tournamentId) {
+    public ResponseEntity<String> getTopicName(@PathVariable Long protocolId) {
         return ResponseEntity.ok().body(
-                notificationService.getTopicName(tournamentId)
+                notificationService.getTopicName(protocolId)
         );
     }
 }
