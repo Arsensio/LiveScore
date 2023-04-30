@@ -102,6 +102,7 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
         eventDTO.setPlayerId(e.getPlayer().getPlayerId());
         eventDTO.setTeamId(e.getTeam().getTeamId());
         eventDTO.setTeamName(e.getTeamName());
+        eventDTO.setTeamLogo(e.getTeamLogo());
     }
 
     @Override

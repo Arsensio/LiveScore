@@ -18,5 +18,6 @@ public class EventDTO {
     private Long playerId;
     private Long teamId;
     private String teamName;
+    private String teamLogo;
     private AssistDTO assist;
 }
