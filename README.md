@@ -21,7 +21,7 @@
 
 ## Getting Started
 
-To get started with LiveScore, follow these steps:
+Чтобы начать работу с LiveScore, выполните следующие действия:
 
 1. Клонируйте репозиторий LiveScore с помощью Git: git clone https://github.com/Arsensio/LiveScore.git
 2. Откройте проект в IntelliJ IDEA.
