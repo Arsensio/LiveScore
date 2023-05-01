@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AfterDrawDTO {
 
+    Long groupId;
     String groupName;
     List<TeamDTO> teams;
 }

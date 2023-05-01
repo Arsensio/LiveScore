@@ -165,6 +165,7 @@ public class DefaultGroupInfoService
 
         for (GroupEntity g : allGroups) {
             AfterDrawDTO afterDrawDTO = new AfterDrawDTO();
+            afterDrawDTO.setGroupId(g.getGroupId());
             afterDrawDTO.setGroupName(g.getGroupName());
             List<GroupInfoEntity> allTeams = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournamentId, g.getGroupId());
             List<TeamDTO> groupTeam = new ArrayList<>();
