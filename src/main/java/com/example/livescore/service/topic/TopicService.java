@@ -4,5 +4,7 @@ public interface TopicService {
 
     void createTopic(String topicName, Long tournamentId);
 
-    String getTopicName(Long protocolId);
+    String getTopicNameByProtocol(Long protocolId);
+
+    String getTopicNameByTournament(Long tournamentId);
 }

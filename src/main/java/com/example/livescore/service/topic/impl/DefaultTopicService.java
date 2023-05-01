@@ -24,7 +24,12 @@ public class DefaultTopicService implements TopicService {
     }
 
     @Override
-    public String getTopicName(Long protocolId) {
-        return topicRepository.getTopicName(protocolId);
+    public String getTopicNameByProtocol(Long protocolId) {
+        return topicRepository.getTopicNameByProtocol(protocolId);
+    }
+
+    @Override
+    public String getTopicNameByTournament(Long tournamentId) {
+        return topicRepository.getTopicNameByTournament(tournamentId);
     }
 }

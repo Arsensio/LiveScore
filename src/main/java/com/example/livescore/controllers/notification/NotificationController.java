@@ -20,5 +20,7 @@ public interface NotificationController {
 
     ResponseEntity<Void> createTopic(CreateTopicDTO createTopicDTO);
 
-    ResponseEntity<String> getTopicName(Long protocolId);
+    ResponseEntity<String> getTopicNameByProtocol(Long protocolId);
+
+    ResponseEntity<String> getTopicNameByTournament(Long tournamentId);
 }

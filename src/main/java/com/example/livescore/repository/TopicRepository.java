@@ -15,5 +15,8 @@ public interface TopicRepository extends JpaRepository<TopicEntity, Long> {
             "join games gm on gm.group_id = gr.group_id " +
             "join protocols p on p.game_id = gm.game_id " +
             "where p.protocol_id = ?1", nativeQuery = true)
-    String getTopicName(Long protocolId);
+    String getTopicNameByProtocol(Long protocolId);
+
+    @Query(value = "select t.topicName from TopicEntity t where t.tournament.tournamentId = ?1")
+    String getTopicNameByTournament(Long tournamentId);
 }

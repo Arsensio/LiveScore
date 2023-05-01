@@ -20,5 +20,7 @@ public interface NotificationService {
 
     void createTopic(CreateTopicDTO createTopicDTO) throws FirebaseMessagingException;
 
-    String getTopicName(Long protocolId);
+    String getTopicNameByProtocol(Long protocolId);
+
+    String getTopicNameByTournament(Long tournamentId);
 }

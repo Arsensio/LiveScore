@@ -110,12 +110,16 @@ create table team_statistics
     win_count     integer,
     tournament_id bigint not null,
     team_id       bigint not null,
-    constraint fk_group
+    group_id      bigint,
+    constraint fk_tournament
         foreign key (tournament_id)
             references tournaments (tournament_id),
     constraint fk_teams
         foreign key (team_id)
             references teams (team_id),
+    constraint fk_group
+        foreign key (group_id)
+            references groups (group_id),
     primary key (tournament_id, team_id)
 );
 

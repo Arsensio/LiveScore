@@ -88,7 +88,12 @@ public class DefaultNotificationService implements NotificationService {
     }
 
     @Override
-    public String getTopicName(Long protocolId) {
-        return topicService.getTopicName(protocolId);
+    public String getTopicNameByProtocol(Long protocolId) {
+        return topicService.getTopicNameByProtocol(protocolId);
+    }
+
+    @Override
+    public String getTopicNameByTournament(Long tournamentId) {
+        return topicService.getTopicNameByTournament(tournamentId);
     }
 }

@@ -90,7 +90,7 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
                     );
                     case 3 -> playerDTO.setTeamId(
                             getTeamIdOrThrowNull(
-                                    beautifyName(currentCell.getStringCellValue()), tournamentId
+                                    currentCell.getStringCellValue(), tournamentId
                             )
                     );
                     case 4 -> playerDTO.setPlayerNumber(
@@ -110,7 +110,7 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
             }
 
             playerService.checkPlayerNumberForExistence(playerDTO.getPlayerNumber(), playerDTO.getTeamId());
-
+            playerDTO.setTournamentId(tournamentId);
             players.add(playerDTO);
         }
         workbook.close();
@@ -157,7 +157,7 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
                         )
                         .teamId(
                                 getTeamIdOrThrowNull(
-                                        beautifyName(row.get(3).toString()), tournamentId
+                                        row.get(3).toString(), tournamentId
                                 )
                         )
                         .playerNumber(
