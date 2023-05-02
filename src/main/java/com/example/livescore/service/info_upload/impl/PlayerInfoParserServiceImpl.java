@@ -175,7 +175,7 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
                 }
 
                 playerService.checkPlayerNumberForExistence(playerDTO.getPlayerNumber(), playerDTO.getTeamId());
-
+                playerDTO.setTournamentId(tournamentId);
                 players.add(playerDTO);
             }
         }
