@@ -80,7 +80,8 @@ public class GroupInfoEntity extends AbstractEntity<GroupInfoDTO> {
                 this.loseCount,
                 this.goalCount,
                 this.goalMissed,
-                this.points
+                this.points,
+                this.team.getTeamId()
         );
     }
 
@@ -95,7 +96,8 @@ public class GroupInfoEntity extends AbstractEntity<GroupInfoDTO> {
                 this.goalCount,
                 this.goalMissed,
                 this.points,
-                isLive
+                isLive,
+                this.team.getTeamId()
         );
     }
 }

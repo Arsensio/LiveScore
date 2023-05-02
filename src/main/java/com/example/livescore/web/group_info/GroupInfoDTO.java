@@ -1,5 +1,6 @@
 package com.example.livescore.web.group_info;
 
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Setter;
 public class GroupInfoDTO {
 
     private Integer position;
+    private Long teamId;
     private String teamName;
     private String teamLogo;
     private Integer gamePlayed;
@@ -23,7 +25,8 @@ public class GroupInfoDTO {
     private Integer points;
     private boolean isLive;
 
-    public GroupInfoDTO(String teamName, String teamLogo, Integer gamePlayed, Integer winCount, Integer drawCount, Integer loseCount, Integer goalCount, Integer goalMissed, Integer points) {
+    public GroupInfoDTO(String teamName, String teamLogo, Integer gamePlayed, Integer winCount, Integer drawCount, Integer loseCount, Integer goalCount, Integer goalMissed, Integer points, Long teamId) {
+        this.teamId = teamId;
         this.teamName = teamName;
         this.teamLogo = teamLogo;
         this.gamePlayed = gamePlayed;
@@ -35,7 +38,7 @@ public class GroupInfoDTO {
         this.points = points;
     }
 
-    public GroupInfoDTO(String teamName, String teamLogo, Integer gamePlayed, Integer winCount, Integer drawCount, Integer loseCount, Integer goalCount, Integer goalMissed, Integer points, boolean isLive) {
+    public GroupInfoDTO(String teamName, String teamLogo, Integer gamePlayed, Integer winCount, Integer drawCount, Integer loseCount, Integer goalCount, Integer goalMissed, Integer points, boolean isLive, Long teamId) {
         this.teamName = teamName;
         this.teamLogo = teamLogo;
         this.gamePlayed = gamePlayed;
@@ -46,5 +49,6 @@ public class GroupInfoDTO {
         this.goalMissed = goalMissed;
         this.points = points;
         this.isLive = isLive;
+        this.teamId = teamId;
     }
 }
