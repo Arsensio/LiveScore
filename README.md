@@ -58,7 +58,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     url: jdbc:postgresql://localhost:5432/live_score
-    username: //ваш username от БД
+    user: //ваш username от БД
     password: //ваш пароль от БД
     baseline-version: 1.0
 
