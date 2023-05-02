@@ -28,7 +28,6 @@ public class DefaultGroupService
 
     @Override
     public List<GroupDTO> findAllByTournamentId(long tournamentId) {
-
         return repository.findAllByTournamentId(tournamentId)
                 .stream()
                 .map(GroupEntity::toDTO)
@@ -117,8 +116,7 @@ public class DefaultGroupService
 
     @Override
     public List<GroupEntity> findAllGroupInGroupStageByTournamentId(Long tournamentId) {
-        List<GroupEntity> allByTournamentIdAndPlayoffFalse = repository.findAllByTournamentIdAndPlayoffFalse(tournamentId);
-        return allByTournamentIdAndPlayoffFalse;
+        return repository.findAllByTournamentIdAndPlayoffFalse(tournamentId);
     }
 
     @Override
@@ -129,6 +127,24 @@ public class DefaultGroupService
     @Override
     public List<GroupDTO> findAllGroupStageByTournamentId(long tournamentId) {
         return repository.findAllGroupStageByTournamentId(tournamentId).stream().map(GroupEntity::toDTO).toList();
+    }
+
+    @Override
+    public List<GroupDTO> findGroupTabsByTournament(long tournamentId) {
+        List<GroupEntity> allByTournamentId = repository.findAllByTournamentId(tournamentId);
+        List<GroupDTO> allGroupDTOByTournamentId = new ArrayList<>();
+        boolean isGroupStageCreated = false;
+
+        for (GroupEntity g : allByTournamentId) {
+            if (!g.isPlayoff() && !isGroupStageCreated) {
+                allGroupDTOByTournamentId.add(new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false));
+                isGroupStageCreated = true;
+            } else if (g.isPlayoff()) {
+                allGroupDTOByTournamentId.add(g.toDTO());
+            }
+        }
+
+        return allGroupDTOByTournamentId;
     }
 
 
