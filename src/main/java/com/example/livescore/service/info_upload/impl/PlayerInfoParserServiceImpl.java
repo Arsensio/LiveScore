@@ -7,7 +7,9 @@ import com.example.livescore.service.info_upload.PlayerInfoParserService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.web.players.SavePlayerDTO;
+import com.example.livescore.web.teams.SaveTeamDTO;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
@@ -44,22 +46,166 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     private final TeamFootballService teamService;
 
     @Override
-    public String savePlayers(InputStream inputStream, Long tournamentId) throws IOException, RuntimeException {
-        List<SavePlayerDTO> players = excelToPlayers(inputStream, tournamentId);
-        save(players);
+    public String saveTeamsAndPlayers(InputStream inputStream, Long tournamentId) throws IOException, RuntimeException {
+//        List<SavePlayerDTO> players = excelToPlayers(inputStream, tournamentId);
+//        save(players);
         return SUCCESS_MESSAGE;
     }
 
     @Override
-    public String savePlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException {
-        List<SavePlayerDTO> players = googleSheetToPlayers(link, tournamentId);
-        save(players);
+    public String saveTeamsAndPlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException {
+//        List<SavePlayerDTO> players = googleSheetToPlayers(link, tournamentId);
+//        save(players);
         return SUCCESS_MESSAGE;
     }
 
     public static boolean hasExcelFormat(MultipartFile file) {
         return Objects.equals(file.getContentType(), TYPE);
     }
+
+
+    public void googleSheetToTeamsAndPlayers(String link) {
+        try {
+            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            final String spreadsheetId = getSheetId(link);
+            List<SavePlayerDTO> players = new ArrayList<>();
+            List<SaveTeamDTO> teams = new ArrayList<>();
+
+            Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleSheets.getCredentials(HTTP_TRANSPORT))
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+
+            String title = sheets.spreadsheets()
+                    .get(spreadsheetId)
+                    .execute()
+                    .getSheets()
+                    .get(0)
+                    .getProperties()
+                    .getTitle();
+
+            String range = title + "!A2:D";
+
+            ValueRange response = sheets.spreadsheets()
+                    .values()
+                    .get(spreadsheetId, range)
+                    .execute();
+
+            List<List<Object>> values = response.getValues();
+
+            System.out.println("Vyzvalsya: " + spreadsheetId);
+
+            if (values == null || values.isEmpty()) {
+                throw new RuntimeException("Данные отсутствуют в таблице, или таблица пуста!");
+            } else {
+                for (List row : values) {
+                    log.info("Row value: Time {}", row.get(0).toString());
+                    log.info("Row value: team {}", row.get(1).toString());
+                    log.info("Row value: team logo {}", row.get(2).toString());
+                    log.info("Row value: players link {}", row.get(3).toString());
+
+                    System.out.println("1");
+                    Sheets playerSheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleSheets.getCredentials(HTTP_TRANSPORT))
+                            .setApplicationName(APPLICATION_NAME)
+                            .build();
+                    System.out.println("2 " + getDriveId(row.get(3).toString()));
+                    String playerSheetTitle = playerSheets.spreadsheets()
+                            .get(getDriveId(row.get(3).toString()))
+                            .execute()
+                            .getSheets()
+                            .get(0)
+                            .getProperties()
+                            .getTitle();
+                    System.out.println("3 " + playerSheetTitle);
+                    String playerrange = playerSheetTitle + "!A2:D";
+                    System.out.println("4 " + playerrange);
+                    ValueRange playerresponse = playerSheets.spreadsheets()
+                            .values()
+                            .get(getDriveId(row.get(3).toString()), playerrange)
+                            .execute();
+                    System.out.println("5");
+                    List<List<Object>> playervalues = playerresponse.getValues();
+                    System.out.println("6");
+                    System.out.println("drive id: " + getDriveId(row.get(3).toString()));
+                    System.out.println("7");
+                    for (List row2 : playervalues) {
+                        log.info("Player name: {}", row2.get(0).toString());
+                        log.info("Player surname: {}", row2.get(1).toString());
+                        log.info("Player number: {}", row2.get(2).toString());
+                        log.info("Player position: {}", row2.get(3).toString());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private List<SavePlayerDTO> googleSheetToPlayers(String link, Long tournamentId) throws GeneralSecurityException,
+            IOException, RuntimeException {
+        // Build a new authorized API client service.
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        final String spreadsheetId = getSheetId(link);
+        List<SavePlayerDTO> players = new ArrayList<>();
+        Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleSheets.getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        String title = sheets.spreadsheets()
+                .get(spreadsheetId)
+                .execute()
+                .getSheets()
+                .get(0)
+                .getProperties()
+                .getTitle();
+
+        String range = title + "!A2:D";  // захардкоденный вариант, может поменятся
+
+        ValueRange response = sheets.spreadsheets()
+                .values()
+                .get(spreadsheetId, range)
+                .execute();
+
+        List<List<Object>> values = response.getValues();
+
+        if (values == null || values.isEmpty()) {
+            throw new RuntimeException("Данные отсутствуют в таблице, или таблица пуста!");
+        } else {
+            for (List row : values) {
+                SavePlayerDTO playerDTO = SavePlayerDTO.builder()
+                        .name(
+                                beautifyName(row.get(1).toString())
+                        )
+                        .surname(
+                                beautifyName(row.get(2).toString())
+                        )
+                        .teamId(
+                                getTeamIdOrThrowNull(
+                                        row.get(3).toString(), tournamentId
+                                )
+                        )
+                        .playerNumber(
+                                Integer.parseInt(row.get(4).toString())
+                        )
+                        .role(
+                                resolveRole(row.get(5).toString())
+                        )
+                        .build();
+                if (alreadyPresents(playerDTO, players)) {
+                    throw EqualPlayersException.withEqualPlayersData(playerDTO);
+                }
+                if (playerDTO.isThereNullFields()) {
+                    throw PlayerNullFieldsException.withPlayerData(playerDTO);
+                }
+
+                playerService.checkPlayerNumberForExistence(playerDTO.getPlayerNumber(), playerDTO.getTeamId());
+                playerDTO.setTournamentId(tournamentId);
+                players.add(playerDTO);
+            }
+        }
+        return players;
+    }
+
 
     /**
      * This method will work only with certain format of an Excel file, any changes to file structure may cause errors
@@ -117,70 +263,7 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
         return players;
     }
 
-    private List<SavePlayerDTO> googleSheetToPlayers(String link, Long tournamentId) throws GeneralSecurityException,
-            IOException, RuntimeException {
-        // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetId = getSheetId(link);
-        List<SavePlayerDTO> players = new ArrayList<>();
-        Sheets sheets = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, GoogleSheets.getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build();
 
-        String title = sheets.spreadsheets()
-                .get(spreadsheetId)
-                .execute()
-                .getSheets()
-                .get(0)
-                .getProperties()
-                .getTitle();
-
-        String range = title + "!A2:F";  // захардкоденный вариант, может поменятся
-
-        ValueRange response = sheets.spreadsheets()
-                .values()
-                .get(spreadsheetId, range)
-                .execute();
-
-        List<List<Object>> values = response.getValues();
-
-        if (values == null || values.isEmpty()) {
-            throw new RuntimeException("Данные отсутствуют в таблице, или таблица пуста!");
-        } else {
-            for (List row : values) {
-                SavePlayerDTO playerDTO = SavePlayerDTO.builder()
-                        .name(
-                                beautifyName(row.get(1).toString())
-                        )
-                        .surname(
-                                beautifyName(row.get(2).toString())
-                        )
-                        .teamId(
-                                getTeamIdOrThrowNull(
-                                        row.get(3).toString(), tournamentId
-                                )
-                        )
-                        .playerNumber(
-                                Integer.parseInt(row.get(4).toString())
-                        )
-                        .role(
-                                resolveRole(row.get(5).toString())
-                        )
-                        .build();
-                if (alreadyPresents(playerDTO, players)) {
-                    throw EqualPlayersException.withEqualPlayersData(playerDTO);
-                }
-                if (playerDTO.isThereNullFields()) {
-                    throw PlayerNullFieldsException.withPlayerData(playerDTO);
-                }
-
-                playerService.checkPlayerNumberForExistence(playerDTO.getPlayerNumber(), playerDTO.getTeamId());
-                playerDTO.setTournamentId(tournamentId);
-                players.add(playerDTO);
-            }
-        }
-        return players;
-    }
 
     private void save(List<SavePlayerDTO> players) {
         for (SavePlayerDTO playerDTO : players) {
@@ -200,5 +283,10 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     // todo: искать команды по турнаменту, не только по названиям
     private Long getTeamIdOrThrowNull(String teamName, Long tournamentId) {
         return teamService.findTeamByNameInTournament(teamName, tournamentId).getTeamId();
+    }
+
+    private class Builder {
+        public Builder(NetHttpTransport netHttpTransport, GsonFactory defaultInstance, HttpRequestInitializer requestInitializer) {
+        }
     }
 }

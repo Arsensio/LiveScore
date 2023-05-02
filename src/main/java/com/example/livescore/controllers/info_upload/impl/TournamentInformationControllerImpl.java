@@ -1,7 +1,7 @@
 package com.example.livescore.controllers.info_upload.impl;
 
 import com.example.livescore.controllers.info_upload.TournamentInformationController;
-import com.example.livescore.service.info_upload.PlayerInfoParserService;
+import com.example.livescore.service.info_upload.impl.PlayerInfoParserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import static com.example.livescore.service.info_upload.impl.PlayerInfoParserSer
 @RequiredArgsConstructor
 public class TournamentInformationControllerImpl implements TournamentInformationController {
 
-    private final PlayerInfoParserService playerInfoParserService;
+    private final PlayerInfoParserServiceImpl playerInfoParserService;
 
     @Override
     @PostMapping("/upload/player_info/file")
@@ -35,7 +35,7 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
         try {
             return ResponseEntity.ok()
                     .body(
-                            playerInfoParserService.savePlayers(file.getInputStream(), tournamentId)
+                            playerInfoParserService.saveTeamsAndPlayers(file.getInputStream(), tournamentId)
                     );
         } catch (IOException e) {
             return ResponseEntity.badRequest()
@@ -51,9 +51,10 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
     public ResponseEntity<String> uploadPlayerInfoLink(@RequestParam("link") String link,
                                                        @RequestParam("tournamentId") Long tournamentId) {
         try {
+            playerInfoParserService.googleSheetToTeamsAndPlayers(link);
             return ResponseEntity.ok()
                     .body(
-                            playerInfoParserService.savePlayers(link, tournamentId)
+                            playerInfoParserService.saveTeamsAndPlayers(link, tournamentId)
                     );
         } catch (GeneralSecurityException | RuntimeException e) {
             return ResponseEntity.badRequest()
