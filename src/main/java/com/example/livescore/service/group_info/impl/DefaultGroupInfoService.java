@@ -235,7 +235,8 @@ public class DefaultGroupInfoService
         List<GroupInfoDTO> orderedByPointList = new ArrayList<>();
 
         List<GroupInfoEntity> allByTournamentIdAndGroupIdOrderByWinCount = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournament, group);
-        GroupInfoListDTO groupInfoListDTO = new GroupInfoListDTO(allByTournamentIdAndGroupIdOrderByWinCount.get(0).getGroup());
+        GroupEntity foundGroup = groupService.findByGroupIdAndTournamentId(tournament, group);
+        GroupInfoListDTO groupInfoListDTO = new GroupInfoListDTO(foundGroup);
         for (GroupInfoEntity groupInfo : allByTournamentIdAndGroupIdOrderByWinCount) {
             updateIfLiveMatchDTO(allByGameStateStarted, orderedByPointList, groupInfo);
         }
