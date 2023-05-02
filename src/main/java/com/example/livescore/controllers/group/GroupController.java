@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface GroupController extends FootballController<GroupDTO, SaveGroupDTO, Long> {
 
-    ResponseEntity<List<GroupDTO>> findAllByTournamentId(long groupId);
+    ResponseEntity<List<GroupDTO>> findAllByTournamentId(long tournamentId);
 
-    ResponseEntity<List<GroupDTO>> findAllGroupStageByTournamentId(long groupId);
+    ResponseEntity<List<GroupDTO>> findGroupTabsByTournament(long tournamentId);
+
+    ResponseEntity<List<GroupDTO>> findAllGroupStageByTournamentId(long tournamentId);
 }
