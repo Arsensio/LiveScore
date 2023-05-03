@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class GoogleSheets {
+public class GoogleApi {
 
     private static final GsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -28,7 +28,7 @@ public class GoogleSheets {
 
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = GoogleSheets.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = GoogleApi.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }

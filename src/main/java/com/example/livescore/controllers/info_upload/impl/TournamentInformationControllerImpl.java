@@ -51,7 +51,6 @@ public class TournamentInformationControllerImpl implements TournamentInformatio
     public ResponseEntity<String> uploadPlayerInfoLink(@RequestParam("link") String link,
                                                        @RequestParam("tournamentId") Long tournamentId) {
         try {
-            playerInfoParserService.googleSheetToTeamsAndPlayers(link);
             return ResponseEntity.ok()
                     .body(
                             playerInfoParserService.saveTeamsAndPlayers(link, tournamentId)

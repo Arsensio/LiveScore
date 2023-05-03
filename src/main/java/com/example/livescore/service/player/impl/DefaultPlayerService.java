@@ -45,7 +45,7 @@ public class DefaultPlayerService
     @Override
     @Transactional
     public PlayerDTO save(SavePlayerDTO savePlayerDTO) {
-        checkPlayerNumberForExistence(savePlayerDTO.getPlayerNumber(), savePlayerDTO.getTeamId());
+//        checkPlayerNumberForExistence(savePlayerDTO.getPlayerNumber(), savePlayerDTO.getTeamId());
         PlayerEntity save = repository.save(new PlayerEntity(
                 null,
                 teamFootballService.findEntityById(savePlayerDTO.getTeamId()),

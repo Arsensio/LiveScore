@@ -42,9 +42,9 @@ public final class ParserUtils {
         return url;
     }
 
-    public static String getDriveId(String url) {
-        url = url.substring(url.indexOf("?id=" + 1));
-        url = url.substring(4);
-        return url;
-    }
+//    public static String getDriveId(String url) {
+//        url = url.substring(url.indexOf("?id=" + 1));
+//        url = url.substring(4);
+//        return url;
+//    }
 }
