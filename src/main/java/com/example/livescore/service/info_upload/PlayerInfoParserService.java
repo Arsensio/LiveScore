@@ -6,7 +6,7 @@ import java.security.GeneralSecurityException;
 
 public interface PlayerInfoParserService {
 
-    String savePlayers(InputStream inputStream, Long tournamentId) throws IOException, RuntimeException;
+    String saveTeamsAndPlayers(InputStream inputStream, Long tournamentId) throws IOException, RuntimeException;
 
-    String savePlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException;
+    String saveTeamsAndPlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException;
 }

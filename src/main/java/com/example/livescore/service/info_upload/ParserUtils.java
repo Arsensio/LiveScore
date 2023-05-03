@@ -23,16 +23,16 @@ public final class ParserUtils {
 
     public static String resolveRole(String roleInSheet) throws RuntimeException {
         return switch (roleInSheet) {
-            case "вратарь (голкипер)" -> String.valueOf(GOALKEEPER);
-            case "защитник (дефендер)" -> String.valueOf(DEFENDER);
-            case "полузащитник (мидфилдер)" -> String.valueOf(MIDDLE_DEFENDER);
-            case "нападающий (форвард)" -> String.valueOf(STRIKER);
+            case "Вратарь" -> String.valueOf(GOALKEEPER);
+            case "Защитник" -> String.valueOf(DEFENDER);
+            case "Полузащитник" -> String.valueOf(MIDDLE_DEFENDER);
+            case "Нападающий" -> String.valueOf(STRIKER);
             default -> throw new RuntimeException("Позиция " + roleInSheet + " не существует!\n" +
                     "Укажите позицию соответственно шаблону:\n" +
-                    "вратарь (голкипер)\n" +
-                    "защитник (дефендер)\n" +
-                    "полузащитник (мидфилдер)\n" +
-                    "нападающий (форвард)");
+                    "Вратарь\n" +
+                    "Защитник\n" +
+                    "Полузащитник\n" +
+                    "Нападающий");
         };
     }
 
@@ -41,4 +41,10 @@ public final class ParserUtils {
         url = url.substring(3, url.indexOf("/edit"));
         return url;
     }
+
+//    public static String getDriveId(String url) {
+//        url = url.substring(url.indexOf("?id=" + 1));
+//        url = url.substring(4);
+//        return url;
+//    }
 }
