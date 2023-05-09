@@ -57,7 +57,9 @@ public class DefaultTeamFootballService
         teamStatisticsService.save(tournament, savedTeam);
 
         if (tournament.getTournamentType().equals("LEAGUE")) {
-            groupInfoRepository.saveAndFlush(getDefaultGroupInfoForLeague(savedTeam, tournament));
+            GroupEntity group = groupService.findAllByTournamentID(tournament.getTournamentId()).get(0);
+            groupInfoRepository.saveAndFlush(getDefaultGroupInfoForLeague(savedTeam, tournament, group));
+            teamStatisticsService.saveAndFlash(tournament, savedTeam, group);
         }
 
         return savedTeam.toDTO();
@@ -132,8 +134,7 @@ public class DefaultTeamFootballService
     }
 
 
-    private GroupInfoEntity getDefaultGroupInfoForLeague(TeamEntity savedTeam, TournamentEntity tournament) {
-        GroupEntity group = groupService.findAllByTournamentID(tournament.getTournamentId()).get(0);
+    private GroupInfoEntity getDefaultGroupInfoForLeague(TeamEntity savedTeam, TournamentEntity tournament, GroupEntity group) {
         return GroupInfoEntity.builder()
                 .tournamentLogo(tournament.getTournamentLogo())
                 .groupName(group.getGroupName())

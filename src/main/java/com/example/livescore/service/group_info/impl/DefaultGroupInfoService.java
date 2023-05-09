@@ -7,6 +7,7 @@ import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
+import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.group_info.*;
 import com.example.livescore.web.teams.TeamDTO;
@@ -28,19 +29,22 @@ public class DefaultGroupInfoService
 
     private final TournamentService tournamentService;
     private final TeamFootballService teamFootballService;
+    private final TeamStatisticsService teamStatisticsService;
     private final GroupService groupService;
     private final ProtocolService protocolService;
 
-    public DefaultGroupInfoService(GroupInfoRepository repository, TournamentService tournamentService, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService) {
+    public DefaultGroupInfoService(GroupInfoRepository repository, TournamentService tournamentService, TeamFootballService teamFootballService, TeamStatisticsService teamStatisticsService, GroupService groupService, ProtocolService protocolService) {
         super(repository);
         this.tournamentService = tournamentService;
         this.teamFootballService = teamFootballService;
+        this.teamStatisticsService = teamStatisticsService;
         this.groupService = groupService;
         this.protocolService = protocolService;
     }
 
     @Override
     public GroupInfoEntity saveAfterDraw(GroupEntity group, TournamentEntity tournament, TeamEntity team) {
+        teamStatisticsService.saveAndFlash(tournament, team, group);
         return repository.save(new GroupInfoEntity(
                 null,
                 tournament.getTournamentLogo(),
@@ -111,6 +115,7 @@ public class DefaultGroupInfoService
                 GroupInfoEntity newGroupInfo = nextStageEntity(tournament, groupInfoEntity, nextStageTeam, nextStage);
 
                 repository.saveAndFlush(newGroupInfo);
+                teamStatisticsService.saveAndFlash(tournament, nextStageTeam, nextStage);
                 nextStageTeams.add(nextStageTeam.toDTO());
             }
         }
@@ -152,6 +157,7 @@ public class DefaultGroupInfoService
 
             GroupInfoEntity newGroupInfo = nextStageEntity(tournament, currentGroupInfo, nextStageTeam, nextGroup);
             repository.saveAndFlush(newGroupInfo);
+            teamStatisticsService.saveAndFlash(tournament, nextStageTeam, nextGroup);
             nextStageTeams.add(nextStageTeam.toDTO());
         }
 
