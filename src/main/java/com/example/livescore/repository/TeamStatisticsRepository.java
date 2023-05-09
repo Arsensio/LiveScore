@@ -69,8 +69,8 @@ public interface TeamStatisticsRepository extends JpaRepository<TeamStatisticsEn
     @Query("SELECT new com.example.livescore.web.teams.TeamDTO(t.teamId, t.teamName, t.teamLogo)" +
             "FROM TeamEntity t " +
             "inner join TeamStatisticsEntity ts on t.teamId = ts.id.team.teamId " +
+            "inner join GroupEntity ge on ts.group.groupId =ge.groupId " +
             "inner join TournamentEntity te on te.tournamentId = ts.id.tournament.tournamentId " +
-            "inner join GroupEntity ge on ge.tournament.tournamentId = te.tournamentId " +
             "WHERE te.tournamentId = ?1 AND ge.groupId =?2 ")
     List<TeamDTO> findAllTeamByGroupIdAndTournamentId(long tournamentId, long groupId);
 }

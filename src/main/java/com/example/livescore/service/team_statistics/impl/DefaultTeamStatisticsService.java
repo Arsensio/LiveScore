@@ -3,10 +3,7 @@ package com.example.livescore.service.team_statistics.impl;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventEnum;
-import com.example.livescore.models.TeamEntity;
-import com.example.livescore.models.TeamStatisticsEntity;
-import com.example.livescore.models.TeamStatisticsEntityPK;
-import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.models.*;
 import com.example.livescore.repository.TeamStatisticsRepository;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
@@ -135,5 +132,12 @@ public class DefaultTeamStatisticsService
             throw ResourceNotFoundException.build(teamStatisticsEntityPK, "TeamStatisticsEntity");
         }
         return byId.get();
+    }
+
+    @Override
+    public TeamStatisticsEntity saveAndFlash(TournamentEntity tournament, TeamEntity team, GroupEntity group) {
+        TeamStatisticsEntity foundTeamStat = this.findEntityById(tournament, team);
+        foundTeamStat.setGroup(group);
+        return repository.saveAndFlush(foundTeamStat);
     }
 }

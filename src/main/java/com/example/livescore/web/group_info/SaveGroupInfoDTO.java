@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SaveGroupInfoDTO {
 
-    private Long tournamentId;
     private Long teamId;
     private Long groupId;
 }
