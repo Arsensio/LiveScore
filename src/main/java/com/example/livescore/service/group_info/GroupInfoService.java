@@ -14,7 +14,7 @@ public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGrou
 
     GroupInfoEntity saveAfterDraw(GroupEntity group, TournamentEntity tournament, TeamEntity team);
 
-    GroupInfoEntity findEntityByGroupAndTeamId(TournamentEntity tournament, GroupEntity group, TeamEntity team);
+    GroupInfoEntity findEntityByTournamentAndGroupAndTeam(TournamentEntity tournament, GroupEntity group, TeamEntity team);
 
     GroupInfoEntity saveAndFlash(GroupInfoEntity groupInfoEntity);
 

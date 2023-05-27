@@ -119,33 +119,30 @@ public class DefaultGameService
         }
 
         GroupEntity group = gameEntity.getGroup();
+        TournamentEntity tournament = group.getTournament();
+        ProtocolEntity protocol = gameEntity.getProtocol();
 
-        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = teamStatisticsService.findAllByTournamentIdOrderByWinCount(group.getTournament().getTournamentId());
-        List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
+        TeamEntity team1 = protocol.getTeam1();
+        TeamEntity team2 = protocol.getTeam2();
 
-        for (TeamStatisticsEntity teamStatistics : allByTournamentIdOrderByWinCount) {
-            for (ProtocolEntity protocolEntity : allByGameStateStarted) {
-                int team1Score = protocolEntity.getTeam1Score();
-                int team2Score = protocolEntity.getTeam2Score();
+        int team1Score = protocol.getTeam1Score();
+        int team2Score = protocol.getTeam2Score();
 
-                if (teamStatistics.getId().getTeam() == protocolEntity.getTeam1()) {
-                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup().getTournament(), protocolEntity.getGame().getGroup(), protocolEntity.getTeam1());
-                    updatePointsAndStatistic(team1Score, team2Score, teamStatistics, groupInfo);
+        TeamStatisticsEntity teamStatistics1 = teamStatisticsService.findEntityById(tournament, team1);
+        TeamStatisticsEntity teamStatistics2 = teamStatisticsService.findEntityById(tournament, team2);
 
-                    System.out.println(groupInfo.getPoints());
+        GroupInfoEntity team1GroupInfo = groupInfoService.findEntityByTournamentAndGroupAndTeam(tournament, group, team1);
+        GroupInfoEntity team2GroupInfo = groupInfoService.findEntityByTournamentAndGroupAndTeam(tournament, group, team2);
 
-                    groupInfoService.saveAndFlash(groupInfo);
-                    teamStatisticsService.save(teamStatistics);
-                } else if (teamStatistics.getId().getTeam() == protocolEntity.getTeam2()) {
-                    GroupInfoEntity groupInfo = groupInfoService.findEntityByGroupAndTeamId(protocolEntity.getGame().getGroup().getTournament(), protocolEntity.getGame().getGroup(), protocolEntity.getTeam2());
-                    updatePointsAndStatistic(team2Score, team1Score, teamStatistics, groupInfo);
+        updatePointsAndStatistic(team1Score, team2Score, teamStatistics1, team1GroupInfo);
+        updatePointsAndStatistic(team2Score, team1Score, teamStatistics2, team2GroupInfo);
 
-                    System.out.println(groupInfo.getPoints());
-                    groupInfoService.saveAndFlash(groupInfo);
-                    teamStatisticsService.save(teamStatistics);
-                }
-            }
-        }
+        groupInfoService.saveAndFlash(team1GroupInfo);
+        groupInfoService.saveAndFlash(team2GroupInfo);
+
+        teamStatisticsService.save(teamStatistics1);
+        teamStatisticsService.save(teamStatistics1);
+
         gameEntity.setGameState(ENDED);
         repository.save(gameEntity);
 
@@ -202,27 +199,20 @@ public class DefaultGameService
     }
 
     private void updatePointsAndStatistic(int foundTeam, int rivalTeam, TeamStatisticsEntity teamStatistics, GroupInfoEntity groupInfoEntity) {
-
         if (foundTeam > rivalTeam) {
-            System.out.println("before update point" + groupInfoEntity.getPoints());
             groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
-            groupInfoEntity.setPoints(teamStatistics.getPoints() + 3);
-
-            System.out.println("after update point" + groupInfoEntity.getPoints());
+            groupInfoEntity.setPoints(groupInfoEntity.getPoints() + 3);
 
             teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 3);
         } else if (foundTeam == rivalTeam) {
-            System.out.println("before update point" + groupInfoEntity.getPoints());
             groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
-            groupInfoEntity.setPoints(teamStatistics.getPoints() + 1);
-            System.out.println("after update point" + groupInfoEntity.getPoints());
-
+            groupInfoEntity.setPoints(groupInfoEntity.getPoints() + 1);
 
             teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 1);
         } else {
-            groupInfoEntity.setLoseCount(teamStatistics.getLoseCount() + 1);
+            groupInfoEntity.setLoseCount(groupInfoEntity.getLoseCount() + 1);
             teamStatistics.setLoseCount(teamStatistics.getLoseCount() + 1);
         }
 

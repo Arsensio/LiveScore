@@ -66,8 +66,8 @@ public class DefaultGroupInfoService
     }
 
     @Override
-    public GroupInfoEntity findEntityByGroupAndTeamId(TournamentEntity tournament, GroupEntity group, TeamEntity team) {
-        return repository.findEntityByGroupAndTeamId(group, team, tournament);
+    public GroupInfoEntity findEntityByTournamentAndGroupAndTeam(TournamentEntity tournament, GroupEntity group, TeamEntity team) {
+        return repository.findEntityByTournamentAndGroupAndTeamId(group, team, tournament);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class DefaultGroupInfoService
         for (long id : teamIds) {
             TeamEntity nextStageTeam = teamFootballService.findEntityById(id);
 
-            GroupInfoEntity currentGroupInfo = repository.findEntityByGroupAndTeamId(currentGroup, nextStageTeam, tournament);
+            GroupInfoEntity currentGroupInfo = repository.findEntityByTournamentAndGroupAndTeamId(currentGroup, nextStageTeam, tournament);
 
             GroupInfoEntity newGroupInfo = nextStageEntity(tournament, currentGroupInfo, nextStageTeam, nextGroup);
             repository.saveAndFlush(newGroupInfo);
@@ -329,7 +329,8 @@ public class DefaultGroupInfoService
                 .comparingInt(GroupInfoDTO::getPoints)
                 .reversed()
                 .thenComparing((p1, p2) ->
-                        Integer.compare(p1.getGoalCount() - p1.getGoalMissed(), p2.getGoalCount() + p2.getGoalMissed()));
+                        Integer.compare(p1.getGoalCount() - p1.getGoalMissed(), p2.getGoalCount() + p2.getGoalMissed()))
+                .thenComparing(GroupInfoDTO::getTeamName);
     }
 
     private static Comparator<GroupInfoEntity> sortGroupEntityAlgorithm() {
