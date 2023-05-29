@@ -21,4 +21,6 @@ public interface GameService extends FootballService<GameDTO, SaveGameDTO, Long>
     GameEntity findEntityById(long id);
 
     GameDTO endMatch(Long id);
+
+    List<NewGameDTO> findAllAdminGameByDate(String date, String token);
 }

@@ -39,14 +39,14 @@ public class DefaultTournamentController
 
     @Override
     @PostMapping("/league")
-    public ResponseEntity<TournamentDTO> createLeagueTournament(@RequestBody SaveTournamentDTO saveTournamentDTO) {
-        return new ResponseEntity<>(service.createLeague(saveTournamentDTO), OK);
+    public ResponseEntity<TournamentDTO> createLeagueTournament(@RequestBody SaveTournamentDTO saveTournamentDTO, @RequestHeader("Authorization") String token) {
+        return new ResponseEntity<>(service.createLeague(saveTournamentDTO, token), OK);
     }
 
     @Override
     @PostMapping("/cup")
-    public ResponseEntity<TournamentDTO> createCupTournament(@RequestBody SaveCupTournamentDTO dto) {
-        return new ResponseEntity<>(service.createCup(dto), OK);
+    public ResponseEntity<TournamentDTO> createCupTournament(@RequestBody SaveCupTournamentDTO dto, @RequestHeader("Authorization") String token) {
+        return new ResponseEntity<>(service.createCup(dto, token), OK);
     }
 
     @Override

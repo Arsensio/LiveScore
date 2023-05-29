@@ -42,6 +42,11 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
     @Column(name = "tournament_status")
     private String tournamentStatus;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private UserEntity user;
+
+
     public TournamentDTO toDTO() {
         return new TournamentDTO(
                 this.tournamentId,

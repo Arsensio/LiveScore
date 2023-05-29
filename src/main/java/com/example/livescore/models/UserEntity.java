@@ -1,6 +1,7 @@
 package com.example.livescore.models;
 
 import com.example.livescore.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,14 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<TournamentEntity> tournaments;
+
+    public Long getUserId(){
+        return this.userId;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

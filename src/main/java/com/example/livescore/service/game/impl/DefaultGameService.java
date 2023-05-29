@@ -4,6 +4,7 @@ import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.*;
 import com.example.livescore.repository.GameRepository;
+import com.example.livescore.security.JwtService;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.group_info.GroupInfoService;
@@ -35,10 +36,10 @@ public class DefaultGameService
     private final ProtocolService protocolService;
     private final TeamStatisticsService teamStatisticsService;
     private final PlayerStatisticsService playerStatisticsService;
-
     private final GroupInfoService groupInfoService;
+    private final JwtService jwtService;
 
-    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService) {
+    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService, JwtService jwtService) {
         super(repository);
         this.teamFootballService = teamFootballService;
         this.groupService = groupService;
@@ -46,6 +47,8 @@ public class DefaultGameService
         this.teamStatisticsService = teamStatisticsService;
         this.playerStatisticsService = playerStatisticsService;
         this.groupInfoService = groupInfoService;
+        this.jwtService = jwtService;
+
     }
 
     @Override
@@ -150,6 +153,22 @@ public class DefaultGameService
         repository.save(gameEntity);
 
         return gameEntity.toDTO();
+    }
+
+    @Override
+    public List<NewGameDTO> findAllAdminGameByDate(String date, String token) {
+        Long userId = jwtService.extractUserId(token);
+
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
+        LocalDateTime date2 = date1.plusMinutes(1439);
+
+        System.out.println("######");
+        List<GameEntity> allGameByDate = repository.findAllByGameDateAndUserId(date1, date2, userId);
+        System.out.println(allGameByDate);
+        List<GroupEntity> allGroups = groupService.findAllEntity();
+
+        return findGameByGroup(allGroups, allGameByDate);
     }
 
     @Override

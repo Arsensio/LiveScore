@@ -5,6 +5,8 @@ import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TournamentRepository;
+import com.example.livescore.repository.UserRepository;
+import com.example.livescore.security.JwtService;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.tournaments.SaveCupTournamentDTO;
@@ -24,16 +26,21 @@ public class DefaultTournamentService
         implements TournamentService {
 
     private final GroupService groupService;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public DefaultTournamentService(TournamentRepository repository, GroupService groupService) {
+    public DefaultTournamentService(TournamentRepository repository, GroupService groupService, JwtService jwtService, UserRepository userRepository) {
         super(repository);
         this.groupService = groupService;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
 
     @Override
+    @Deprecated
     public TournamentDTO save(SaveTournamentDTO dto) {
-        return this.saveEntity(dto).toDTO();
+        return this.saveEntity(dto,null).toDTO();
     }
 
     @Override
@@ -72,14 +79,14 @@ public class DefaultTournamentService
     }
 
     @Override
-    public TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO) {
-        TournamentEntity savedTournament = saveEntity(saveTournamentDTO);
+    public TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO, String token) {
+        TournamentEntity savedTournament = saveEntity(saveTournamentDTO,token);
         groupService.createGroupBYTournament(savedTournament, saveTournamentDTO.getLocation(), 0);
         return savedTournament.toDTO();
     }
 
     @Override
-    public TournamentDTO createCup(SaveCupTournamentDTO dto) {
+    public TournamentDTO createCup(SaveCupTournamentDTO dto, String token) {
         Integer teamsNum = dto.getTeamsNum();
 
         if (teamsNum % 2 != 0) {
@@ -93,7 +100,8 @@ public class DefaultTournamentService
                 dto.getLocation(),
                 dto.getTournamentLogo(),
                 dto.getTeamsNum(),
-                IN_PROGRESS.toString()
+                IN_PROGRESS.toString(),
+                userRepository.findUserEntitiesByUserId(jwtService.extractUserId(token))
         ));
 
         if (dto.isPlayOf()) {
@@ -120,7 +128,7 @@ public class DefaultTournamentService
         return repository.saveAndFlush(tournament).toDTO();
     }
 
-    private TournamentEntity saveEntity(SaveTournamentDTO dto) {
+    private TournamentEntity saveEntity(SaveTournamentDTO dto, String token) {
         return repository.save(new TournamentEntity(
                 null,
                 dto.getTournamentName(),
@@ -128,7 +136,8 @@ public class DefaultTournamentService
                 dto.getLocation(),
                 dto.getTournamentLogo(),
                 dto.getTeamsNum(),
-                IN_PROGRESS.toString()
+                IN_PROGRESS.toString(),
+                userRepository.findUserEntitiesByUserId(jwtService.extractUserId(token))
         ));
     }
 }

@@ -49,6 +49,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+//              TODO: need to test without that part of code
+//                Long userId = jwtService.extractUserId(token);
+//                request.setAttribute("userId", userId);
             }
         }
         filterChain.doFilter(request, response);

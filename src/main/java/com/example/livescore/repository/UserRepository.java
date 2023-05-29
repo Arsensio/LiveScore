@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Modifying
     @Query("update UserEntity u set u.username = ?2 where u.username = ?1")
     void updateUsername(String oldUsername, String newUsername);
+
+    UserEntity findUserEntitiesByUserId(Long userId);
 }

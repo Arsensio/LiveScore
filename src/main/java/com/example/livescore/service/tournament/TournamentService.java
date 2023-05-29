@@ -16,9 +16,9 @@ public interface TournamentService extends FootballService<TournamentDTO, SaveTo
 
     TournamentEntity findEntityById(long id);
 
-    TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO);
+    TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO, String token);
 
-    TournamentDTO createCup(SaveCupTournamentDTO saveCupTournamentDTO);
+    TournamentDTO createCup(SaveCupTournamentDTO saveCupTournamentDTO,String token);
 
     List<TournamentDTO> searchByName(String name);
 
