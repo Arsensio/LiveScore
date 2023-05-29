@@ -6,6 +6,7 @@ import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface GameController extends FootballController<GameDTO, SaveGameDTO,
 
     ResponseEntity<List<GameDTO>> findAllByDate(String date);
 
-    ResponseEntity<List<NewGameDTO>> newFindAllByDate(String date);
+    ResponseEntity<List<NewGameDTO>> newFindAllByDate(String date, List<Long> tournaments);
 
     ResponseEntity<List<NewGameDTO>> findAllLiveMatches();
 

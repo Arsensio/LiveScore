@@ -49,24 +49,27 @@ public class DefaultGameService
     }
 
     @Override
+    @Deprecated
     public List<GameDTO> findAllByDate(String date) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
         LocalDateTime date2 = date1.plusMinutes(1439);
 
-        return repository.findAllByGameDate(date1, date2)
+        return repository.findAllByGameDate(date1, date2, List.of(1l, 2l))
                 .stream()
                 .map(GameEntity::toDTO)
                 .toList();
     }
 
     @Override
-    public List<NewGameDTO> newFindAllByDate(String date) {
+    public List<NewGameDTO> newFindAllByDate(String date, List<Long> tournaments) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
         LocalDateTime date2 = date1.plusMinutes(1439);
 
-        List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2);
+        System.out.println("######");
+        List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2, tournaments);
+        System.out.println(allGameByDate);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
         return findGameByGroup(allGroups, allGameByDate);

@@ -32,8 +32,8 @@ public class DefaultGameController
 
     @GetMapping("/new/date")
     @Override
-    public ResponseEntity<List<NewGameDTO>> newFindAllByDate(String date) {
-        return new ResponseEntity<>(service.newFindAllByDate(date), OK);
+    public ResponseEntity<List<NewGameDTO>> newFindAllByDate(@RequestParam("date") String date, @RequestParam("tournaments") List<Long> tournaments) {
+        return new ResponseEntity<>(service.newFindAllByDate(date,tournaments), OK);
     }
 
     @GetMapping("/live")

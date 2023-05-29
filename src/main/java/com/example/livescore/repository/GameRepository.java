@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface GameRepository extends JpaRepository<GameEntity, Long> {
 
-    @Query("FROM GameEntity g WHERE g.protocol.dateAndTime BETWEEN ?1 AND ?2 ORDER BY g.protocol.dateAndTime ")
-    List<GameEntity> findAllByGameDate(LocalDateTime date1, LocalDateTime date2);
+    @Query("FROM GameEntity g WHERE (g.protocol.dateAndTime BETWEEN ?1 AND ?2) AND (g.group.tournament.tournamentId IN ?3) ORDER BY g.protocol.dateAndTime ")
+    List<GameEntity> findAllByGameDate(LocalDateTime date1, LocalDateTime date2, List<Long> tournaments);
 
     @Modifying
     @Query(value = "UPDATE GameEntity g set g.gameState = 'STARTED' where g.gameId =?1")
