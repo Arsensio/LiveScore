@@ -18,8 +18,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/player_statistics")
-public class DefaultPlayerStatisticsController extends AbstractFootballController<PlayerStatisticsService,
-        PlayerStatisticsDTO, SavePlayerStatisticsDTO, PlayerStatisticsEntityPK>
+public class DefaultPlayerStatisticsController
+        extends AbstractFootballController<PlayerStatisticsService, PlayerStatisticsDTO, SavePlayerStatisticsDTO, PlayerStatisticsEntityPK>
         implements PlayerStatisticsController {
 
     public DefaultPlayerStatisticsController(PlayerStatisticsService service) {

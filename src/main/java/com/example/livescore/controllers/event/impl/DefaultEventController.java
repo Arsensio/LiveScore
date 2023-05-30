@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/event")
-public class DefaultEventController extends AbstractFootballController<EventService, EventDTO, SaveEventDTO, Long>
+public class DefaultEventController
+        extends AbstractFootballController<EventService, EventDTO, SaveEventDTO, Long>
         implements EventController {
 
     public DefaultEventController(EventService service) {

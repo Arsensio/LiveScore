@@ -16,7 +16,8 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/player")
-public class DefaultPlayerController extends AbstractFootballController<PlayerService, PlayerDTO, SavePlayerDTO, Long>
+public class DefaultPlayerController
+        extends AbstractFootballController<PlayerService, PlayerDTO, SavePlayerDTO, Long>
         implements PlayerController {
 
     public DefaultPlayerController(PlayerService service) {

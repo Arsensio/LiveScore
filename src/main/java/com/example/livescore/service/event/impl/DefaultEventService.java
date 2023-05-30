@@ -50,7 +50,6 @@ public class DefaultEventService
         this.groupInfoService = groupInfoService;
     }
 
-
     @Override
     @Transactional
     public EventDTO saveGoal(SaveGoalEventDTO dto) {
@@ -81,7 +80,7 @@ public class DefaultEventService
     @Override
     @Transactional
     public EventDTO updateGoal(Long id, SaveGoalEventDTO dto) {
-        EventEntity event = findEntityById(id);
+        EventEntity event = this.findEntityById(id);
         EventInfoEntity goalInfo = event.getEventInfoByEnum(GOAL);
 
         ProtocolEntity protocol = event.getProtocol();
@@ -106,14 +105,7 @@ public class DefaultEventService
 
         increasePlayerStatistic(tournament, newGoalAuthor, GOAL, protocol);
 
-        EventDTO returnDto = repository.saveAndFlush(
-                new EventEntity(
-                        event.getEventId(),
-                        event.getGameScore(),
-                        event.getMinute(),
-                        event.getProtocol()
-                )
-        ).toDTO();
+        EventDTO returnDto = repository.saveAndFlush(getEntity(event)).toDTO();
 
         if (dto.getAssistId() != null && dto.getAssistId() != 0) {
             PlayerEntity assistPlayer = playerService.findEntityById(dto.getAssistId());
@@ -166,23 +158,13 @@ public class DefaultEventService
         //update new Event
         EventEnum newEventEnum = getEventById(dto.getEventEnumId());
         PlayerEntity newPlayer = playerService.findEntityById(dto.getPlayerId());
+
         increasePlayerStatistic(tournament, newPlayer, newEventEnum, protocol);
 
         EventInfoEntity newEventInfo = eventInfoService.saveEventInfo(newEventInfo(event, newPlayer, newEventEnum));
-
         event.setMinute(dto.getMinute());
 
-        System.out.println(event);
-
-        repository.saveAndFlush(
-                new EventEntity(
-                        event.getEventId(),
-                        event.getGameScore(),
-                        event.getMinute(),
-                        event.getProtocol()
-                )
-        );
-
+        repository.saveAndFlush(getEntity(event));
 
         event.setEventInfo(List.of(newEventInfo));
 
@@ -314,13 +296,13 @@ public class DefaultEventService
         groupInfoService.decrementGoalMissedCount(group, goalMissedTeam);
     }
 
-    private void updateNewAuthorInfo(EventInfoEntity goalInfo, PlayerEntity newGoalAuthor) {
-        goalInfo.setPlayer(newGoalAuthor);
-        goalInfo.setPlayerName(newGoalAuthor.getName());
-        goalInfo.setPlayerSurname(newGoalAuthor.getSurname());
-        goalInfo.setPlayerNumber(newGoalAuthor.getPlayerNumber());
-        goalInfo.setTeamName(newGoalAuthor.getTeam().getTeamName());
-        goalInfo.setTeamLogo(newGoalAuthor.getTeam().getTeamLogo());
+    private static EventEntity getEntity(EventEntity event) {
+        return new EventEntity(
+                event.getEventId(),
+                event.getGameScore(),
+                event.getMinute(),
+                event.getProtocol()
+        );
     }
 
 }

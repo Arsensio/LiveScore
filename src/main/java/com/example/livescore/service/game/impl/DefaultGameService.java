@@ -52,11 +52,10 @@ public class DefaultGameService
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public List<GameDTO> findAllByDate(String date) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
-        LocalDateTime date2 = date1.plusMinutes(1439);
+        LocalDateTime date1 = parseDate(date);
+        LocalDateTime date2 = calculateEndDate(date1);
 
         return repository.findAllByGameDate(date1, date2, List.of(1l, 2l))
                 .stream()
@@ -66,13 +65,10 @@ public class DefaultGameService
 
     @Override
     public List<NewGameDTO> newFindAllByDate(String date, List<Long> tournaments) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
-        LocalDateTime date2 = date1.plusMinutes(1439);
+        LocalDateTime date1 = parseDate(date);
+        LocalDateTime date2 = calculateEndDate(date1);
 
-        System.out.println("######");
         List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2, tournaments);
-        System.out.println(allGameByDate);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
         return findGameByGroup(allGroups, allGameByDate);
@@ -158,10 +154,8 @@ public class DefaultGameService
     @Override
     public List<NewGameDTO> findAllAdminGameByDate(String date, String token) {
         Long userId = jwtService.extractUserId(token);
-
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
-        LocalDateTime date2 = date1.plusMinutes(1439);
+        LocalDateTime date1 = parseDate(date);
+        LocalDateTime date2 = calculateEndDate(date1);
 
         List<GameEntity> allGameByDate = repository.findAllByGameDateAndUserId(date1, date2, userId);
         List<GroupEntity> allGroups = groupService.findAllEntity();
@@ -261,5 +255,14 @@ public class DefaultGameService
             }
         }
         return returnGameByDate;
+    }
+
+    private LocalDateTime parseDate(String date) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return LocalDateTime.parse(date + " 00:00", df);
+    }
+
+    private LocalDateTime calculateEndDate(LocalDateTime date) {
+        return date.plusMinutes(1439);
     }
 }

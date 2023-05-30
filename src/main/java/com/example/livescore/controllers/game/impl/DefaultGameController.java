@@ -25,6 +25,7 @@ public class DefaultGameController
 
     @GetMapping("/date")
     @Override
+    @Deprecated(forRemoval = true)
     public ResponseEntity<List<GameDTO>> findAllByDate(@RequestParam("date") String date) {
         return new ResponseEntity<>(service.findAllByDate(date), OK);
     }

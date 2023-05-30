@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/protocol")
-public class DefaultProtocolController extends AbstractFootballController<ProtocolService, ProtocolDTO,
-        SaveProtocolDTO, Long>
+public class DefaultProtocolController
+        extends AbstractFootballController<ProtocolService, ProtocolDTO, SaveProtocolDTO, Long>
         implements ProtocolController {
 
     public DefaultProtocolController(ProtocolService service) {
