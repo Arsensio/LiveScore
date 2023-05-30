@@ -2,6 +2,7 @@ package com.example.core.service;
 
 import com.example.core.dto.AbstractEntity;
 import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.UnsupportedMethodException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +40,12 @@ public abstract class AbstractFootballService<
         return repository.findAll()
                 .stream()
                 .map(E::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public RD findById(I id) {
-        Optional<E> referenceById = repository.findById(id);
-        if (referenceById.isEmpty()) {
-            throw ResourceNotFoundException.build(id, clazz.getName());
-        } else {
-            return referenceById.get().toDTO();
-        }
+        return findEntityById(id).toDTO();
     }
 
     @Override
@@ -69,19 +65,13 @@ public abstract class AbstractFootballService<
                 .orElseThrow(() -> ResourceNotFoundException.build(id, clazz.getName()));
     }
 
-    /***
-     * left so that heirs do not have to implement unnecessary functionality
-     */
     @Override
     public RD save(SD dto) {
-        return null;
+        throw UnsupportedMethodException.build("save", clazz.getName());
     }
 
-    /***
-     * left so that heirs do not have to implement unnecessary functionality
-     */
     @Override
     public RD update(I id, SD dto) {
-        return null;
+        throw UnsupportedMethodException.build("update", clazz.getName());
     }
 }

@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
 import static com.example.livescore.enums.TournamentTypes.LEAGUE;

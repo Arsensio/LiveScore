@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.livescore.enums.GameState.*;
@@ -155,15 +154,15 @@ public class DefaultGameService
     @Override
     public GameDTO save(SaveGameDTO dto) {
         GroupEntity group = groupService.findEntityById(dto.getGroupId());
-        GameEntity createdGame = createGameEntity(group);
-        ProtocolEntity defaultProtocol = createDefaultProtocol(createdGame, dto);
+        GameEntity createdGame = getDefaultGameEntity(group);
+        ProtocolEntity defaultProtocol = getDefaultProtocolEntity(createdGame, dto);
 
         createdGame.setProtocol(defaultProtocol);
 
         return createdGame.toDTO();
     }
 
-    private GameEntity createGameEntity(GroupEntity group) {
+    private GameEntity getDefaultGameEntity(GroupEntity group) {
         GameEntity gameEntity = new GameEntity(
                 null,
                 NOT_STARTED,
@@ -173,7 +172,7 @@ public class DefaultGameService
         return repository.save(gameEntity);
     }
 
-    private ProtocolEntity createDefaultProtocol(GameEntity savedEntity, SaveGameDTO dto) {
+    private ProtocolEntity getDefaultProtocolEntity(GameEntity savedEntity, SaveGameDTO dto) {
         ProtocolEntity protocol = new ProtocolEntity(
                 null,
                 savedEntity,
@@ -222,28 +221,34 @@ public class DefaultGameService
     }
 
     private List<NewGameDTO> findGameByGroup(List<GroupEntity> allGroups, List<GameEntity> allGameByDate) {
-        List<NewGameDTO> returnGameByDate = new ArrayList<>();
-        for (GroupEntity group : allGroups) {
-            NewGameDTO newGame = new NewGameDTO();
-            newGame.setTournamentName(group.getTournament().getTournamentName());
-            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
-            newGame.setGroupName(group.getGroupName());
-            newGame.setGroupId(group.getGroupId());
-            newGame.setTournamentId(group.getTournament().getTournamentId());
+        return allGroups.stream()
+                .map(group -> {
+                    NewGameDTO newGame = getNewGameDTOByGroup(group);
+                    List<GameDTO> games = getGamesByGroup(allGameByDate, group);
 
-            List<GameDTO> games = new ArrayList<>();
-            for (GameEntity game : allGameByDate) {
-                if (group.equals(game.getGroup())) {
-                    games.add(game.toDTO());
-                }
-            }
-            newGame.setGames(games);
+                    newGame.setGames(games);
 
-            if (!games.isEmpty()) {
-                returnGameByDate.add(newGame);
-            }
-        }
-        return returnGameByDate;
+                    return newGame;
+                })
+                .filter(newGame -> !newGame.getGames().isEmpty())
+                .toList();
+    }
+
+    private static List<GameDTO> getGamesByGroup(List<GameEntity> allGameByDate, GroupEntity group) {
+        return allGameByDate.stream()
+                .filter(game -> group.equals(game.getGroup()))
+                .map(GameEntity::toDTO)
+                .toList();
+    }
+
+    private static NewGameDTO getNewGameDTOByGroup(GroupEntity group) {
+        NewGameDTO newGame = new NewGameDTO();
+        newGame.setTournamentName(group.getTournament().getTournamentName());
+        newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
+        newGame.setGroupName(group.getGroupName());
+        newGame.setGroupId(group.getGroupId());
+        newGame.setTournamentId(group.getTournament().getTournamentId());
+        return newGame;
     }
 
     private LocalDateTime parseDate(String date) {

@@ -57,7 +57,6 @@ public class DefaultTeamStatisticsService
     public TeamStatisticsDTO save(TournamentEntity tournament, TeamEntity team) {
         TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(tournament, team);
         TeamStatisticsEntity saved = repository.save(getDefaultTeamStatisticsEntity(pk));
-
         return saved.toDTO();
     }
 

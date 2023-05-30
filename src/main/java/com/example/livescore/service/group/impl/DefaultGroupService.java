@@ -1,6 +1,5 @@
 package com.example.livescore.service.group.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.PlayOffEnum;
 import com.example.livescore.models.GroupEntity;
@@ -13,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.example.livescore.enums.PlayOffEnum.*;
 
@@ -60,25 +60,22 @@ public class DefaultGroupService
 
     @Override
     public List<GroupEntity> createGroupsByTournament(TournamentEntity tournament, Integer teamNum) {
-        List<GroupEntity> createdGroups = new ArrayList<>();
         int groupNum = teamNum / 4;
-        for (int i = 0; i < groupNum; i++) {
-            if (i < 26) {
-                char letter = (char) ('A' + i);
-                GroupEntity savedGroup = repository.save(new GroupEntity(
-                                null,
-                                tournament,
-                                "Group " + letter,
-                                0,
-                                null,
-                                false
-                        )
-                );
-                createdGroups.add(savedGroup);
-            } else {
-                break;
-            }
-        }
+
+        List<GroupEntity> createdGroups = new ArrayList<>(IntStream.range(0, Math.min(groupNum, 26))
+                .mapToObj(i -> {
+                    char letter = (char) ('A' + i);
+                    return new GroupEntity(
+                            null,
+                            tournament,
+                            "Group " + letter,
+                            0,
+                            null,
+                            false
+                    );
+                })
+                .map(repository::save)
+                .toList());
 
         createdGroups.addAll(createPlayOfGroups(tournament, groupNum * 2));
 
@@ -89,7 +86,6 @@ public class DefaultGroupService
     public List<GroupEntity> createPlayOfGroupsByTournament(TournamentEntity tournament, Integer teamsNum) {
         return createPlayOfGroups(tournament, teamsNum);
     }
-
 
     @Override
     public GroupEntity createGroupBYTournament(TournamentEntity tournament, String leagueNameOrLocation, Integer order) {
@@ -122,26 +118,26 @@ public class DefaultGroupService
     @Override
     public List<GroupDTO> findGroupTabsByTournament(long tournamentId) {
         List<GroupEntity> allByTournamentId = repository.findAllByTournamentId(tournamentId);
-        List<GroupDTO> allGroupDTOByTournamentId = new ArrayList<>();
-        boolean isGroupStageCreated = false;
+        boolean[] isGroupStageCreated = {false};
 
-        for (GroupEntity g : allByTournamentId) {
-            if (!g.isPlayoff() && !isGroupStageCreated) {
-                allGroupDTOByTournamentId.add(new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false));
-                isGroupStageCreated = true;
-            } else if (g.isPlayoff()) {
-                allGroupDTOByTournamentId.add(g.toDTO());
-            }
-        }
-
-        return allGroupDTOByTournamentId;
+        return allByTournamentId.stream()
+                .flatMap(g -> {
+                    if (!g.isPlayoff() && !isGroupStageCreated[0]) {
+                        isGroupStageCreated[0] = true;
+                        return Stream.of(new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false));
+                    } else if (g.isPlayoff()) {
+                        return Stream.of(g.toDTO());
+                    } else {
+                        return Stream.empty();
+                    }
+                })
+                .toList();
     }
 
     @Override
     public GroupEntity findByGroupIdAndTournamentId(long tournament, long group) {
         return repository.findByGroupIdAndTournamentId(tournament, group);
     }
-
 
     private List<GroupEntity> createPlayOfGroups(TournamentEntity tournament, Integer teamNum) {
         List<GroupEntity> playOfGroups = new ArrayList<>();

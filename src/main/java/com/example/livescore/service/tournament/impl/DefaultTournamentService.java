@@ -1,7 +1,6 @@
 package com.example.livescore.service.tournament.impl;
 
 import com.example.core.exception.exceptions.IllegalCupFormatException;
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.TournamentRepository;
@@ -15,7 +14,6 @@ import com.example.livescore.web.tournaments.TournamentDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.livescore.enums.StatusEnum.FINISHED;
 import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
@@ -45,14 +43,11 @@ public class DefaultTournamentService
 
     @Override
     public TournamentDTO update(Long id, SaveTournamentDTO dto) {
-        repository.findById(id).ifPresentOrElse(tournamentEntity -> {
-            tournamentEntity.setTournamentName(dto.getTournamentName());
-            tournamentEntity.setTournamentType(dto.getTournamentType());
-            repository.saveAndFlush(tournamentEntity);
-        }, () -> {
-            throw ResourceNotFoundException.build(id, "TournamentEntity");
-        });
-        return repository.findById(id).get().toDTO();
+        TournamentEntity tournamentEntity = findEntityById(id);
+        tournamentEntity.setTournamentName(dto.getTournamentName());
+        tournamentEntity.setTournamentLogo(dto.getTournamentLogo());
+
+        return repository.saveAndFlush(tournamentEntity).toDTO();
     }
 
     @Override
@@ -83,16 +78,7 @@ public class DefaultTournamentService
             throw IllegalCupFormatException.build(teamsNum);
         }
 
-        TournamentEntity savedTournament = repository.save(new TournamentEntity(
-                null,
-                dto.getTournamentName(),
-                dto.getTournamentType(),
-                dto.getLocation(),
-                dto.getTournamentLogo(),
-                dto.getTeamsNum(),
-                IN_PROGRESS.toString(),
-                userRepository.findUserEntitiesByUserId(jwtService.extractUserId(token))
-        ));
+        TournamentEntity savedTournament = repository.save(getDefaultTournamentEntity(dto,token));
 
         if (dto.isPlayOf()) {
             groupService.createPlayOfGroupsByTournament(savedTournament, teamsNum);
@@ -119,7 +105,11 @@ public class DefaultTournamentService
     }
 
     private TournamentEntity saveEntity(SaveTournamentDTO dto, String token) {
-        return repository.save(new TournamentEntity(
+        return repository.save(getDefaultTournamentEntity(dto, token));
+    }
+
+    private <D extends SaveTournamentDTO> TournamentEntity getDefaultTournamentEntity(D dto, String token) {
+        return new TournamentEntity(
                 null,
                 dto.getTournamentName(),
                 dto.getTournamentType(),
@@ -128,6 +118,6 @@ public class DefaultTournamentService
                 dto.getTeamsNum(),
                 IN_PROGRESS.toString(),
                 userRepository.findUserEntitiesByUserId(jwtService.extractUserId(token))
-        ));
+        );
     }
 }
