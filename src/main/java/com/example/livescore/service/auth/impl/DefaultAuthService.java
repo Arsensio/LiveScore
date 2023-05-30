@@ -31,7 +31,6 @@ public class DefaultAuthService implements AuthService {
         );
 
         UserEntity userEntity = getUserEntity(authRequest.getUsername());
-        System.out.println(userEntity.getUserId());
 
         String jwtToken = jwtService.generateToken(authRequest.getUsername(),userEntity.getUserId());
         return AuthResponse.builder()

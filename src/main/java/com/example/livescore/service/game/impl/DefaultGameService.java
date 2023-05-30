@@ -163,9 +163,7 @@ public class DefaultGameService
         LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
         LocalDateTime date2 = date1.plusMinutes(1439);
 
-        System.out.println("######");
         List<GameEntity> allGameByDate = repository.findAllByGameDateAndUserId(date1, date2, userId);
-        System.out.println(allGameByDate);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
         return findGameByGroup(allGroups, allGameByDate);

@@ -5,8 +5,6 @@ import com.example.livescore.web.games.GameDTO;
 import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public interface GameController extends FootballController<GameDTO, SaveGameDTO,
 
     ResponseEntity<List<NewGameDTO>> findAllLiveMatches();
 
-    ResponseEntity<GameDTO> startMatch(@PathVariable Long id);
+    ResponseEntity<GameDTO> startMatch(Long id);
 
-    ResponseEntity<GameDTO> endMatch(@PathVariable Long id);
+    ResponseEntity<GameDTO> endMatch(Long id);
 }

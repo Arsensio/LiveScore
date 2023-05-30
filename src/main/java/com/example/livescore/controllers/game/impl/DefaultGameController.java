@@ -2,12 +2,10 @@ package com.example.livescore.controllers.game.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.game.GameController;
-import com.example.livescore.security.JwtService;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.web.games.GameDTO;
 import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +19,9 @@ public class DefaultGameController
         extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
         implements GameController {
 
-    private final JwtService jwtService;
-
-    public DefaultGameController(GameService service, JwtService jwtService) {
+    public DefaultGameController(GameService service) {
         super(service);
-        this.jwtService = jwtService;
     }
-
 
     @GetMapping("/date")
     @Override
@@ -45,13 +39,6 @@ public class DefaultGameController
     @GetMapping("/admin/date")
     public ResponseEntity<List<NewGameDTO>> findAllAdminGameByDate(@RequestParam("date") String date, @RequestHeader("Authorization") String token) {
         return new ResponseEntity<>(service.findAllAdminGameByDate(date, token), OK);
-    }
-
-    //    @Override
-    @GetMapping("/admin/resource")
-    public ResponseEntity<String> adminResourceEndpoint(@RequestHeader("Authorization") String token) {
-
-        return null;
     }
 
     @GetMapping("/live")

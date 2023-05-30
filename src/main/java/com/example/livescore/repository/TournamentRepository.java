@@ -10,12 +10,12 @@ import java.util.List;
 @Repository
 public interface TournamentRepository extends JpaRepository<TournamentEntity, Long> {
 
-    @Query("FROM TournamentEntity")
+    @Query("FROM TournamentEntity t WHERE t.user.userId = ?1")
     List<TournamentEntity> findAllTournamentByUserId(long userId);
 
-    @Query("FROM TournamentEntity t WHERE lower(t.tournamentName) like lower(concat('%',?1,'%'))")
+    @Query("FROM TournamentEntity t WHERE (lower(t.tournamentName) like lower(concat('%',?1,'%'))) AND t.tournamentStatus != 'FINISHED'")
     List<TournamentEntity> searchByName(String name);
 
-    @Query("FROM TournamentEntity t WHERE t.tournamentType ='CUP'")
+    @Query("FROM TournamentEntity t WHERE t.tournamentType ='CUP' AND t.user.userId = ?1")
     List<TournamentEntity> findAllCupByUserId(long userId);
 }
