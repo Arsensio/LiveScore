@@ -8,7 +8,7 @@ import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
 
 import java.util.List;
 
-public interface PlayerStatisticsService extends FootballService<PlayerStatisticsDTO, SavePlayerStatisticsDTO,
+public interface PlayerStatisticsService extends FootballService<PlayerStatisticsEntity, PlayerStatisticsDTO, SavePlayerStatisticsDTO,
         PlayerStatisticsEntityPK> {
 
     List<DistinctPlayerStatisticsDTO> findAllByGoals(long groupId);
@@ -19,11 +19,9 @@ public interface PlayerStatisticsService extends FootballService<PlayerStatistic
 
     List<DistinctPlayerStatisticsDTO> findAllByAssists(long groupId);
 
-    PlayerStatisticsEntity findEntityById(PlayerStatisticsEntityPK id);
-
     PlayerStatisticsEntity saveAndFlush(PlayerStatisticsEntity player);
 
-    PlayerStatisticsEntity saveDefault(PlayerEntity player, TournamentEntity tournament);
+    PlayerStatisticsEntity save(PlayerEntity player, TournamentEntity tournament);
 
     void incrementGamePlayed(PlayerStatisticsEntityPK id);
 }

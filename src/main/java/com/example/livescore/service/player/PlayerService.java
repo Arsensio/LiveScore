@@ -9,11 +9,9 @@ import com.example.livescore.web.players.UpdatePlayerDTO;
 
 import java.util.List;
 
-public interface PlayerService extends FootballService<PlayerDTO, SavePlayerDTO, Long> {
+public interface PlayerService extends FootballService<PlayerEntity, PlayerDTO, SavePlayerDTO, Long> {
 
     List<PlayerDTO> findAllByTeamId(long teamId);
-
-    PlayerEntity findEntityById(long playerId);
 
     List<MinPlayerDto> findAllPlayersOfTeam(Long teamId);
 

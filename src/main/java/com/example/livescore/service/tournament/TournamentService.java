@@ -8,13 +8,11 @@ import com.example.livescore.web.tournaments.TournamentDTO;
 
 import java.util.List;
 
-public interface TournamentService extends FootballService<TournamentDTO, SaveTournamentDTO, Long> {
+public interface TournamentService extends FootballService<TournamentEntity,TournamentDTO, SaveTournamentDTO, Long> {
 
     List<TournamentDTO> findAllByUserId(long userId);
 
     List<TournamentEntity> findAllEntity();
-
-    TournamentEntity findEntityById(long id);
 
     TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO, String token);
 

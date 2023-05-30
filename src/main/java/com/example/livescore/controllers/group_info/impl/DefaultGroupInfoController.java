@@ -2,6 +2,7 @@ package com.example.livescore.controllers.group_info.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.group_info.GroupInfoController;
+import com.example.livescore.models.GroupInfoEntity;
 import com.example.livescore.service.group_info.GroupInfoService;
 import com.example.livescore.web.group_info.*;
 import com.example.livescore.web.teams.TeamDTO;
@@ -16,7 +17,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/group_info")
 public class DefaultGroupInfoController
-        extends AbstractFootballController<GroupInfoService, GroupInfoDTO, SaveGroupInfoDTO, Long>
+        extends AbstractFootballController<GroupInfoEntity, GroupInfoService, GroupInfoDTO, SaveGroupInfoDTO, Long>
         implements GroupInfoController {
 
     public DefaultGroupInfoController(GroupInfoService service) {

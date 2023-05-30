@@ -1,6 +1,5 @@
 package com.example.livescore.service.team_statistics.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventEnum;
 import com.example.livescore.models.*;
@@ -14,7 +13,6 @@ import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DefaultTeamStatisticsService
@@ -58,17 +56,7 @@ public class DefaultTeamStatisticsService
     @Override
     public TeamStatisticsDTO save(TournamentEntity tournament, TeamEntity team) {
         TeamStatisticsEntityPK pk = new TeamStatisticsEntityPK(tournament, team);
-        TeamStatisticsEntity saved = repository.save(new TeamStatisticsEntity(
-                pk,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                null
-        ));
+        TeamStatisticsEntity saved = repository.save(getDefaultTeamStatisticsEntity(pk));
 
         return saved.toDTO();
     }
@@ -115,24 +103,33 @@ public class DefaultTeamStatisticsService
 
     @Override
     public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long tournamentId) {
-        List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(tournamentId);
-        return allByTournamentIdOrderByWinCount;
+        return repository.findAllByTournamentIdOrderByWinCount(tournamentId);
     }
 
     @Override
-    public TeamStatisticsEntity findEntityById(TournamentEntity tournament, TeamEntity team) {
+    public TeamStatisticsEntity findEntityByTournamentAndTeam(TournamentEntity tournament, TeamEntity team) {
         TeamStatisticsEntityPK teamStatisticsEntityPK = new TeamStatisticsEntityPK(tournament, team);
-        Optional<TeamStatisticsEntity> byId = repository.findById(teamStatisticsEntityPK);
-        if (byId.isEmpty()) {
-            throw ResourceNotFoundException.build(teamStatisticsEntityPK, "TeamStatisticsEntity");
-        }
-        return byId.get();
+        return findEntityById(teamStatisticsEntityPK);
     }
 
     @Override
     public TeamStatisticsEntity saveAndFlash(TournamentEntity tournament, TeamEntity team, GroupEntity group) {
-        TeamStatisticsEntity foundTeamStat = this.findEntityById(tournament, team);
+        TeamStatisticsEntity foundTeamStat = this.findEntityByTournamentAndTeam(tournament, team);
         foundTeamStat.setGroup(group);
         return repository.saveAndFlush(foundTeamStat);
+    }
+
+    private static TeamStatisticsEntity getDefaultTeamStatisticsEntity(TeamStatisticsEntityPK pk) {
+        return new TeamStatisticsEntity(
+                pk,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null
+        );
     }
 }

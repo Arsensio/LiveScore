@@ -2,6 +2,7 @@ package com.example.livescore.controllers.tournament.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.tournament.TournamentController;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.tournaments.SaveCupTournamentDTO;
 import com.example.livescore.web.tournaments.SaveTournamentDTO;
@@ -17,7 +18,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/tournament")
 public class DefaultTournamentController
-        extends AbstractFootballController<TournamentService, TournamentDTO, SaveTournamentDTO, Long>
+        extends AbstractFootballController<TournamentEntity, TournamentService, TournamentDTO, SaveTournamentDTO, Long>
         implements TournamentController {
 
     public DefaultTournamentController(TournamentService service) {

@@ -171,15 +171,6 @@ public class DefaultEventService
         return event.toDTO();
     }
 
-    private EventEntity findEntityById(Long id) {
-        Optional<EventEntity> foundEvent = repository.findById(id);
-
-        if (foundEvent.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "EventEntity");
-        }
-
-        return foundEvent.get();
-    }
 
     private <T extends AbstractSaveEventDTO> EventEntity newEvent(T dto, ProtocolEntity protocol) {
         return EventEntity.builder()

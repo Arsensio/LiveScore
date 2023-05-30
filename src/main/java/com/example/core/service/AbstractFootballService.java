@@ -24,7 +24,7 @@ public abstract class AbstractFootballService<
         E extends AbstractEntity<RD>,
         RD, SD, I,
         R extends JpaRepository<E, I>>
-        implements FootballService<RD, SD, I> {
+        implements FootballService<E, RD, SD, I> {
 
     protected final R repository;
     private Class<E> clazz;
@@ -61,6 +61,12 @@ public abstract class AbstractFootballService<
             repository.deleteById(id);
             return referenceById.get().toDTO();
         }
+    }
+
+    @Override
+    public E findEntityById(I id) {
+        return repository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.build(id, clazz.getName()));
     }
 
     /***

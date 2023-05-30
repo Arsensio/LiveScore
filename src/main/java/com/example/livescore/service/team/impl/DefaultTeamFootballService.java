@@ -82,16 +82,6 @@ public class DefaultTeamFootballService
         return teamStatisticsService.findAllTeamByTournamentId(groupId);
     }
 
-    @Override
-    public TeamEntity findEntityById(long id) {
-        Optional<TeamEntity> referenceById = repository.findById(id);
-        if (referenceById.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "TeamEntity");
-        } else {
-            return referenceById.get();
-        }
-    }
-
     // todo: искать не только по тим нейм но и по турнаменту
     @Override
     public TeamDTO findTeamByNameInTournament(String teamName, Long tournamentId) {

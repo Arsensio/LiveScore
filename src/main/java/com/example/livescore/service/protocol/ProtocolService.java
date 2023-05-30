@@ -8,9 +8,7 @@ import com.example.livescore.web.protocols.SaveProtocolDTO;
 import java.util.List;
 
 
-public interface ProtocolService extends FootballService<ProtocolDTO, SaveProtocolDTO, Long> {
-
-    ProtocolEntity findEntityById(long id);
+public interface ProtocolService extends FootballService<ProtocolEntity, ProtocolDTO, SaveProtocolDTO, Long> {
 
     ProtocolEntity saveAndFlush(ProtocolEntity protocol);
 

@@ -22,12 +22,6 @@ public class DefaultProtocolService
     }
 
     @Override
-    public ProtocolEntity findEntityById(long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> ResourceNotFoundException.build(id, "ProtocolEntity"));
-    }
-
-    @Override
     public ProtocolEntity saveAndFlush(ProtocolEntity protocol) {
         return repository.saveAndFlush(protocol);
     }

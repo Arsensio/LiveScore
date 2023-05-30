@@ -8,11 +8,9 @@ import com.example.livescore.web.teams.TeamWithPlayersDto;
 
 import java.util.List;
 
-public interface TeamFootballService extends FootballService<TeamDTO, SaveTeamDTO, Long> {
+public interface TeamFootballService extends FootballService<TeamEntity, TeamDTO, SaveTeamDTO, Long> {
 
     List<TeamDTO> findAllTeamByTournamentId(long groupId);
-
-    TeamEntity findEntityById(long id);
 
     TeamDTO findTeamByNameInTournament(String teamName, Long tournamentId);
 

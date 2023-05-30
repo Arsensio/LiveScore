@@ -1,5 +1,6 @@
 package com.example.core.controller;
 
+import com.example.core.dto.AbstractEntity;
 import com.example.core.service.FootballService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ import java.util.List;
  */
 @Controller
 public abstract class AbstractFootballController<
-        S extends FootballService<RD, SD, I>,
+        E extends AbstractEntity<RD>,
+        S extends FootballService<E,RD, SD, I>,
         RD, SD, I>
         implements FootballController<RD, SD, I> {
 

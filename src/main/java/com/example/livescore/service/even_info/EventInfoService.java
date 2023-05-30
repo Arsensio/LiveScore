@@ -9,7 +9,7 @@ import com.example.livescore.web.assists.SaveAssistsDTO;
 
 import java.util.List;
 
-public interface EventInfoService extends FootballService<AssistDTO, SaveAssistsDTO, Long> {
+public interface EventInfoService extends FootballService<EventInfoEntity, AssistDTO, SaveAssistsDTO, Long> {
 
     EventInfoEntity saveAssist(PlayerEntity assistPlayer, EventEntity event);
 

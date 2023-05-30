@@ -54,16 +54,6 @@ public class DefaultGroupService
     }
 
     @Override
-    public GroupEntity findEntityById(long id) {
-        Optional<GroupEntity> referenceById = repository.findById(id);
-        if (referenceById.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "GroupEntity");
-        } else {
-            return referenceById.get();
-        }
-    }
-
-    @Override
     public GroupEntity findNextStage(GroupEntity group) {
         return repository.findNextStage(group.getTournament().getTournamentId(), group.getGroupOrder() + 1);
     }

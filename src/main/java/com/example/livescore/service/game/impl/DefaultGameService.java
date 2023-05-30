@@ -1,6 +1,5 @@
 package com.example.livescore.service.game.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.*;
 import com.example.livescore.repository.GameRepository;
@@ -22,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.livescore.enums.GameState.*;
 
@@ -105,12 +103,6 @@ public class DefaultGameService
     }
 
     @Override
-    public GameEntity findEntityById(long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> ResourceNotFoundException.build(id, "GameEntity"));
-    }
-
-    @Override
     public GameDTO endMatch(Long id) {
         GameEntity gameEntity = findEntityById(id);
         if (gameEntity.getGameState() == ENDED) {
@@ -127,8 +119,8 @@ public class DefaultGameService
         int team1Score = protocol.getTeam1Score();
         int team2Score = protocol.getTeam2Score();
 
-        TeamStatisticsEntity teamStatistics1 = teamStatisticsService.findEntityById(tournament, team1);
-        TeamStatisticsEntity teamStatistics2 = teamStatisticsService.findEntityById(tournament, team2);
+        TeamStatisticsEntity teamStatistics1 = teamStatisticsService.findEntityByTournamentAndTeam(tournament, team1);
+        TeamStatisticsEntity teamStatistics2 = teamStatisticsService.findEntityByTournamentAndTeam(tournament, team2);
 
         GroupInfoEntity team1GroupInfo = groupInfoService.findEntityByTournamentAndGroupAndTeam(tournament, group, team1);
         GroupInfoEntity team2GroupInfo = groupInfoService.findEntityByTournamentAndGroupAndTeam(tournament, group, team2);

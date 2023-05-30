@@ -8,17 +8,15 @@ import com.example.livescore.web.games.SaveGameDTO;
 
 import java.util.List;
 
-public interface GameService extends FootballService<GameDTO, SaveGameDTO, Long> {
+public interface GameService extends FootballService<GameEntity, GameDTO, SaveGameDTO, Long> {
 
     List<GameDTO> findAllByDate(String date);
 
-    List<NewGameDTO> newFindAllByDate(String date,List<Long> tournaments);
+    List<NewGameDTO> newFindAllByDate(String date, List<Long> tournaments);
 
     List<NewGameDTO> findAllLiveMatches();
 
     GameDTO startMatch(Long gameId);
-
-    GameEntity findEntityById(long id);
 
     GameDTO endMatch(Long id);
 

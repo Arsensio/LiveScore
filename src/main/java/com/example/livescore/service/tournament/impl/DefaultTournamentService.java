@@ -69,16 +69,6 @@ public class DefaultTournamentService
     }
 
     @Override
-    public TournamentEntity findEntityById(long id) {
-        Optional<TournamentEntity> tournament = repository.findById(id);
-        if (tournament.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "TournamentEntity");
-        } else {
-            return tournament.get();
-        }
-    }
-
-    @Override
     public TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO, String token) {
         TournamentEntity savedTournament = saveEntity(saveTournamentDTO,token);
         groupService.createGroupBYTournament(savedTournament, saveTournamentDTO.getLocation(), 0);

@@ -2,6 +2,7 @@ package com.example.livescore.controllers.group.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.group.GroupController;
+import com.example.livescore.models.GroupEntity;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.web.groups.GroupDTO;
 import com.example.livescore.web.groups.SaveGroupDTO;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/group")
 public class DefaultGroupController
-        extends AbstractFootballController<GroupService, GroupDTO, SaveGroupDTO, Long>
+        extends AbstractFootballController<GroupEntity, GroupService, GroupDTO, SaveGroupDTO, Long>
         implements GroupController {
 
     public DefaultGroupController(GroupService service) {

@@ -2,6 +2,7 @@ package com.example.livescore.controllers.team.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.team.TeamFootballController;
+import com.example.livescore.models.TeamEntity;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.web.teams.SaveTeamDTO;
 import com.example.livescore.web.teams.TeamDTO;
@@ -20,7 +21,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/team")
 public class DefaultTeamFootballController
-        extends AbstractFootballController<TeamFootballService, TeamDTO, SaveTeamDTO, Long>
+        extends AbstractFootballController<TeamEntity, TeamFootballService, TeamDTO, SaveTeamDTO, Long>
         implements TeamFootballController {
 
     public DefaultTeamFootballController(TeamFootballService service) {
