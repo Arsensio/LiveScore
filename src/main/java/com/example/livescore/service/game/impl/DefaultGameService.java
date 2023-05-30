@@ -106,11 +106,8 @@ public class DefaultGameService
 
     @Override
     public GameEntity findEntityById(long id) {
-        Optional<GameEntity> foundGame = repository.findById(id);
-        if (foundGame.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "GameEntity");
-        }
-        return foundGame.get();
+        return repository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.build(id, "GameEntity"));
     }
 
     @Override

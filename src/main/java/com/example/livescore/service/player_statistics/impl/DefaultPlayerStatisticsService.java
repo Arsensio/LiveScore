@@ -2,7 +2,10 @@ package com.example.livescore.service.player_statistics.impl;
 
 import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.models.*;
+import com.example.livescore.models.PlayerEntity;
+import com.example.livescore.models.PlayerStatisticsEntity;
+import com.example.livescore.models.PlayerStatisticsEntityPK;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.PlayerStatisticsRepository;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
@@ -12,12 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class DefaultPlayerStatisticsService
-        extends AbstractFootballService<PlayerStatisticsEntity, PlayerStatisticsDTO, SavePlayerStatisticsDTO,
-        PlayerStatisticsEntityPK, PlayerStatisticsRepository>
+        extends AbstractFootballService<PlayerStatisticsEntity, PlayerStatisticsDTO, SavePlayerStatisticsDTO, PlayerStatisticsEntityPK, PlayerStatisticsRepository>
         implements PlayerStatisticsService {
 
     public DefaultPlayerStatisticsService(PlayerStatisticsRepository repository) {
@@ -29,7 +30,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByGoals(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("GOALS"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByYellowCard(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("YELLOW CARD"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByRedCard(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("RED CARD"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -53,7 +54,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByAssists(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("ASSISTS"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

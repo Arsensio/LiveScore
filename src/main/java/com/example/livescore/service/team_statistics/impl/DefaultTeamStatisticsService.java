@@ -18,8 +18,7 @@ import java.util.Optional;
 
 @Service
 public class DefaultTeamStatisticsService
-        extends AbstractFootballService<TeamStatisticsEntity, TeamStatisticsDTO,
-        SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
+        extends AbstractFootballService<TeamStatisticsEntity, TeamStatisticsDTO, SaveTeamStatisticsDTO, TeamStatisticsEntityPK, TeamStatisticsRepository>
         implements TeamStatisticsService {
 
     public DefaultTeamStatisticsService(TeamStatisticsRepository repository) {
@@ -117,10 +116,6 @@ public class DefaultTeamStatisticsService
     @Override
     public List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long tournamentId) {
         List<TeamStatisticsEntity> allByTournamentIdOrderByWinCount = repository.findAllByTournamentIdOrderByWinCount(tournamentId);
-        for (TeamStatisticsEntity ts : allByTournamentIdOrderByWinCount) {
-            System.out.println(ts.getId().getTeam().getTeamId());
-        }
-
         return allByTournamentIdOrderByWinCount;
     }
 

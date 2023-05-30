@@ -87,12 +87,8 @@ public class DefaultPlayerService
 
     @Override
     public PlayerEntity findEntityById(long playerId) {
-        Optional<PlayerEntity> player = repository.findById(playerId);
-        if (player.isEmpty()) {
-            throw ResourceNotFoundException.build(playerId, "PlayerEntity");
-        } else {
-            return player.get();
-        }
+        return repository.findById(playerId)
+                .orElseThrow(() -> ResourceNotFoundException.build(playerId, "PlayerEntity"));
     }
 
     @Override
