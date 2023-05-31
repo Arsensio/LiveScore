@@ -42,4 +42,12 @@ public class TeamEntity extends AbstractEntity<TeamDTO> {
                 this.teamLogo
         );
     }
+
+    @Override
+    public String toString() {
+        return "TeamEntity{" +
+                "teamId=" + teamId +
+                ", teamName='" + teamName + '\'' +
+                '}';
+    }
 }

@@ -36,4 +36,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handlePlayerNullFields(PlayerNullFieldsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
     }
+
+    @ExceptionHandler(value = EventException.class)
+    protected ResponseEntity<Object> handleEventAlreadyExists(EventException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
+    }
 }

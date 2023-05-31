@@ -39,4 +39,9 @@ public class PlayerStatisticsEntityPK implements Serializable {
     public int hashCode() {
         return Objects.hash(tournament, player);
     }
+
+    @Override
+    public String toString() {
+        return tournament.getTournamentId()+", "+player.getPlayerId();
+    }
 }

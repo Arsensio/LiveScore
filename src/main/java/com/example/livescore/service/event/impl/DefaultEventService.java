@@ -1,6 +1,6 @@
 package com.example.livescore.service.event.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.EventException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventEnum;
 import com.example.livescore.models.*;
@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import static com.example.core.enums.ErrorMessage.*;
 import static com.example.livescore.enums.EventEnum.*;
 
 @Service
@@ -58,6 +58,14 @@ public class DefaultEventService
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
         TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
         PlayerEntity goalPlayer = playerService.findEntityById(dto.getPlayerId());
+
+        List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(goalPlayer.getPlayerId(), protocol.getProtocolId());
+        EventInfoEntity eventRedCard = getEventInfo(events, RED_CARD);
+        EventInfoEntity secondYellowCard = getEventInfo(events, SECOND_YELLOW_CARD);
+
+        if (eventRedCard != null || secondYellowCard != null) {
+            throw EventException.build(HAS_RED_CARD_EXCEPTION, goalPlayer.getPlayerId());
+        }
 
         increasePlayerStatistic(tournament, goalPlayer, GOAL, protocol);
         EventEntity save = repository.save(newEvent(dto, protocol));
@@ -127,6 +135,29 @@ public class DefaultEventService
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
         PlayerEntity player = playerService.findEntityById(dto.getPlayerId());
         TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+
+        List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(player.getPlayerId(), protocol.getProtocolId());
+
+        if (!events.isEmpty()) {
+            EventInfoEntity eventYellowCard = getEventInfo(events, YELLOW_CARD);
+            EventInfoEntity secondYellowCard = getEventInfo(events, SECOND_YELLOW_CARD);
+            EventInfoEntity eventRedCard = getEventInfo(events, RED_CARD);
+
+            if (eventRedCard == null && eventYellowCard != null && secondYellowCard == null && eventEnum == YELLOW_CARD) {
+                increasePlayerStatistic(tournament, player, RED_CARD, protocol);
+
+                EventEntity saveEvent = repository.save(newEvent(dto, protocol));
+                EventInfoEntity saveEventInfo = eventInfoService.saveEventInfo(newEventInfo(saveEvent, player, SECOND_YELLOW_CARD));
+
+                saveEvent.setEventInfo(List.of(saveEventInfo));
+
+                return saveEvent.toDTO();
+            } else if (eventRedCard != null) {
+                throw EventException.build(EVENT_RED_CARD_EXCEPTION, player.getPlayerId());
+            } else if (secondYellowCard != null) {
+                throw EventException.build(EVENT_SECOND_YELLOW_CARD_EXCEPTION, player.getPlayerId());
+            }
+        }
 
         increasePlayerStatistic(tournament, player, eventEnum, protocol);
 
@@ -210,6 +241,8 @@ public class DefaultEventService
             foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() + 1);
         } else if (eventName == SCORE_PENALTY) {
             postGoalCount(tournament, player, protocol, foundPlayerStat);
+        } else if (eventName == SECOND_YELLOW_CARD) {
+            foundPlayerStat.setRedCard(foundPlayerStat.getRedCard() + 1);
         }
 
         log.info("UPDATE PLAYER STATISTICS");
@@ -294,6 +327,13 @@ public class DefaultEventService
                 event.getMinute(),
                 event.getProtocol()
         );
+    }
+
+    private static EventInfoEntity getEventInfo(List<EventInfoEntity> events, EventEnum yellowCard) {
+        return events.stream()
+                .filter(e -> e.getEventName().equals(yellowCard.getEventName()))
+                .findFirst()
+                .orElse(null);
     }
 
 }

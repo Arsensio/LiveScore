@@ -18,4 +18,6 @@ public interface EventInfoService extends FootballService<EventInfoEntity, Assis
     EventInfoEntity saveEventInfo(EventInfoEntity eventInfoEntity);
 
     List<EventInfoEntity> findAllByEvent(EventEntity event);
+
+    List<EventInfoEntity> findAllEventByPlayerAndProtocol(Long playerId, Long protocolId);
 }
