@@ -42,6 +42,9 @@ public class PlayerStatisticsEntityPK implements Serializable {
 
     @Override
     public String toString() {
-        return tournament.getTournamentId()+", "+player.getPlayerId();
+        return "{" +
+                "tournament=" + tournament.getTournamentId() +
+                ", player=" + player.getPlayerId() +
+                '}';
     }
 }
