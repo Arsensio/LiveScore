@@ -59,13 +59,7 @@ public class DefaultEventService
         TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
         PlayerEntity goalPlayer = playerService.findEntityById(dto.getPlayerId());
 
-        List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(goalPlayer.getPlayerId(), protocol.getProtocolId());
-        EventInfoEntity eventRedCard = getEventInfo(events, RED_CARD);
-        EventInfoEntity secondYellowCard = getEventInfo(events, SECOND_YELLOW_CARD);
-
-        if (eventRedCard != null || secondYellowCard != null) {
-            throw EventException.build(HAS_RED_CARD_EXCEPTION, goalPlayer.getPlayerId());
-        }
+        checkForRedCard(protocol, goalPlayer);
 
         increasePlayerStatistic(tournament, goalPlayer, GOAL, protocol);
         EventEntity save = repository.save(newEvent(dto, protocol));
@@ -126,6 +120,49 @@ public class DefaultEventService
         return returnDto;
     }
 
+    @Override
+    @Transactional
+    public EventDTO savePenalty(SaveEventDTO saveEventDTO) {
+        EventEnum eventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
+
+        ProtocolEntity protocol = protocolService.findEntityById(saveEventDTO.getProtocolId());
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        PlayerEntity player = playerService.findEntityById(saveEventDTO.getPlayerId());
+
+        checkForRedCard(protocol, player);
+
+        increasePlayerStatistic(tournament, player, eventEnum, protocol);
+        EventEntity save = repository.save(newEvent(saveEventDTO, protocol));
+
+        EventInfoEntity penaltyEventInfo = eventInfoService.saveEventInfo(newEventInfo(save, player, eventEnum));
+        save.setEventInfo(List.of(penaltyEventInfo));
+
+        return save.toDTO();
+    }
+
+    @Override
+    public EventDTO updatePenalty(Long id, SaveEventDTO saveEventDTO) {
+        EventEntity event = this.findEntityById(id);
+        EventEnum eventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
+        EventInfoEntity goalInfo = event.getEventInfoByEnum(eventEnum);
+
+        ProtocolEntity protocol = event.getProtocol();
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+
+        //rollback statistics and delete eventInfo
+        rollBackPlayerStatistics(tournament, goalInfo.getPlayer(), EventEnum.valueOf(goalInfo.getEventName()), protocol);
+        eventInfoService.delete(goalInfo.getId());
+
+        PlayerEntity newGoalAuthor = playerService.findEntityById(saveEventDTO.getPlayerId());
+        EventInfoEntity newEventInfo = newEventInfo(event, newGoalAuthor, eventEnum);
+        eventInfoService.saveEventInfo(newEventInfo);
+        event.setMinute(saveEventDTO.getMinute());
+
+        increasePlayerStatistic(tournament, newGoalAuthor, eventEnum, protocol);
+
+        EventDTO returnDto = repository.saveAndFlush(getEntity(event)).toDTO();
+        return returnDto;
+    }
 
     @Override
     @Transactional
@@ -231,18 +268,24 @@ public class DefaultEventService
         PlayerStatisticsEntity foundPlayerStat = playerStatisticsService.findEntityById(playerStatisticsEntityPK);
 
         log.info(foundPlayerStat.toString());
-        if (eventName == GOAL) {
-            postGoalCount(tournament, player, protocol, foundPlayerStat);
-        } else if (eventName == ASSIST) {
-            foundPlayerStat.setAssists(foundPlayerStat.getAssists() + 1);
-        } else if (eventName == RED_CARD) {
-            foundPlayerStat.setRedCard(foundPlayerStat.getRedCard() + 1);
-        } else if (eventName == YELLOW_CARD) {
-            foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() + 1);
-        } else if (eventName == SCORE_PENALTY) {
-            postGoalCount(tournament, player, protocol, foundPlayerStat);
-        } else if (eventName == SECOND_YELLOW_CARD) {
-            foundPlayerStat.setRedCard(foundPlayerStat.getRedCard() + 1);
+
+        switch (eventName) {
+            case GOAL:
+            case SCORE_PENALTY:
+                postGoalCount(tournament, player, protocol, foundPlayerStat);
+                break;
+            case ASSIST:
+                foundPlayerStat.setAssists(foundPlayerStat.getAssists() + 1);
+                break;
+            case RED_CARD:
+            case SECOND_YELLOW_CARD:
+                foundPlayerStat.setRedCard(foundPlayerStat.getRedCard() + 1);
+                break;
+            case YELLOW_CARD:
+                foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() + 1);
+                break;
+            default:
+                break;
         }
 
         log.info("UPDATE PLAYER STATISTICS");
@@ -336,4 +379,14 @@ public class DefaultEventService
                 .orElse(null);
     }
 
+
+    private void checkForRedCard(ProtocolEntity protocol, PlayerEntity goalPlayer) {
+        List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(goalPlayer.getPlayerId(), protocol.getProtocolId());
+        EventInfoEntity eventRedCard = getEventInfo(events, RED_CARD);
+        EventInfoEntity secondYellowCard = getEventInfo(events, SECOND_YELLOW_CARD);
+
+        if (eventRedCard != null || secondYellowCard != null) {
+            throw EventException.build(HAS_RED_CARD_EXCEPTION, goalPlayer.getPlayerId());
+        }
+    }
 }

@@ -71,7 +71,8 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
                     eventName.equals(RED_CARD.getEventName()) ||
                     eventName.equals(PENALTY.getEventName()) ||
                     eventName.equals(MISS_PENALTY.getEventName()) ||
-                    eventName.equals(SECOND_YELLOW_CARD.getEventName())
+                    eventName.equals(SECOND_YELLOW_CARD.getEventName())||
+                    eventName.equals(SCORE_PENALTY.getEventName())
             ) {
                 setEventInfo(eventDTO, eventInfoEntity);
             } else if (eventName.equals(ASSIST.getEventName())) {

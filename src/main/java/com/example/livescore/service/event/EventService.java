@@ -11,4 +11,8 @@ public interface EventService extends FootballService<EventEntity, EventDTO, Sav
     EventDTO saveGoal(SaveGoalEventDTO dto);
 
     EventDTO updateGoal(Long id, SaveGoalEventDTO dto);
+
+    EventDTO savePenalty(SaveEventDTO saveEventDTO);
+
+    EventDTO updatePenalty(Long id, SaveEventDTO saveEventDTO);
 }
