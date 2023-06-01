@@ -64,6 +64,14 @@ public class DefaultTournamentService
     }
 
     @Override
+    public List<Long> findAllTournamentId() {
+        return repository.findAll()
+                .stream()
+                .map(TournamentEntity::getTournamentId)
+                .toList();
+    }
+
+    @Override
     public TournamentDTO createLeague(SaveTournamentDTO saveTournamentDTO, String token) {
         TournamentEntity savedTournament = saveEntity(saveTournamentDTO,token);
         groupService.createGroupBYTournament(savedTournament, saveTournamentDTO.getLocation(), 0);
