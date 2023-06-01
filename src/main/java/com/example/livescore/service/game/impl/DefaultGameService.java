@@ -11,6 +11,7 @@ import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.protocol.ProtocolService;
 import com.example.livescore.service.team.TeamFootballService;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
+import com.example.livescore.service.tournament.TournamentService;
 import com.example.livescore.web.games.GameDTO;
 import com.example.livescore.web.games.NewGameDTO;
 import com.example.livescore.web.games.SaveGameDTO;
@@ -35,8 +36,9 @@ public class DefaultGameService
     private final PlayerStatisticsService playerStatisticsService;
     private final GroupInfoService groupInfoService;
     private final JwtService jwtService;
+    private final TournamentService tournamentService;
 
-    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService, JwtService jwtService) {
+    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService, JwtService jwtService, TournamentService tournamentService) {
         super(repository);
         this.teamFootballService = teamFootballService;
         this.groupService = groupService;
@@ -45,7 +47,7 @@ public class DefaultGameService
         this.playerStatisticsService = playerStatisticsService;
         this.groupInfoService = groupInfoService;
         this.jwtService = jwtService;
-
+        this.tournamentService = tournamentService;
     }
 
     @Override
@@ -64,6 +66,10 @@ public class DefaultGameService
     public List<NewGameDTO> newFindAllByDate(String date, List<Long> tournaments) {
         LocalDateTime date1 = parseDate(date);
         LocalDateTime date2 = calculateEndDate(date1);
+
+        if (tournaments == null) {
+            tournaments = tournamentService.findAllTournamentId();
+        }
 
         List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2, tournaments);
         List<GroupEntity> allGroups = groupService.findAllEntity();
