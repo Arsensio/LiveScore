@@ -3,17 +3,14 @@ package com.example.livescore.web.tournaments;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaveCupTournamentDTO {
+public class SaveCupTournamentDTO extends SaveTournamentDTO {
 
-    private String tournamentName;
-    private String tournamentType;
-    private String tournamentLogo;
-    private String location;
-    private Integer teamsNum;
     private boolean isPlayOf;
 }

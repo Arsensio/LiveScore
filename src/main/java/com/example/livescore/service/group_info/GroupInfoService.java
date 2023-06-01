@@ -10,7 +10,7 @@ import com.example.livescore.web.teams.TeamDTO;
 
 import java.util.List;
 
-public interface GroupInfoService extends FootballService<GroupInfoDTO, SaveGroupInfoDTO, Long> {
+public interface GroupInfoService extends FootballService<GroupInfoEntity, GroupInfoDTO, SaveGroupInfoDTO, Long> {
 
     GroupInfoEntity saveAfterDraw(GroupEntity group, TournamentEntity tournament, TeamEntity team);
 

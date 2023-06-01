@@ -45,24 +45,7 @@ public class DefaultGroupInfoService
     @Override
     public GroupInfoEntity saveAfterDraw(GroupEntity group, TournamentEntity tournament, TeamEntity team) {
         teamStatisticsService.saveAndFlash(tournament, team, group);
-        return repository.save(new GroupInfoEntity(
-                null,
-                tournament.getTournamentLogo(),
-                group.getGroupName(),
-                team.getTeamName(),
-                team.getTeamLogo(),
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                CREATED.toString(),
-                group,
-                team,
-                tournament
-        ));
+        return repository.save(getDefaultGroupInfoEntity(group, tournament, team));
     }
 
     @Override
@@ -87,7 +70,6 @@ public class DefaultGroupInfoService
         List<GroupEntity> groupEntities = groupService.findAllGroupInGroupStageByTournamentId(tournamentId);
         List<ProtocolEntity> allByGameStateStarted = protocolService.findAllByGameStateStarted();
 
-
         List<List<GroupInfoEntity>> allSortedGroups = new ArrayList<>();
 
         for (GroupEntity g : groupEntities) {
@@ -101,7 +83,6 @@ public class DefaultGroupInfoService
             }
             sortedList.sort(sortGroupEntityAlgorithm());
             allSortedGroups.add(sortedList);
-
         }
 
         List<TeamDTO> nextStageTeams = new ArrayList<>();
@@ -119,7 +100,6 @@ public class DefaultGroupInfoService
                 nextStageTeams.add(nextStageTeam.toDTO());
             }
         }
-
 
         return nextStageTeams;
     }
@@ -214,19 +194,7 @@ public class DefaultGroupInfoService
             List<GroupInfoDTO> orderedByPointList = new ArrayList<>();
 
             List<GroupInfoEntity> allGroupInfoByTournamentAndGroup = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournamentId, group.getGroupId());
-            for (GroupInfoEntity groupInfo : allGroupInfoByTournamentAndGroup) {
-                updateIfLiveMatchDTO(allByGameStateStarted, orderedByPointList, groupInfo);
-            }
-
-            orderedByPointList.sort(sortGroupAlgorithm());
-            for (int i = 0; i < orderedByPointList.size(); i++) {
-                GroupInfoDTO groupInfoDTO = orderedByPointList.get(i);
-                groupInfoDTO.setPosition(i + 1);
-                orderedByPointList.set(i, groupInfoDTO);
-            }
-
-            groupInfoListDTO.setSortedByPointTeams(orderedByPointList);
-            returnGroupList.add(groupInfoListDTO);
+            sortByPointsAndSetPosition(returnGroupList, allByGameStateStarted, orderedByPointList, allGroupInfoByTournamentAndGroup, groupInfoListDTO);
         }
 
 
@@ -243,22 +211,10 @@ public class DefaultGroupInfoService
         List<GroupInfoEntity> allByTournamentIdAndGroupIdOrderByWinCount = repository.findAllByTournamentIdAndGroupIdOrderByWinCount(tournament, group);
         GroupEntity foundGroup = groupService.findByGroupIdAndTournamentId(tournament, group);
         GroupInfoListDTO groupInfoListDTO = new GroupInfoListDTO(foundGroup);
-        for (GroupInfoEntity groupInfo : allByTournamentIdAndGroupIdOrderByWinCount) {
-            updateIfLiveMatchDTO(allByGameStateStarted, orderedByPointList, groupInfo);
-        }
-
-        orderedByPointList.sort(sortGroupAlgorithm());
-        for (int i = 0; i < orderedByPointList.size(); i++) {
-            GroupInfoDTO groupInfoDTO = orderedByPointList.get(i);
-            groupInfoDTO.setPosition(i + 1);
-            orderedByPointList.set(i, groupInfoDTO);
-        }
-        groupInfoListDTO.setSortedByPointTeams(orderedByPointList);
-        returnGroupList.add(groupInfoListDTO);
+        sortByPointsAndSetPosition(returnGroupList, allByGameStateStarted, orderedByPointList, allByTournamentIdAndGroupIdOrderByWinCount, groupInfoListDTO);
 
         return returnGroupList;
     }
-
 
     @Override
     public void incrementGoalCount(GroupEntity group, TeamEntity team) {
@@ -359,5 +315,41 @@ public class DefaultGroupInfoService
                 .tournament(tournament)
                 .points(0)
                 .build();
+    }
+
+    private static GroupInfoEntity getDefaultGroupInfoEntity(GroupEntity group, TournamentEntity tournament, TeamEntity team) {
+        return new GroupInfoEntity(
+                null,
+                tournament.getTournamentLogo(),
+                group.getGroupName(),
+                team.getTeamName(),
+                team.getTeamLogo(),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                CREATED.toString(),
+                group,
+                team,
+                tournament
+        );
+    }
+
+    private void sortByPointsAndSetPosition(List<GroupInfoListDTO> returnGroupList, List<ProtocolEntity> allByGameStateStarted, List<GroupInfoDTO> orderedByPointList, List<GroupInfoEntity> allByTournamentIdAndGroupIdOrderByWinCount, GroupInfoListDTO groupInfoListDTO) {
+        for (GroupInfoEntity groupInfo : allByTournamentIdAndGroupIdOrderByWinCount) {
+            updateIfLiveMatchDTO(allByGameStateStarted, orderedByPointList, groupInfo);
+        }
+
+        orderedByPointList.sort(sortGroupAlgorithm());
+        for (int i = 0; i < orderedByPointList.size(); i++) {
+            GroupInfoDTO groupInfoDTO = orderedByPointList.get(i);
+            groupInfoDTO.setPosition(i + 1);
+            orderedByPointList.set(i, groupInfoDTO);
+        }
+        groupInfoListDTO.setSortedByPointTeams(orderedByPointList);
+        returnGroupList.add(groupInfoListDTO);
     }
 }

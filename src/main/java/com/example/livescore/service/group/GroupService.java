@@ -8,13 +8,11 @@ import com.example.livescore.web.groups.SaveGroupDTO;
 
 import java.util.List;
 
-public interface GroupService extends FootballService<GroupDTO, SaveGroupDTO, Long> {
+public interface GroupService extends FootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long> {
 
     List<GroupDTO> findAllByTournamentId(long tournamentId);
 
     List<GroupEntity> findAllEntity();
-
-    GroupEntity findEntityById(long id);
 
     GroupEntity findNextStage(GroupEntity group);
 

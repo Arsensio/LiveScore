@@ -11,4 +11,8 @@ public interface EventController extends FootballController<EventDTO, SaveEventD
     ResponseEntity<EventDTO> saveGoal(SaveGoalEventDTO saveGoalEventDTO);
 
     ResponseEntity<EventDTO> updateGoal(Long id, SaveGoalEventDTO saveGoalEventDTO);
+
+    ResponseEntity<EventDTO> savePenalty(SaveEventDTO saveEventDTO);
+
+    ResponseEntity<EventDTO> updatePenalty(Long id, SaveEventDTO saveEventDTO);
 }

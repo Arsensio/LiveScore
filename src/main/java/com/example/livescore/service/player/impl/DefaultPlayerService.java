@@ -19,10 +19,7 @@ import com.example.livescore.web.players.UpdatePlayerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class DefaultPlayerService
@@ -31,14 +28,12 @@ public class DefaultPlayerService
 
     private final TeamFootballService teamFootballService;
     private final PlayerStatisticsService playerStatisticsService;
-    private final GroupService groupService;
     private final TournamentService tournamentService;
 
-    public DefaultPlayerService(PlayerRepository playerRepository, TeamFootballService teamFootballService, PlayerStatisticsService playerStatisticsService, GroupService groupService, TournamentService tournamentService) {
+    public DefaultPlayerService(PlayerRepository playerRepository, TeamFootballService teamFootballService, PlayerStatisticsService playerStatisticsService, TournamentService tournamentService) {
         super(playerRepository);
         this.teamFootballService = teamFootballService;
         this.playerStatisticsService = playerStatisticsService;
-        this.groupService = groupService;
         this.tournamentService = tournamentService;
     }
 
@@ -46,35 +41,20 @@ public class DefaultPlayerService
     @Transactional
     public PlayerDTO save(SavePlayerDTO savePlayerDTO) {
 //        checkPlayerNumberForExistence(savePlayerDTO.getPlayerNumber(), savePlayerDTO.getTeamId());
-        PlayerEntity save = repository.save(new PlayerEntity(
-                null,
-                teamFootballService.findEntityById(savePlayerDTO.getTeamId()),
-                savePlayerDTO.getName(),
-                savePlayerDTO.getSurname(),
-                savePlayerDTO.getPlayerNumber(),
-                savePlayerDTO.getRole()
-        ));
+        PlayerEntity save = repository.save(getDefaultPlayerEntity(savePlayerDTO));
         TournamentEntity tournament = tournamentService.findEntityById(savePlayerDTO.getTournamentId());
-        playerStatisticsService.saveDefault(save, tournament);
+        playerStatisticsService.save(save, tournament);
         return save.toDTO();
     }
 
     @Override
     public PlayerDTO update(Long id, SavePlayerDTO savePlayerDTO) {
         checkPlayerNumberForExistence(savePlayerDTO.getPlayerNumber(), savePlayerDTO.getTeamId());
-        repository.findById(id).ifPresentOrElse(playerEntity -> {
-            playerEntity.setName(savePlayerDTO.getName());
-            playerEntity.setSurname(savePlayerDTO.getSurname());
-            playerEntity.setRole(savePlayerDTO.getRole());
-            playerEntity.setTeam(teamFootballService.findEntityById(savePlayerDTO.getTeamId()));
-            playerEntity.setPlayerNumber(savePlayerDTO.getPlayerNumber());
-            repository.saveAndFlush(playerEntity);
-        }, () -> {
-            throw ResourceNotFoundException.build(id, "Player");
-        });
-        return repository.findById(id)
-                .get()
-                .toDTO();
+
+        PlayerEntity playerEntity = findEntityById(id);
+        updatePlayerEntity(playerEntity, savePlayerDTO);
+
+        return repository.saveAndFlush(playerEntity).toDTO();
     }
 
     @Override
@@ -86,41 +66,16 @@ public class DefaultPlayerService
     }
 
     @Override
-    public PlayerEntity findEntityById(long playerId) {
-        Optional<PlayerEntity> player = repository.findById(playerId);
-        if (player.isEmpty()) {
-            throw ResourceNotFoundException.build(playerId, "PlayerEntity");
-        } else {
-            return player.get();
-        }
-    }
-
-    @Override
     public List<MinPlayerDto> findAllPlayersOfTeam(Long teamId) {
         return repository.findAllPlayersOfTeam(teamId);
     }
 
     @Override
     public List<PlayerDTO> transferPlayers(List<UpdatePlayerDTO> playersToUpdate) {
-        List<PlayerDTO> updatedPlayers = new ArrayList<>();
-
-        for (UpdatePlayerDTO p : playersToUpdate) {
-            PlayerEntity player = findEntityById(p.getPlayerId());
-            TeamEntity newTeam = teamFootballService.findEntityById(p.getNewTeamId());
-            List<Integer> allPlayerNumber = findAllPlayerNumberByTeamId(newTeam.getTeamId());
-            Integer newNumber = player.getPlayerNumber();
-            if (allPlayerNumber.contains(newNumber)) {
-                newNumber = generateRandomNumExcludeList(allPlayerNumber);
-            }
-
-            player.setTeam(newTeam);
-            player.setPlayerNumber(newNumber);
-
-            PlayerEntity updatedPlayer = repository.saveAndFlush(player);
-            updatedPlayers.add(updatedPlayer.toDTO());
-        }
-
-        return updatedPlayers;
+        return playersToUpdate.stream()
+                .map(this::updatePlayer)
+                .map(PlayerEntity::toDTO)
+                .toList();
     }
 
     @Override
@@ -137,14 +92,6 @@ public class DefaultPlayerService
         }
     }
 
-    private PlayerEntity findEntityById(Long id) {
-        Optional<PlayerEntity> foundEntity = repository.findById(id);
-        if (foundEntity.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "TeamEntity");
-        } else
-            return foundEntity.get();
-    }
-
     private List<Integer> findAllPlayerNumberByTeamId(Long teamId) {
         List<PlayerEntity> allByTeamId = repository.findAllByTeamId(teamId);
 
@@ -155,11 +102,48 @@ public class DefaultPlayerService
 
     private Integer generateRandomNumExcludeList(List<Integer> excludedValues) {
         Random rand = new Random();
-        int randomNum;
-        do {
+        Set<Integer> excludedSet = new HashSet<>(excludedValues);
+
+        int randomNum = rand.nextInt(99) + 1;
+        while (excludedSet.contains(randomNum)) {
             randomNum = rand.nextInt(99) + 1;
-        } while (excludedValues.contains(randomNum));
+        }
 
         return randomNum;
+    }
+
+    private PlayerEntity getDefaultPlayerEntity(SavePlayerDTO savePlayerDTO) {
+        return new PlayerEntity(
+                null,
+                teamFootballService.findEntityById(savePlayerDTO.getTeamId()),
+                savePlayerDTO.getName(),
+                savePlayerDTO.getSurname(),
+                savePlayerDTO.getPlayerNumber(),
+                savePlayerDTO.getRole()
+        );
+    }
+
+    private PlayerEntity updatePlayer(UpdatePlayerDTO updatePlayerDTO) {
+        PlayerEntity player = findEntityById(updatePlayerDTO.getPlayerId());
+        TeamEntity newTeam = teamFootballService.findEntityById(updatePlayerDTO.getNewTeamId());
+        List<Integer> allPlayerNumbers = findAllPlayerNumberByTeamId(newTeam.getTeamId());
+        Integer newNumber = player.getPlayerNumber();
+
+        if (allPlayerNumbers.contains(newNumber)) {
+            newNumber = generateRandomNumExcludeList(allPlayerNumbers);
+        }
+
+        player.setTeam(newTeam);
+        player.setPlayerNumber(newNumber);
+
+        return repository.saveAndFlush(player);
+    }
+
+    private void updatePlayerEntity(PlayerEntity playerEntity, SavePlayerDTO savePlayerDTO) {
+        playerEntity.setName(savePlayerDTO.getName());
+        playerEntity.setSurname(savePlayerDTO.getSurname());
+        playerEntity.setRole(savePlayerDTO.getRole());
+        playerEntity.setTeam(teamFootballService.findEntityById(savePlayerDTO.getTeamId()));
+        playerEntity.setPlayerNumber(savePlayerDTO.getPlayerNumber());
     }
 }

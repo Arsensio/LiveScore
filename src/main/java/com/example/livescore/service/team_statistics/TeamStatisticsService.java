@@ -9,7 +9,7 @@ import com.example.livescore.web.teams.TeamDTO;
 
 import java.util.List;
 
-public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO, SaveTeamStatisticsDTO,
+public interface TeamStatisticsService extends FootballService<TeamStatisticsEntity, TeamStatisticsDTO, SaveTeamStatisticsDTO,
         TeamStatisticsEntityPK> {
 
     List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId);
@@ -38,7 +38,7 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsDTO
 
     List<TeamStatisticsEntity> findAllByTournamentIdOrderByWinCount(Long groupId);
 
-    TeamStatisticsEntity findEntityById(TournamentEntity tournament, TeamEntity team);
+    TeamStatisticsEntity findEntityByTournamentAndTeam(TournamentEntity tournament, TeamEntity team);
 
     TeamStatisticsEntity saveAndFlash(TournamentEntity tournament, TeamEntity team, GroupEntity group);
 }

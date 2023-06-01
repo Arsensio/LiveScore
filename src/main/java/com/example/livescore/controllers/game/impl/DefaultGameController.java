@@ -2,6 +2,7 @@ package com.example.livescore.controllers.game.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.game.GameController;
+import com.example.livescore.models.GameEntity;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.web.games.GameDTO;
 import com.example.livescore.web.games.NewGameDTO;
@@ -16,24 +17,30 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/game")
 public class DefaultGameController
-        extends AbstractFootballController<GameService, GameDTO, SaveGameDTO, Long>
+        extends AbstractFootballController<GameEntity, GameService, GameDTO, SaveGameDTO, Long>
         implements GameController {
 
     public DefaultGameController(GameService service) {
         super(service);
     }
 
-
     @GetMapping("/date")
     @Override
+    @Deprecated(forRemoval = true)
     public ResponseEntity<List<GameDTO>> findAllByDate(@RequestParam("date") String date) {
         return new ResponseEntity<>(service.findAllByDate(date), OK);
     }
 
     @GetMapping("/new/date")
     @Override
-    public ResponseEntity<List<NewGameDTO>> newFindAllByDate(String date) {
-        return new ResponseEntity<>(service.newFindAllByDate(date), OK);
+    public ResponseEntity<List<NewGameDTO>> newFindAllByDate(@RequestParam("date") String date, @RequestParam("tournaments") List<Long> tournaments) {
+        return new ResponseEntity<>(service.newFindAllByDate(date, tournaments), OK);
+    }
+
+    @Override
+    @GetMapping("/admin/date")
+    public ResponseEntity<List<NewGameDTO>> findAllAdminGameByDate(@RequestParam("date") String date, @RequestHeader("Authorization") String token) {
+        return new ResponseEntity<>(service.findAllAdminGameByDate(date, token), OK);
     }
 
     @GetMapping("/live")

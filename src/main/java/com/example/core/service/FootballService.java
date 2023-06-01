@@ -1,5 +1,7 @@
 package com.example.core.service;
 
+import com.example.core.dto.AbstractEntity;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
  * @param <SD> - Save DTO - data transfer object, that our server will get from client to save it in DB
  * @param <I>  - Unique identifier of a DTO, which will be saved in DB
  */
-public interface FootballService<RD, SD, I> {
+public interface FootballService<E extends AbstractEntity<RD>,RD, SD, I> {
 
     List<RD> findAll();
 
@@ -20,4 +22,6 @@ public interface FootballService<RD, SD, I> {
     RD update(I id, SD dto);
 
     RD delete(I id);
+
+    E findEntityById(I id);
 }

@@ -1,8 +1,10 @@
 package com.example.livescore.service.player_statistics.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
-import com.example.livescore.models.*;
+import com.example.livescore.models.PlayerEntity;
+import com.example.livescore.models.PlayerStatisticsEntity;
+import com.example.livescore.models.PlayerStatisticsEntityPK;
+import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.PlayerStatisticsRepository;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
@@ -11,13 +13,10 @@ import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class DefaultPlayerStatisticsService
-        extends AbstractFootballService<PlayerStatisticsEntity, PlayerStatisticsDTO, SavePlayerStatisticsDTO,
-        PlayerStatisticsEntityPK, PlayerStatisticsRepository>
+        extends AbstractFootballService<PlayerStatisticsEntity, PlayerStatisticsDTO, SavePlayerStatisticsDTO, PlayerStatisticsEntityPK, PlayerStatisticsRepository>
         implements PlayerStatisticsService {
 
     public DefaultPlayerStatisticsService(PlayerStatisticsRepository repository) {
@@ -29,7 +28,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByGoals(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("GOALS"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -37,7 +36,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByYellowCard(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("YELLOW CARD"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -45,7 +44,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByRedCard(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("RED CARD"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -53,17 +52,7 @@ public class DefaultPlayerStatisticsService
         return repository.findAllByAssists(groupId)
                 .stream()
                 .map(playerStatisticsEntity -> playerStatisticsEntity.distinctDTO("ASSISTS"))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public PlayerStatisticsEntity findEntityById(PlayerStatisticsEntityPK playerId) {
-        Optional<PlayerStatisticsEntity> player = repository.findById(playerId);
-        if (player.isEmpty()) {
-            throw ResourceNotFoundException.build(playerId, "PlayerEntity");
-        } else {
-            return player.get();
-        }
+                .toList();
     }
 
     @Override
@@ -72,20 +61,24 @@ public class DefaultPlayerStatisticsService
     }
 
     @Override
-    public PlayerStatisticsEntity saveDefault(PlayerEntity player, TournamentEntity tournament) {
+    public PlayerStatisticsEntity save(PlayerEntity player, TournamentEntity tournament) {
         PlayerStatisticsEntityPK pk = new PlayerStatisticsEntityPK(tournament, player);
-        return repository.save(new PlayerStatisticsEntity(
+        return repository.save(getDefaultPlayerStatisticsEntity(pk));
+    }
+
+    @Override
+    public void incrementGamePlayed(PlayerStatisticsEntityPK id) {
+        repository.incrementGameCount(id);
+    }
+
+    private static PlayerStatisticsEntity getDefaultPlayerStatisticsEntity(PlayerStatisticsEntityPK pk) {
+        return new PlayerStatisticsEntity(
                 pk,
                 0L,
                 0L,
                 0L,
                 0L,
                 0L
-        ));
-    }
-
-    @Override
-    public void incrementGamePlayed(PlayerStatisticsEntityPK id) {
-        repository.incrementGameCount(id);
+        );
     }
 }

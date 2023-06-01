@@ -1,9 +1,9 @@
 package com.example.livescore.service.game.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.*;
 import com.example.livescore.repository.GameRepository;
+import com.example.livescore.security.JwtService;
 import com.example.livescore.service.game.GameService;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.group_info.GroupInfoService;
@@ -19,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.livescore.enums.GameState.*;
 
@@ -35,10 +33,10 @@ public class DefaultGameService
     private final ProtocolService protocolService;
     private final TeamStatisticsService teamStatisticsService;
     private final PlayerStatisticsService playerStatisticsService;
-
     private final GroupInfoService groupInfoService;
+    private final JwtService jwtService;
 
-    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService) {
+    public DefaultGameService(GameRepository repository, TeamFootballService teamFootballService, GroupService groupService, ProtocolService protocolService, TeamStatisticsService teamStatisticsService, PlayerStatisticsService playerStatisticsService, GroupInfoService groupInfoService, JwtService jwtService) {
         super(repository);
         this.teamFootballService = teamFootballService;
         this.groupService = groupService;
@@ -46,27 +44,28 @@ public class DefaultGameService
         this.teamStatisticsService = teamStatisticsService;
         this.playerStatisticsService = playerStatisticsService;
         this.groupInfoService = groupInfoService;
+        this.jwtService = jwtService;
+
     }
 
     @Override
+    @Deprecated(forRemoval = true)
     public List<GameDTO> findAllByDate(String date) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
-        LocalDateTime date2 = date1.plusMinutes(1439);
+        LocalDateTime date1 = parseDate(date);
+        LocalDateTime date2 = calculateEndDate(date1);
 
-        return repository.findAllByGameDate(date1, date2)
+        return repository.findAllByGameDate(date1, date2, List.of(1l, 2l))
                 .stream()
                 .map(GameEntity::toDTO)
                 .toList();
     }
 
     @Override
-    public List<NewGameDTO> newFindAllByDate(String date) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime date1 = LocalDateTime.parse(date + " 00:00", df);
-        LocalDateTime date2 = date1.plusMinutes(1439);
+    public List<NewGameDTO> newFindAllByDate(String date, List<Long> tournaments) {
+        LocalDateTime date1 = parseDate(date);
+        LocalDateTime date2 = calculateEndDate(date1);
 
-        List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2);
+        List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2, tournaments);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
         return findGameByGroup(allGroups, allGameByDate);
@@ -103,15 +102,6 @@ public class DefaultGameService
     }
 
     @Override
-    public GameEntity findEntityById(long id) {
-        Optional<GameEntity> foundGame = repository.findById(id);
-        if (foundGame.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "GameEntity");
-        }
-        return foundGame.get();
-    }
-
-    @Override
     public GameDTO endMatch(Long id) {
         GameEntity gameEntity = findEntityById(id);
         if (gameEntity.getGameState() == ENDED) {
@@ -128,8 +118,8 @@ public class DefaultGameService
         int team1Score = protocol.getTeam1Score();
         int team2Score = protocol.getTeam2Score();
 
-        TeamStatisticsEntity teamStatistics1 = teamStatisticsService.findEntityById(tournament, team1);
-        TeamStatisticsEntity teamStatistics2 = teamStatisticsService.findEntityById(tournament, team2);
+        TeamStatisticsEntity teamStatistics1 = teamStatisticsService.findEntityByTournamentAndTeam(tournament, team1);
+        TeamStatisticsEntity teamStatistics2 = teamStatisticsService.findEntityByTournamentAndTeam(tournament, team2);
 
         GroupInfoEntity team1GroupInfo = groupInfoService.findEntityByTournamentAndGroupAndTeam(tournament, group, team1);
         GroupInfoEntity team2GroupInfo = groupInfoService.findEntityByTournamentAndGroupAndTeam(tournament, group, team2);
@@ -150,17 +140,29 @@ public class DefaultGameService
     }
 
     @Override
+    public List<NewGameDTO> findAllAdminGameByDate(String date, String token) {
+        Long userId = jwtService.extractUserId(token);
+        LocalDateTime date1 = parseDate(date);
+        LocalDateTime date2 = calculateEndDate(date1);
+
+        List<GameEntity> allGameByDate = repository.findAllByGameDateAndUserId(date1, date2, userId);
+        List<GroupEntity> allGroups = groupService.findAllEntity();
+
+        return findGameByGroup(allGroups, allGameByDate);
+    }
+
+    @Override
     public GameDTO save(SaveGameDTO dto) {
         GroupEntity group = groupService.findEntityById(dto.getGroupId());
-        GameEntity createdGame = createGameEntity(group);
-        ProtocolEntity defaultProtocol = createDefaultProtocol(createdGame, dto);
+        GameEntity createdGame = getDefaultGameEntity(group);
+        ProtocolEntity defaultProtocol = getDefaultProtocolEntity(createdGame, dto);
 
         createdGame.setProtocol(defaultProtocol);
 
         return createdGame.toDTO();
     }
 
-    private GameEntity createGameEntity(GroupEntity group) {
+    private GameEntity getDefaultGameEntity(GroupEntity group) {
         GameEntity gameEntity = new GameEntity(
                 null,
                 NOT_STARTED,
@@ -170,7 +172,7 @@ public class DefaultGameService
         return repository.save(gameEntity);
     }
 
-    private ProtocolEntity createDefaultProtocol(GameEntity savedEntity, SaveGameDTO dto) {
+    private ProtocolEntity getDefaultProtocolEntity(GameEntity savedEntity, SaveGameDTO dto) {
         ProtocolEntity protocol = new ProtocolEntity(
                 null,
                 savedEntity,
@@ -219,27 +221,42 @@ public class DefaultGameService
     }
 
     private List<NewGameDTO> findGameByGroup(List<GroupEntity> allGroups, List<GameEntity> allGameByDate) {
-        List<NewGameDTO> returnGameByDate = new ArrayList<>();
-        for (GroupEntity group : allGroups) {
-            NewGameDTO newGame = new NewGameDTO();
-            newGame.setTournamentName(group.getTournament().getTournamentName());
-            newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
-            newGame.setGroupName(group.getGroupName());
-            newGame.setGroupId(group.getGroupId());
-            newGame.setTournamentId(group.getTournament().getTournamentId());
+        return allGroups.stream()
+                .map(group -> {
+                    NewGameDTO newGame = getNewGameDTOByGroup(group);
+                    List<GameDTO> games = getGamesByGroup(allGameByDate, group);
 
-            List<GameDTO> games = new ArrayList<>();
-            for (GameEntity game : allGameByDate) {
-                if (group.equals(game.getGroup())) {
-                    games.add(game.toDTO());
-                }
-            }
-            newGame.setGames(games);
+                    newGame.setGames(games);
 
-            if (!games.isEmpty()) {
-                returnGameByDate.add(newGame);
-            }
-        }
-        return returnGameByDate;
+                    return newGame;
+                })
+                .filter(newGame -> !newGame.getGames().isEmpty())
+                .toList();
+    }
+
+    private static List<GameDTO> getGamesByGroup(List<GameEntity> allGameByDate, GroupEntity group) {
+        return allGameByDate.stream()
+                .filter(game -> group.equals(game.getGroup()))
+                .map(GameEntity::toDTO)
+                .toList();
+    }
+
+    private static NewGameDTO getNewGameDTOByGroup(GroupEntity group) {
+        NewGameDTO newGame = new NewGameDTO();
+        newGame.setTournamentName(group.getTournament().getTournamentName());
+        newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
+        newGame.setGroupName(group.getGroupName());
+        newGame.setGroupId(group.getGroupId());
+        newGame.setTournamentId(group.getTournament().getTournamentId());
+        return newGame;
+    }
+
+    private LocalDateTime parseDate(String date) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return LocalDateTime.parse(date + " 00:00", df);
+    }
+
+    private LocalDateTime calculateEndDate(LocalDateTime date) {
+        return date.plusMinutes(1439);
     }
 }

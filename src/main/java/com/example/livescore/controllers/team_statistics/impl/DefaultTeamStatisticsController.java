@@ -2,6 +2,7 @@ package com.example.livescore.controllers.team_statistics.impl;
 
 import com.example.core.controller.AbstractFootballController;
 import com.example.livescore.controllers.team_statistics.TeamStatisticController;
+import com.example.livescore.models.TeamStatisticsEntity;
 import com.example.livescore.models.TeamStatisticsEntityPK;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
@@ -15,8 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team_statistics")
-public class DefaultTeamStatisticsController extends AbstractFootballController<TeamStatisticsService,
-        TeamStatisticsDTO, SaveTeamStatisticsDTO, TeamStatisticsEntityPK>
+public class DefaultTeamStatisticsController
+        extends AbstractFootballController<TeamStatisticsEntity, TeamStatisticsService, TeamStatisticsDTO, SaveTeamStatisticsDTO, TeamStatisticsEntityPK>
         implements TeamStatisticController {
 
     public DefaultTeamStatisticsController(TeamStatisticsService service) {

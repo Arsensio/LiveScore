@@ -42,6 +42,11 @@ public class DefaultEventInfoService
         return repository.findAllByEvent(event);
     }
 
+    @Override
+    public List<EventInfoEntity> findAllEventByPlayerAndProtocol(Long playerId, Long protocolId) {
+        return repository.findAllEventsByPlayerAndProtocol(playerId,protocolId);
+    }
+
     private EventInfoEntity getGoalInfoEntity(PlayerEntity assistPlayer, EventEntity event, long eventId) {
         return new EventInfoEntity(assistPlayer, EventEnum.getEventNameById(eventId), event);
     }

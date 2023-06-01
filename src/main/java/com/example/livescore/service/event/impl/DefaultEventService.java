@@ -1,6 +1,6 @@
 package com.example.livescore.service.event.impl;
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
+import com.example.core.exception.exceptions.EventException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventEnum;
 import com.example.livescore.models.*;
@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import static com.example.core.enums.ErrorMessage.*;
 import static com.example.livescore.enums.EventEnum.*;
 
 @Service
@@ -50,7 +50,6 @@ public class DefaultEventService
         this.groupInfoService = groupInfoService;
     }
 
-
     @Override
     @Transactional
     public EventDTO saveGoal(SaveGoalEventDTO dto) {
@@ -59,6 +58,8 @@ public class DefaultEventService
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
         TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
         PlayerEntity goalPlayer = playerService.findEntityById(dto.getPlayerId());
+
+        checkForRedCard(protocol, goalPlayer);
 
         increasePlayerStatistic(tournament, goalPlayer, GOAL, protocol);
         EventEntity save = repository.save(newEvent(dto, protocol));
@@ -81,7 +82,7 @@ public class DefaultEventService
     @Override
     @Transactional
     public EventDTO updateGoal(Long id, SaveGoalEventDTO dto) {
-        EventEntity event = findEntityById(id);
+        EventEntity event = this.findEntityById(id);
         EventInfoEntity goalInfo = event.getEventInfoByEnum(GOAL);
 
         ProtocolEntity protocol = event.getProtocol();
@@ -106,14 +107,7 @@ public class DefaultEventService
 
         increasePlayerStatistic(tournament, newGoalAuthor, GOAL, protocol);
 
-        EventDTO returnDto = repository.saveAndFlush(
-                new EventEntity(
-                        event.getEventId(),
-                        event.getGameScore(),
-                        event.getMinute(),
-                        event.getProtocol()
-                )
-        ).toDTO();
+        EventDTO returnDto = repository.saveAndFlush(getEntity(event)).toDTO();
 
         if (dto.getAssistId() != null && dto.getAssistId() != 0) {
             PlayerEntity assistPlayer = playerService.findEntityById(dto.getAssistId());
@@ -126,6 +120,49 @@ public class DefaultEventService
         return returnDto;
     }
 
+    @Override
+    @Transactional
+    public EventDTO savePenalty(SaveEventDTO saveEventDTO) {
+        EventEnum eventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
+
+        ProtocolEntity protocol = protocolService.findEntityById(saveEventDTO.getProtocolId());
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        PlayerEntity player = playerService.findEntityById(saveEventDTO.getPlayerId());
+
+        checkForRedCard(protocol, player);
+
+        increasePlayerStatistic(tournament, player, eventEnum, protocol);
+        EventEntity save = repository.save(newEvent(saveEventDTO, protocol));
+
+        EventInfoEntity penaltyEventInfo = eventInfoService.saveEventInfo(newEventInfo(save, player, eventEnum));
+        save.setEventInfo(List.of(penaltyEventInfo));
+
+        return save.toDTO();
+    }
+
+    @Override
+    public EventDTO updatePenalty(Long id, SaveEventDTO saveEventDTO) {
+        EventEntity event = this.findEntityById(id);
+        EventEnum eventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
+        EventInfoEntity goalInfo = event.getEventInfoByEnum(eventEnum);
+
+        ProtocolEntity protocol = event.getProtocol();
+        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+
+        //rollback statistics and delete eventInfo
+        rollBackPlayerStatistics(tournament, goalInfo.getPlayer(), EventEnum.valueOf(goalInfo.getEventName()), protocol);
+        eventInfoService.delete(goalInfo.getId());
+
+        PlayerEntity newGoalAuthor = playerService.findEntityById(saveEventDTO.getPlayerId());
+        EventInfoEntity newEventInfo = newEventInfo(event, newGoalAuthor, eventEnum);
+        eventInfoService.saveEventInfo(newEventInfo);
+        event.setMinute(saveEventDTO.getMinute());
+
+        increasePlayerStatistic(tournament, newGoalAuthor, eventEnum, protocol);
+
+        EventDTO returnDto = repository.saveAndFlush(getEntity(event)).toDTO();
+        return returnDto;
+    }
 
     @Override
     @Transactional
@@ -135,6 +172,29 @@ public class DefaultEventService
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
         PlayerEntity player = playerService.findEntityById(dto.getPlayerId());
         TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+
+        List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(player.getPlayerId(), protocol.getProtocolId());
+
+        if (!events.isEmpty()) {
+            EventInfoEntity eventYellowCard = getEventInfo(events, YELLOW_CARD);
+            EventInfoEntity secondYellowCard = getEventInfo(events, SECOND_YELLOW_CARD);
+            EventInfoEntity eventRedCard = getEventInfo(events, RED_CARD);
+
+            if (eventRedCard == null && eventYellowCard != null && secondYellowCard == null && eventEnum == YELLOW_CARD) {
+                increasePlayerStatistic(tournament, player, RED_CARD, protocol);
+
+                EventEntity saveEvent = repository.save(newEvent(dto, protocol));
+                EventInfoEntity saveEventInfo = eventInfoService.saveEventInfo(newEventInfo(saveEvent, player, SECOND_YELLOW_CARD));
+
+                saveEvent.setEventInfo(List.of(saveEventInfo));
+
+                return saveEvent.toDTO();
+            } else if (eventRedCard != null) {
+                throw EventException.build(EVENT_RED_CARD_EXCEPTION, player.getPlayerId());
+            } else if (secondYellowCard != null) {
+                throw EventException.build(EVENT_SECOND_YELLOW_CARD_EXCEPTION, player.getPlayerId());
+            }
+        }
 
         increasePlayerStatistic(tournament, player, eventEnum, protocol);
 
@@ -166,38 +226,19 @@ public class DefaultEventService
         //update new Event
         EventEnum newEventEnum = getEventById(dto.getEventEnumId());
         PlayerEntity newPlayer = playerService.findEntityById(dto.getPlayerId());
+
         increasePlayerStatistic(tournament, newPlayer, newEventEnum, protocol);
 
         EventInfoEntity newEventInfo = eventInfoService.saveEventInfo(newEventInfo(event, newPlayer, newEventEnum));
-
         event.setMinute(dto.getMinute());
 
-        System.out.println(event);
-
-        repository.saveAndFlush(
-                new EventEntity(
-                        event.getEventId(),
-                        event.getGameScore(),
-                        event.getMinute(),
-                        event.getProtocol()
-                )
-        );
-
+        repository.saveAndFlush(getEntity(event));
 
         event.setEventInfo(List.of(newEventInfo));
 
         return event.toDTO();
     }
 
-    private EventEntity findEntityById(Long id) {
-        Optional<EventEntity> foundEvent = repository.findById(id);
-
-        if (foundEvent.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "EventEntity");
-        }
-
-        return foundEvent.get();
-    }
 
     private <T extends AbstractSaveEventDTO> EventEntity newEvent(T dto, ProtocolEntity protocol) {
         return EventEntity.builder()
@@ -227,16 +268,24 @@ public class DefaultEventService
         PlayerStatisticsEntity foundPlayerStat = playerStatisticsService.findEntityById(playerStatisticsEntityPK);
 
         log.info(foundPlayerStat.toString());
-        if (eventName == GOAL) {
-            postGoalCount(tournament, player, protocol, foundPlayerStat);
-        } else if (eventName == ASSIST) {
-            foundPlayerStat.setAssists(foundPlayerStat.getAssists() + 1);
-        } else if (eventName == RED_CARD) {
-            foundPlayerStat.setRedCard(foundPlayerStat.getRedCard() + 1);
-        } else if (eventName == YELLOW_CARD) {
-            foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() + 1);
-        } else if (eventName == SCORE_PENALTY) {
-            postGoalCount(tournament, player, protocol, foundPlayerStat);
+
+        switch (eventName) {
+            case GOAL:
+            case SCORE_PENALTY:
+                postGoalCount(tournament, player, protocol, foundPlayerStat);
+                break;
+            case ASSIST:
+                foundPlayerStat.setAssists(foundPlayerStat.getAssists() + 1);
+                break;
+            case RED_CARD:
+            case SECOND_YELLOW_CARD:
+                foundPlayerStat.setRedCard(foundPlayerStat.getRedCard() + 1);
+                break;
+            case YELLOW_CARD:
+                foundPlayerStat.setYellowCard(foundPlayerStat.getYellowCard() + 1);
+                break;
+            default:
+                break;
         }
 
         log.info("UPDATE PLAYER STATISTICS");
@@ -314,13 +363,30 @@ public class DefaultEventService
         groupInfoService.decrementGoalMissedCount(group, goalMissedTeam);
     }
 
-    private void updateNewAuthorInfo(EventInfoEntity goalInfo, PlayerEntity newGoalAuthor) {
-        goalInfo.setPlayer(newGoalAuthor);
-        goalInfo.setPlayerName(newGoalAuthor.getName());
-        goalInfo.setPlayerSurname(newGoalAuthor.getSurname());
-        goalInfo.setPlayerNumber(newGoalAuthor.getPlayerNumber());
-        goalInfo.setTeamName(newGoalAuthor.getTeam().getTeamName());
-        goalInfo.setTeamLogo(newGoalAuthor.getTeam().getTeamLogo());
+    private static EventEntity getEntity(EventEntity event) {
+        return new EventEntity(
+                event.getEventId(),
+                event.getGameScore(),
+                event.getMinute(),
+                event.getProtocol()
+        );
     }
 
+    private static EventInfoEntity getEventInfo(List<EventInfoEntity> events, EventEnum yellowCard) {
+        return events.stream()
+                .filter(e -> e.getEventName().equals(yellowCard.getEventName()))
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    private void checkForRedCard(ProtocolEntity protocol, PlayerEntity goalPlayer) {
+        List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(goalPlayer.getPlayerId(), protocol.getProtocolId());
+        EventInfoEntity eventRedCard = getEventInfo(events, RED_CARD);
+        EventInfoEntity secondYellowCard = getEventInfo(events, SECOND_YELLOW_CARD);
+
+        if (eventRedCard != null || secondYellowCard != null) {
+            throw EventException.build(HAS_RED_CARD_EXCEPTION, goalPlayer.getPlayerId());
+        }
+    }
 }

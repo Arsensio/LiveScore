@@ -21,7 +21,9 @@ public enum EventEnum {
     SCORE_PENALTY("SCORE_PENALTY"),
 
     //7
-    MISS_PENALTY("MISS_PENALTY");
+    MISS_PENALTY("MISS_PENALTY"),
+
+    SECOND_YELLOW_CARD("SECOND_YELLOW_CARD");
 
     private final String eventName;
 

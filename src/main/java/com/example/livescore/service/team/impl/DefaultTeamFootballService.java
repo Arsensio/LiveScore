@@ -20,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
+import static com.example.livescore.enums.TournamentTypes.LEAGUE;
 
 @Service
 public class DefaultTeamFootballService
@@ -46,51 +46,39 @@ public class DefaultTeamFootballService
     @Override
     @Transactional
     public TeamDTO save(SaveTeamDTO saveTeamDTO) {
-        TeamEntity savedTeam = repository.save(new TeamEntity(
-                        null,
-                        saveTeamDTO.getTeamName(),
-                        saveTeamDTO.getTeamLogo(),
-                        null
-                )
-        );
+        TeamEntity savedTeam = repository.save(getEntity(saveTeamDTO));
         TournamentEntity tournament = tournamentService.findEntityById(saveTeamDTO.getTournamentId());
         teamStatisticsService.save(tournament, savedTeam);
 
-        if (tournament.getTournamentType().equals("LEAGUE")) {
-            GroupEntity group = groupService.findAllByTournamentID(tournament.getTournamentId()).get(0);
-            groupInfoRepository.saveAndFlush(getDefaultGroupInfoForLeague(savedTeam, tournament, group));
+        if (isLeagueTournament(tournament)) {
+            GroupEntity group = getFirstGroupForTournament(tournament);
+            if (group == null) {
+                throw ResourceNotFoundException.build(tournament, "GroupEntity");
+            }
+            GroupInfoEntity defaultGroupInfo = getDefaultGroupInfoForLeague(savedTeam, tournament, group);
+            groupInfoRepository.saveAndFlush(defaultGroupInfo);
             teamStatisticsService.saveAndFlash(tournament, savedTeam, group);
         }
 
         return savedTeam.toDTO();
     }
 
-
     @Override
+    @Transactional
     public TeamDTO update(Long id, SaveTeamDTO saveTeamDTO) {
-        repository.findById(id).ifPresentOrElse(team -> {
-            team.setTeamName(saveTeamDTO.getTeamName());
-            team.setTeamLogo(saveTeamDTO.getTeamLogo());
-            repository.saveAndFlush(team);
-        }, () -> {
-            throw ResourceNotFoundException.build(id, "Team");
-        });
-        return repository.findById(id).get().toDTO();
+        TeamEntity team = repository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.build(id, "Team"));
+
+        team.setTeamName(saveTeamDTO.getTeamName());
+        team.setTeamLogo(saveTeamDTO.getTeamLogo());
+        repository.saveAndFlush(team);
+
+        return team.toDTO();
     }
 
     @Override
     public List<TeamDTO> findAllTeamByTournamentId(long groupId) {
         return teamStatisticsService.findAllTeamByTournamentId(groupId);
-    }
-
-    @Override
-    public TeamEntity findEntityById(long id) {
-        Optional<TeamEntity> referenceById = repository.findById(id);
-        if (referenceById.isEmpty()) {
-            throw ResourceNotFoundException.build(id, "TeamEntity");
-        } else {
-            return referenceById.get();
-        }
     }
 
     // todo: искать не только по тим нейм но и по турнаменту
@@ -133,7 +121,6 @@ public class DefaultTeamFootballService
         return teamWithPlayersDto;
     }
 
-
     private GroupInfoEntity getDefaultGroupInfoForLeague(TeamEntity savedTeam, TournamentEntity tournament, GroupEntity group) {
         return GroupInfoEntity.builder()
                 .tournamentLogo(tournament.getTournamentLogo())
@@ -152,5 +139,23 @@ public class DefaultTeamFootballService
                 .team(savedTeam)
                 .tournament(tournament)
                 .build();
+    }
+
+    private boolean isLeagueTournament(TournamentEntity tournament) {
+        return LEAGUE.toString().equals(tournament.getTournamentType());
+    }
+
+    private GroupEntity getFirstGroupForTournament(TournamentEntity tournament) {
+        List<GroupEntity> groups = groupService.findAllByTournamentID(tournament.getTournamentId());
+        return groups.isEmpty() ? null : groups.get(0);
+    }
+
+    private static TeamEntity getEntity(SaveTeamDTO saveTeamDTO) {
+        return new TeamEntity(
+                null,
+                saveTeamDTO.getTeamName(),
+                saveTeamDTO.getTeamLogo(),
+                null
+        );
     }
 }

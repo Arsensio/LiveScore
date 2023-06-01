@@ -61,24 +61,24 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
         EventDTO eventDTO = EventDTO.builder()
                 .eventId(eventId)
                 .minute(minute)
-                .gameScore(gameScore)
-                .build();
+                .gameScore(gameScore).build();
 
-        for (EventInfoEntity e : eventInfo) {
-            if (e.getEventName().equals(GOAL.getEventName())) {
-                setEventInfo(eventDTO, e);
-            } else if (e.getEventName().equals(YELLOW_CARD.getEventName())) {
-                setEventInfo(eventDTO, e);
-            } else if (e.getEventName().equals(RED_CARD.getEventName())) {
-                setEventInfo(eventDTO, e);
-            } else if (e.getEventName().equals(PENALTY.getEventName())) {
-                setEventInfo(eventDTO, e);
-            } else if (e.getEventName().equals(MISS_PENALTY.getEventName())) {
-                setEventInfo(eventDTO, e);
-            } else if (e.getEventName().equals(ASSIST.getEventName())) {
+        for (EventInfoEntity eventInfoEntity : eventInfo) {
+            String eventName = eventInfoEntity.getEventName();
+
+            if (eventName.equals(GOAL.getEventName()) ||
+                    eventName.equals(YELLOW_CARD.getEventName()) ||
+                    eventName.equals(RED_CARD.getEventName()) ||
+                    eventName.equals(PENALTY.getEventName()) ||
+                    eventName.equals(MISS_PENALTY.getEventName()) ||
+                    eventName.equals(SECOND_YELLOW_CARD.getEventName())||
+                    eventName.equals(SCORE_PENALTY.getEventName())
+            ) {
+                setEventInfo(eventDTO, eventInfoEntity);
+            } else if (eventName.equals(ASSIST.getEventName())) {
                 AssistDTO assist = AssistDTO.builder()
-                        .assistPlayer(e.getPlayerName() + " " + e.getPlayerSurname())
-                        .assistPlayerId(e.getPlayer().getPlayerId())
+                        .assistPlayer(eventInfoEntity.getPlayerName() + " " + eventInfoEntity.getPlayerSurname())
+                        .assistPlayerId(eventInfoEntity.getPlayer().getPlayerId())
                         .build();
                 eventDTO.setAssist(assist);
             }
@@ -88,12 +88,10 @@ public class EventEntity extends AbstractEntity<EventDTO> implements Serializabl
     }
 
     public EventInfoEntity getEventInfoByEnum(EventEnum eventEnum) {
-        for (EventInfoEntity e : eventInfo) {
-            if (e.getEventName().equals(eventEnum.getEventName())) {
-                return e;
-            }
-        }
-        return null;
+        return eventInfo.stream()
+                .filter(e -> e.getEventName().equals(eventEnum.getEventName()))
+                .findFirst()
+                .orElse(null);
     }
 
     private void setEventInfo(EventDTO eventDTO, EventInfoEntity e) {

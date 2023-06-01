@@ -9,7 +9,7 @@ public enum PlayOffEnum {
     FINAL("Final");
 
 
-    private String name;
+    private final String name;
 
     PlayOffEnum(String name) {
         this.name = name;

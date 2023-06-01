@@ -8,7 +8,7 @@ public class IllegalCupFormatException extends RuntimeException {
         super(message);
     }
 
-    public static <I> IllegalCupFormatException build(int teamNumber) {
+    public static IllegalCupFormatException build(int teamNumber) {
         return new IllegalCupFormatException(String.format(ILLEGAL_CUP_FORMAT_EXCEPTION.getMessage(), teamNumber));
     }
 }
