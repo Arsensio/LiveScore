@@ -1,4 +1,4 @@
-package com.example.livescore.web.players;
+package com.example.livescore.web.playerStatistics;
 
 
 import lombok.AllArgsConstructor;

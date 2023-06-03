@@ -4,7 +4,8 @@ import com.example.core.service.FootballService;
 import com.example.livescore.models.*;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.playerStatistics.SavePlayerStatisticsDTO;
-import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
+import com.example.livescore.web.playerStatistics.DistinctPlayerStatisticsDTO;
+import com.example.livescore.web.playerStatistics.TopFivePlayerStatistics;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface PlayerStatisticsService extends FootballService<PlayerStatistic
     PlayerStatisticsEntity save(PlayerEntity player, TournamentEntity tournament);
 
     void incrementGamePlayed(PlayerStatisticsEntityPK id);
+
+    List<TopFivePlayerStatistics> findTopFivePlayerStatistics(long tournament_id);
 }

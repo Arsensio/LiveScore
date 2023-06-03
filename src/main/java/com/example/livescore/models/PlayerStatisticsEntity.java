@@ -2,7 +2,7 @@ package com.example.livescore.models;
 
 import com.example.core.dto.AbstractEntity;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
-import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
+import com.example.livescore.web.playerStatistics.DistinctPlayerStatisticsDTO;
 import lombok.*;
 
 import javax.persistence.Column;

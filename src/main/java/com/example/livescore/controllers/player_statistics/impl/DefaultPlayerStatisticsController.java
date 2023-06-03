@@ -7,7 +7,8 @@ import com.example.livescore.models.PlayerStatisticsEntityPK;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.web.playerStatistics.PlayerStatisticsDTO;
 import com.example.livescore.web.playerStatistics.SavePlayerStatisticsDTO;
-import com.example.livescore.web.players.DistinctPlayerStatisticsDTO;
+import com.example.livescore.web.playerStatistics.DistinctPlayerStatisticsDTO;
+import com.example.livescore.web.playerStatistics.TopFivePlayerStatistics;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -37,6 +39,12 @@ public class DefaultPlayerStatisticsController
     @GetMapping("/assists")
     public ResponseEntity<List<DistinctPlayerStatisticsDTO>> findAllByAssists(@RequestParam("tournament_id") long tournament_id) {
         return new ResponseEntity<>(service.findAllByAssists(tournament_id), HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping("/top_five/{tournament_id}")
+    public ResponseEntity<List<TopFivePlayerStatistics>> findTopFivePlayerStatistics(@PathParam("tournament_id") long tournament_id) {
+        return new ResponseEntity<>(service.findTopFivePlayerStatistics(tournament_id), HttpStatus.OK);
     }
 
     @Override

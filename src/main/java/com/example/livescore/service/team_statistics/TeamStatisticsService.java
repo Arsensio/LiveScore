@@ -5,6 +5,7 @@ import com.example.livescore.models.*;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
+import com.example.livescore.web.teamStatistics.TopFiveTeamStatistics;
 import com.example.livescore.web.teams.TeamDTO;
 
 import java.util.List;
@@ -41,4 +42,6 @@ public interface TeamStatisticsService extends FootballService<TeamStatisticsEnt
     TeamStatisticsEntity findEntityByTournamentAndTeam(TournamentEntity tournament, TeamEntity team);
 
     TeamStatisticsEntity saveAndFlash(TournamentEntity tournament, TeamEntity team, GroupEntity group);
+
+    List<TopFiveTeamStatistics> findAllTopFiveStatistics(long tournament_id);
 }

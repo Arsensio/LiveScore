@@ -8,6 +8,7 @@ import com.example.livescore.service.team_statistics.TeamStatisticsService;
 import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
 import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
+import com.example.livescore.web.teamStatistics.TopFiveTeamStatistics;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +41,11 @@ public class DefaultTeamStatisticsController
     @GetMapping("/yellow_cards/{tournament_id}")
     public ResponseEntity<List<DistinctTeamStatisticsDTO>> findAllSortedByYellowCards(@PathVariable long tournament_id) {
         return new ResponseEntity<>(service.findTeamsSortedByYellowCard(tournament_id), HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping("/top_five/{tournament_id}")
+    public ResponseEntity<List<TopFiveTeamStatistics>> findAllTopFiveStatistics(@PathVariable long tournament_id) {
+        return new ResponseEntity<>(service.findAllTopFiveStatistics(tournament_id), HttpStatus.OK);
     }
 }

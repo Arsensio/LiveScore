@@ -5,14 +5,14 @@ import com.example.livescore.enums.EventEnum;
 import com.example.livescore.models.*;
 import com.example.livescore.repository.TeamStatisticsRepository;
 import com.example.livescore.service.team_statistics.TeamStatisticsService;
-import com.example.livescore.web.teamStatistics.DistinctTeamStatisticsDTO;
-import com.example.livescore.web.teamStatistics.SaveTeamStatisticsDTO;
-import com.example.livescore.web.teamStatistics.StatisticDTO;
-import com.example.livescore.web.teamStatistics.TeamStatisticsDTO;
+import com.example.livescore.web.teamStatistics.*;
 import com.example.livescore.web.teams.TeamDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.livescore.enums.EventEnum.*;
 
 @Service
 public class DefaultTeamStatisticsService
@@ -27,14 +27,13 @@ public class DefaultTeamStatisticsService
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByGoals(long groupId) {
         return repository.findAllByTournamentIdOrderByGoalCount(groupId)
                 .stream()
-                .map(team -> team.toDistinctStatisticsDTO(EventEnum.GOAL.getEventName()))
+                .map(team -> team.toDistinctStatisticsDTO(GOAL.getEventName()))
                 .toList();
     }
 
     @Override
     public List<DistinctTeamStatisticsDTO> findTeamsSortedByRedCards(long groupId) {
         List<StatisticDTO> allByTournamentIdOrderByRedCard = repository.findAllByTournamentIdOrderByRedCard(groupId);
-
         return allByTournamentIdOrderByRedCard
                 .stream()
                 .map(statisticDTO ->
@@ -116,6 +115,26 @@ public class DefaultTeamStatisticsService
         TeamStatisticsEntity foundTeamStat = this.findEntityByTournamentAndTeam(tournament, team);
         foundTeamStat.setGroup(group);
         return repository.saveAndFlush(foundTeamStat);
+    }
+
+    @Override
+    public List<TopFiveTeamStatistics> findAllTopFiveStatistics(long tournament_id) {
+        List<TopFiveTeamStatistics> teamStatistics = new ArrayList<>();
+        teamStatistics.add(getDefaultTopFiveTeamStatistics(GOAL, findTeamsSortedByGoals(tournament_id)));
+        teamStatistics.add(getDefaultTopFiveTeamStatistics(RED_CARD, findTeamsSortedByRedCards(tournament_id)));
+        teamStatistics.add(getDefaultTopFiveTeamStatistics(YELLOW_CARD, findTeamsSortedByYellowCard(tournament_id)));
+
+        return teamStatistics;
+    }
+
+    private TopFiveTeamStatistics getDefaultTopFiveTeamStatistics(EventEnum goal, List<DistinctTeamStatisticsDTO> tournament_id) {
+        return new TopFiveTeamStatistics(goal.getEventName(), getTopFiveElement(tournament_id));
+    }
+
+    private List<DistinctTeamStatisticsDTO> getTopFiveElement(List<DistinctTeamStatisticsDTO> list) {
+        return list.stream()
+                .limit(5)
+                .toList();
     }
 
     private static TeamStatisticsEntity getDefaultTeamStatisticsEntity(TeamStatisticsEntityPK pk) {
