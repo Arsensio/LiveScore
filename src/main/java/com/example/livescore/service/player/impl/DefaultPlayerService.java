@@ -72,6 +72,7 @@ public class DefaultPlayerService
     public List<PlayerDTO> transferPlayers(List<UpdatePlayerDTO> playersToUpdate) {
         return playersToUpdate.stream()
                 .map(this::updatePlayer)
+                .filter(Objects::nonNull)
                 .map(PlayerEntity::toDTO)
                 .toList();
     }
@@ -125,7 +126,7 @@ public class DefaultPlayerService
         PlayerEntity player = findEntityById(updatePlayerDTO.getPlayerId());
 
         if (Objects.equals(player.getTeam().getTeamId(), updatePlayerDTO.getNewTeamId())) {
-            return player;
+            return null;
         }
 
         TeamEntity newTeam = teamFootballService.findEntityById(updatePlayerDTO.getNewTeamId());
