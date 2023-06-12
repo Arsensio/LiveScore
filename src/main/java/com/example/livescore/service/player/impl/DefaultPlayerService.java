@@ -1,13 +1,11 @@
 package com.example.livescore.service.player.impl;
 
 
-import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.PlayerEntity;
 import com.example.livescore.models.TeamEntity;
 import com.example.livescore.models.TournamentEntity;
 import com.example.livescore.repository.PlayerRepository;
-import com.example.livescore.service.group.GroupService;
 import com.example.livescore.service.player.PlayerService;
 import com.example.livescore.service.player_statistics.PlayerStatisticsService;
 import com.example.livescore.service.team.TeamFootballService;
@@ -125,6 +123,11 @@ public class DefaultPlayerService
 
     private PlayerEntity updatePlayer(UpdatePlayerDTO updatePlayerDTO) {
         PlayerEntity player = findEntityById(updatePlayerDTO.getPlayerId());
+
+        if (Objects.equals(player.getTeam().getTeamId(), updatePlayerDTO.getNewTeamId())) {
+            return player;
+        }
+
         TeamEntity newTeam = teamFootballService.findEntityById(updatePlayerDTO.getNewTeamId());
         List<Integer> allPlayerNumbers = findAllPlayerNumberByTeamId(newTeam.getTeamId());
         Integer newNumber = player.getPlayerNumber();

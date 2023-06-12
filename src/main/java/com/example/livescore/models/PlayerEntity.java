@@ -43,6 +43,7 @@ public class PlayerEntity extends AbstractEntity<PlayerDTO> {
     public PlayerDTO toDTO() {
         return new PlayerDTO(
                 this.playerId,
+                this.team.getTeamId(),
                 this.team.getTeamName(),
                 this.name,
                 this.surname,
