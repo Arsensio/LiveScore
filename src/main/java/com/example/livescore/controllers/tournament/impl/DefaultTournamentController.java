@@ -28,14 +28,14 @@ public class DefaultTournamentController
 
     @Override
     @GetMapping("/user")
-    public ResponseEntity<List<TournamentDTO>> findAllByUserId(@PathParam("userId") long userId) {
-        return new ResponseEntity<>(service.findAllByUserId(userId), OK);
+    public ResponseEntity<List<TournamentDTO>> findAllByUserId(@RequestHeader("Authorization") String token) {
+        return new ResponseEntity<>(service.findAllByUserId(token), OK);
     }
 
     @Override
     @GetMapping("/user/cup")
-    public ResponseEntity<List<TournamentDTO>> findAllCupTournamentByUser(@PathParam("userId") long userId) {
-        return new ResponseEntity<>(service.findAllCupTournamentByUser(userId), OK);
+    public ResponseEntity<List<TournamentDTO>> findAllCupTournamentByUser(@RequestHeader("Authorization") String token) {
+        return new ResponseEntity<>(service.findAllCupTournamentByUser(token), OK);
     }
 
     @Override
