@@ -16,6 +16,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     }
 
     @Override
+    @Transactional
     public String saveTeamsAndPlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException {
         googleSheetToTeamsAndPlayers(link, tournamentId);
         return SUCCESS_MESSAGE;
