@@ -3,6 +3,7 @@ package com.example.livescore.service.tournament.impl;
 import com.example.core.exception.exceptions.IllegalCupFormatException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.models.UserEntity;
 import com.example.livescore.repository.TournamentRepository;
 import com.example.livescore.repository.UserRepository;
 import com.example.livescore.security.JwtService;
@@ -51,8 +52,8 @@ public class DefaultTournamentService
     }
 
     @Override
-    public List<TournamentDTO> findAllByUserId(long userId) {
-        return repository.findAllTournamentByUserId(userId)
+    public List<TournamentDTO> findAllByUserId(String token) {
+        return repository.findAllTournamentByUserId(jwtService.extractUserId(token))
                 .stream()
                 .map(TournamentEntity::toDTO)
                 .toList();
@@ -102,8 +103,11 @@ public class DefaultTournamentService
     }
 
     @Override
-    public List<TournamentDTO> findAllCupTournamentByUser(long userId) {
-        return repository.findAllCupByUserId(userId).stream().map(TournamentEntity::toDTO).toList();
+    public List<TournamentDTO> findAllCupTournamentByUser(String token) {
+        return repository.findAllCupByUserId(jwtService.extractUserId(token))
+                .stream()
+                .map(TournamentEntity::toDTO)
+                .toList();
     }
 
     @Override

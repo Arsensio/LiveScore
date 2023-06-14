@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface TournamentController extends FootballController<TournamentDTO, SaveTournamentDTO, Long> {
 
-    ResponseEntity<List<TournamentDTO>> findAllByUserId(long userId);
+    ResponseEntity<List<TournamentDTO>> findAllByUserId(String token);
 
-    ResponseEntity<List<TournamentDTO>> findAllCupTournamentByUser(long userId);
+    ResponseEntity<List<TournamentDTO>> findAllCupTournamentByUser(String token);
 
     ResponseEntity<TournamentDTO> createLeagueTournament(SaveTournamentDTO saveTournamentDTO, String token);
 
