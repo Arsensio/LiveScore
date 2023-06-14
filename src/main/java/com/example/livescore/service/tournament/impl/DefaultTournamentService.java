@@ -3,7 +3,6 @@ package com.example.livescore.service.tournament.impl;
 import com.example.core.exception.exceptions.IllegalCupFormatException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.TournamentEntity;
-import com.example.livescore.models.UserEntity;
 import com.example.livescore.repository.TournamentRepository;
 import com.example.livescore.repository.UserRepository;
 import com.example.livescore.security.JwtService;
