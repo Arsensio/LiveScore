@@ -41,4 +41,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleEventAlreadyExists(EventException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
     }
+
+    @ExceptionHandler(value = InvalidTournamentTypeException.class)
+    protected ResponseEntity<Object> handleInvalidTournamentType(InvalidTournamentTypeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
+    }
 }

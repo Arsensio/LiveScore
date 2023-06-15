@@ -55,6 +55,13 @@ public class DefaultGroupInfoController
     }
 
     @Override
+    @PostMapping("/finish_league/{tournament_id}")
+    public ResponseEntity<TeamDTO> finishLeague(@PathVariable("tournament_id") long tournamentId) {
+        return new ResponseEntity<>(service.finishLeague(tournamentId), OK);
+    }
+
+
+    @Override
     @GetMapping("/tables_after_draw/{tournamentId}")
     public ResponseEntity<List<AfterDrawDTO>> getTablesAfterDraw(@PathVariable("tournamentId") long tournamentId) {
         return new ResponseEntity<>(service.getTablesAfterDraw(tournamentId), OK);

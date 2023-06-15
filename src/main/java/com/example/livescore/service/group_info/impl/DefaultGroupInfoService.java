@@ -1,5 +1,7 @@
 package com.example.livescore.service.group_info.impl;
 
+import com.example.core.exception.exceptions.InvalidTournamentTypeException;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.models.*;
 import com.example.livescore.repository.GroupInfoRepository;
@@ -17,9 +19,11 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.livescore.enums.PlayOffEnum.FINAL;
-import static com.example.livescore.enums.StatusEnum.*;
+import static com.example.livescore.enums.StatusEnum.FINISHED;
+import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
 
 
 @Service
@@ -164,6 +168,33 @@ public class DefaultGroupInfoService
         }
 
         return afterDrawList;
+    }
+
+    @Override
+    @Transactional
+    public TeamDTO finishLeague(long tournamentId) {
+        TeamEntity winnerTeam;
+        TournamentEntity tournament = tournamentService.findEntityById(tournamentId);
+
+        if (!tournament.getTournamentType().equals("LEAGUE")) {
+            throw InvalidTournamentTypeException.build(tournamentId);
+        }
+
+        List<GroupInfoListDTO> allGroupsFromTournament = findAllTeamsFromTournamentSortedByPoints(tournamentId);
+
+        if (!allGroupsFromTournament.isEmpty()) {
+            List<GroupInfoDTO> sortedByPointTeams = allGroupsFromTournament.get(0).getSortedByPointTeams();
+            winnerTeam = teamFootballService.findEntityById(sortedByPointTeams.get(0).getTeamId());
+        } else {
+            throw ResourceNotFoundException.build(tournamentId, "Teams by Tournament");
+        }
+
+        if (Objects.equals(tournament.getTournamentStatus(), FINISHED.toString())) {
+            return winnerTeam.toDTO();
+        }
+
+        tournamentService.finishTournament(tournament);
+        return winnerTeam.toDTO();
     }
 
     @Override
@@ -331,7 +362,7 @@ public class DefaultGroupInfoService
                 0,
                 0,
                 0,
-                CREATED.toString(),
+                IN_PROGRESS.toString(),
                 group,
                 team,
                 tournament

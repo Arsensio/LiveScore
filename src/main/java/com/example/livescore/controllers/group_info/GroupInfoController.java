@@ -19,6 +19,8 @@ public interface GroupInfoController extends FootballController<GroupInfoDTO, Sa
 
     ResponseEntity<List<TeamDTO>> finishStage(long tournamentId, FinishStageDTO finishStageDTO);
 
+    ResponseEntity<TeamDTO> finishLeague(long tournamentId);
+
     ResponseEntity<List<AfterDrawDTO>> getTablesAfterDraw(long tournamentId);
 
 }

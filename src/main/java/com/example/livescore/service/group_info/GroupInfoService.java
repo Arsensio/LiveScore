@@ -22,7 +22,6 @@ public interface GroupInfoService extends FootballService<GroupInfoEntity, Group
 
     List<GroupInfoListDTO> findGroupSortedByPoints(long tournament, long group);
 
-
     List<GroupInfoDTO> createDrawInCup(List<SaveGroupInfoDTO> list);
 
     void incrementGoalCount(GroupEntity group, TeamEntity team);
@@ -40,4 +39,6 @@ public interface GroupInfoService extends FootballService<GroupInfoEntity, Group
     List<TeamDTO> finishStage(long tournamentId, FinishStageDTO finishStageDTO);
 
     List<AfterDrawDTO> getTablesAfterDraw(long tournamentId);
+
+    TeamDTO finishLeague(long tournamentId);
 }

@@ -3,7 +3,9 @@ package com.example.livescore.service.group.impl;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.PlayOffEnum;
 import com.example.livescore.models.GroupEntity;
+import com.example.livescore.models.GroupInfoEntity;
 import com.example.livescore.models.TournamentEntity;
+import com.example.livescore.repository.GroupInfoRepository;
 import com.example.livescore.repository.GroupRepository;
 import com.example.livescore.service.group.GroupService;
 import com.example.livescore.web.groups.GroupDTO;
@@ -13,17 +15,20 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.example.livescore.enums.PlayOffEnum.*;
+import static com.example.livescore.enums.StatusEnum.IN_PROGRESS;
 
 @Service
 public class DefaultGroupService
         extends AbstractFootballService<GroupEntity, GroupDTO, SaveGroupDTO, Long, GroupRepository>
         implements GroupService {
 
-    public DefaultGroupService(GroupRepository repository) {
+    private final GroupInfoRepository groupInfoRepository;
+
+    public DefaultGroupService(GroupRepository repository, GroupInfoRepository groupInfoRepository) {
         super(repository);
+        this.groupInfoRepository = groupInfoRepository;
     }
 
     @Override
@@ -119,19 +124,70 @@ public class DefaultGroupService
     public List<GroupDTO> findGroupTabsByTournament(long tournamentId) {
         List<GroupEntity> allByTournamentId = repository.findAllByTournamentId(tournamentId);
         boolean[] isGroupStageCreated = {false};
+        boolean was = false;
 
-        return allByTournamentId.stream()
-                .flatMap(g -> {
-                    if (!g.isPlayoff() && !isGroupStageCreated[0]) {
-                        isGroupStageCreated[0] = true;
-                        return Stream.of(new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false));
-                    } else if (g.isPlayoff()) {
-                        return Stream.of(g.toDTO());
-                    } else {
-                        return Stream.empty();
-                    }
-                })
-                .toList();
+        List<GroupDTO> groupTabs = new ArrayList<>();
+        for (GroupEntity g : allByTournamentId) {
+            List<GroupInfoEntity> byGroup = groupInfoRepository.findByGroup(g.getGroupId());
+            GroupInfoEntity groupInfo = null;
+            if (!byGroup.isEmpty()) {
+                groupInfo = byGroup.get(0);
+            }
+            if (groupInfo != null && groupInfo.getStatus().equals(IN_PROGRESS.toString())) {
+                if (!g.isPlayoff() && !was) {
+                    was = true;
+                    GroupDTO tab = new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false);
+                    tab.setCurrentStage(true);
+                    groupTabs.add(tab);
+                } else if (g.isPlayoff()) {
+                    GroupDTO tab = g.toDTO();
+                    tab.setCurrentStage(true);
+                    groupTabs.add(tab);
+                }
+            } else {
+                if (!g.isPlayoff() && !was) {
+                    was = true;
+                    GroupDTO tab = new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false);
+                    groupTabs.add(tab);
+                } else if (g.isPlayoff()) {
+                    GroupDTO tab = g.toDTO();
+                    groupTabs.add(tab);
+                }
+            }
+        }
+        return groupTabs;
+
+//        return allByTournamentId.stream()
+//                .flatMap(g -> {
+//                            GroupInfoEntity groupInfo = groupInfoRepository.findByGroup(g.getGroupId()).get(0);
+//                            if (groupInfo.getStatus().equals(IN_PROGRESS.toString())) {
+//                                if (!g.isPlayoff() && !isGroupStageCreated[0]) {
+//                                    isGroupStageCreated[0] = true;
+//                                    GroupDTO group_stage = new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false);
+//                                    group_stage.setCurrentStage(true);
+//                                    return Stream.of(group_stage);
+//                                } else if (g.isPlayoff()) {
+//                                    GroupDTO t = g.toDTO();
+//                                    t.setCurrentStage(true);
+//                                    return Stream.of(t);
+//                                } else {
+//                                    return Stream.empty();
+//                                }
+//                            } else {
+//                                if (!g.isPlayoff() && !isGroupStageCreated[0]) {
+//                                    isGroupStageCreated[0] = true;
+//                                    GroupDTO group_stage = new GroupDTO(null, g.getTournament().getTournamentName(), "Group Stage", false);
+//                                    return Stream.of(group_stage);
+//                                } else if (g.isPlayoff()) {
+//                                    GroupDTO t = g.toDTO();
+//                                    return Stream.of(t);
+//                                } else {
+//                                    return Stream.empty();
+//                                }
+//                            }
+//                        }
+//                )
+//                .toList();
     }
 
     @Override

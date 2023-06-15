@@ -39,4 +39,6 @@ public interface GroupInfoRepository extends JpaRepository<GroupInfoEntity, Long
     @Query(value = "FROM GroupInfoEntity gi WHERE gi.tournament.tournamentId = ?1 AND gi.group.groupId= ?2 ORDER BY gi.points DESC")
     List<GroupInfoEntity> findAllByTournamentIdAndGroupIdOrderByWinCount(Long tournament, Long group);
 
+    @Query(value = "FROM GroupInfoEntity  gi WHERE gi.group.groupId = ?1")
+    List<GroupInfoEntity> findByGroup(Long groupId);
 }

@@ -16,4 +16,12 @@ public class GroupDTO {
     private String tournamentName;
     private String groupName;
     private boolean isPlayoff;
+    private boolean currentStage;
+
+    public GroupDTO(Long groupId, String tournamentName, String groupName, boolean isPlayoff) {
+        this.groupId = groupId;
+        this.tournamentName = tournamentName;
+        this.groupName = groupName;
+        this.isPlayoff = isPlayoff;
+    }
 }

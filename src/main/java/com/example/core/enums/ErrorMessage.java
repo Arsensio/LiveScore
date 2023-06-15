@@ -7,7 +7,8 @@ public enum ErrorMessage {
     UNSUPPORTED_METHOD_EXCEPTION("Method %s in %s class is not implemented"),
     EVENT_RED_CARD_EXCEPTION("Event RED_CARD already exists for playerId: %s"),
     EVENT_SECOND_YELLOW_CARD_EXCEPTION("Event SECOND_YELLOW_CARD already exists for playerId: %s"),
-    HAS_RED_CARD_EXCEPTION("Player with id: %s has a red card");
+    HAS_RED_CARD_EXCEPTION("Player with id: %s has a red card"),
+    INVALID_TOURNAMENT_TYPE_EXCEPTION("Invalid tournament type with id: %s");
 
     private String message;
 
