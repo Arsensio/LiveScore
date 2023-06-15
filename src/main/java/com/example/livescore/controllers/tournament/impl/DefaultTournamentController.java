@@ -33,6 +33,12 @@ public class DefaultTournamentController
     }
 
     @Override
+    @GetMapping("/user/no_finished")
+    public ResponseEntity<List<TournamentDTO>> findAllNotFinishedByUserId(@PathParam("userId") long userId) {
+        return new ResponseEntity<>(service.findAllNotFinishedByUserId(userId), OK);
+    }
+
+    @Override
     @GetMapping("/user/cup")
     public ResponseEntity<List<TournamentDTO>> findAllCupTournamentByUser(@PathParam("userId") long userId) {
         return new ResponseEntity<>(service.findAllCupTournamentByUser(userId), OK);

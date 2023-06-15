@@ -16,4 +16,5 @@ public class TournamentDTO {
     private String tournamentLogo;
     private String tournamentType;
     private String tournamentLocation;
+    private String tournamentStatus;
 }

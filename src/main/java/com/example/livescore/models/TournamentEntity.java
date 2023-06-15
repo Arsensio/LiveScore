@@ -53,7 +53,8 @@ public class TournamentEntity extends AbstractEntity<TournamentDTO> {
                 this.tournamentName,
                 this.tournamentLogo,
                 this.tournamentType,
-                this.tournamentLocation
+                this.tournamentLocation,
+                this.tournamentStatus
         );
     }
 

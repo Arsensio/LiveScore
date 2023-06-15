@@ -98,18 +98,32 @@ public class DefaultTournamentService
 
     @Override
     public List<TournamentDTO> searchByName(String name) {
-        return repository.searchByName(name).stream().map(TournamentEntity::toDTO).toList();
+        return repository.searchByName(name)
+                .stream()
+                .map(TournamentEntity::toDTO)
+                .toList();
     }
 
     @Override
     public List<TournamentDTO> findAllCupTournamentByUser(long userId) {
-        return repository.findAllCupByUserId(userId).stream().map(TournamentEntity::toDTO).toList();
+        return repository.findAllCupByUserId(userId)
+                .stream()
+                .map(TournamentEntity::toDTO)
+                .toList();
     }
 
     @Override
     public TournamentDTO finishTournament(TournamentEntity tournament) {
         tournament.setTournamentStatus(FINISHED.toString());
         return repository.saveAndFlush(tournament).toDTO();
+    }
+
+    @Override
+    public List<TournamentDTO> findAllNotFinishedByUserId(long userId) {
+        return repository.findAllNotFinishedByUserId(userId)
+                .stream()
+                .map(TournamentEntity::toDTO)
+                .toList();
     }
 
     private TournamentEntity saveEntity(SaveTournamentDTO dto, String token) {
