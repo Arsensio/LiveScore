@@ -74,7 +74,7 @@ public class DefaultGameService
         List<GameEntity> allGameByDate = repository.findAllByGameDate(date1, date2, tournaments);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
-        return findGameByGroup(allGroups, allGameByDate);
+        return mapToListNewGameDto(allGroups, allGameByDate);
     }
 
 
@@ -83,7 +83,7 @@ public class DefaultGameService
         List<GameEntity> allLiveGame = repository.findAllLiveGame();
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
-        return findGameByGroup(allGroups, allLiveGame);
+        return mapToListNewGameDto(allGroups, allLiveGame);
 
     }
 
@@ -154,7 +154,7 @@ public class DefaultGameService
         List<GameEntity> allGameByDate = repository.findAllByGameDateAndUserId(date1, date2, userId);
         List<GroupEntity> allGroups = groupService.findAllEntity();
 
-        return findGameByGroup(allGroups, allGameByDate);
+        return mapToListNewGameDto(allGroups, allGameByDate);
     }
 
     @Override
@@ -226,7 +226,7 @@ public class DefaultGameService
 
     }
 
-    private List<NewGameDTO> findGameByGroup(List<GroupEntity> allGroups, List<GameEntity> allGameByDate) {
+    private List<NewGameDTO> mapToListNewGameDto(List<GroupEntity> allGroups, List<GameEntity> allGameByDate) {
         return allGroups.stream()
                 .map(group -> {
                     NewGameDTO newGame = getNewGameDTOByGroup(group);
@@ -248,12 +248,17 @@ public class DefaultGameService
     }
 
     private static NewGameDTO getNewGameDTOByGroup(GroupEntity group) {
+        TournamentEntity tournament = group.getTournament();
+
         NewGameDTO newGame = new NewGameDTO();
-        newGame.setTournamentName(group.getTournament().getTournamentName());
-        newGame.setTournamentLogo(group.getTournament().getTournamentLogo());
+        newGame.setTournamentName(tournament.getTournamentName());
+        newGame.setTournamentLogo(tournament.getTournamentLogo());
         newGame.setGroupName(group.getGroupName());
         newGame.setGroupId(group.getGroupId());
-        newGame.setTournamentId(group.getTournament().getTournamentId());
+        newGame.setTournamentId(tournament.getTournamentId());
+        newGame.setTournamentLocation(tournament.getTournamentLocation());
+        newGame.setTournamentStatus(tournament.getTournamentStatus());
+        newGame.setTournamentType(tournament.getTournamentType());
         return newGame;
     }
 
