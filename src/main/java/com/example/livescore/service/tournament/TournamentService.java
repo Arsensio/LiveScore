@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface TournamentService extends FootballService<TournamentEntity,TournamentDTO, SaveTournamentDTO, Long> {
 
-    List<TournamentDTO> findAllByUserId(long userId);
+    List<TournamentDTO> findAllByUserId(String token);
 
     List<TournamentEntity> findAllEntity();
 
@@ -22,9 +22,9 @@ public interface TournamentService extends FootballService<TournamentEntity,Tour
 
     List<TournamentDTO> searchByName(String name);
 
-    List<TournamentDTO> findAllCupTournamentByUser(long userId);
+    List<TournamentDTO> findAllCupTournamentByUser(String token);
 
     TournamentDTO finishTournament(TournamentEntity tournament);
 
-    List<TournamentDTO> findAllNotFinishedByUserId(long userId);
+    List<TournamentDTO> findAllNotFinishedByUserId(String token);
 }

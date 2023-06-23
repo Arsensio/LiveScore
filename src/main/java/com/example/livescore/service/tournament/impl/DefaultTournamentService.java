@@ -51,8 +51,8 @@ public class DefaultTournamentService
     }
 
     @Override
-    public List<TournamentDTO> findAllByUserId(long userId) {
-        return repository.findAllTournamentByUserId(userId)
+    public List<TournamentDTO> findAllByUserId(String token) {
+        return repository.findAllTournamentByUserId(getUserIdByToken(token))
                 .stream()
                 .map(TournamentEntity::toDTO)
                 .toList();
@@ -105,8 +105,8 @@ public class DefaultTournamentService
     }
 
     @Override
-    public List<TournamentDTO> findAllCupTournamentByUser(long userId) {
-        return repository.findAllCupByUserId(userId)
+    public List<TournamentDTO> findAllCupTournamentByUser(String token) {
+        return repository.findAllCupByUserId(getUserIdByToken(token))
                 .stream()
                 .map(TournamentEntity::toDTO)
                 .toList();
@@ -119,8 +119,8 @@ public class DefaultTournamentService
     }
 
     @Override
-    public List<TournamentDTO> findAllNotFinishedByUserId(long userId) {
-        return repository.findAllNotFinishedByUserId(userId)
+    public List<TournamentDTO> findAllNotFinishedByUserId(String token) {
+        return repository.findAllNotFinishedByUserId(getUserIdByToken(token))
                 .stream()
                 .map(TournamentEntity::toDTO)
                 .toList();
@@ -141,5 +141,9 @@ public class DefaultTournamentService
                 IN_PROGRESS.toString(),
                 userRepository.findUserEntitiesByUserId(jwtService.extractUserId(token))
         );
+    }
+
+    private Long getUserIdByToken(String token) {
+        return jwtService.extractUserId(token);
     }
 }
