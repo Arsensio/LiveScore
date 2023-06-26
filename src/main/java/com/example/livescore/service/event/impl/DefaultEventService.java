@@ -1,6 +1,7 @@
 package com.example.livescore.service.event.impl;
 
 import com.example.core.exception.exceptions.EventException;
+import com.example.core.exception.exceptions.ResourceNotFoundException;
 import com.example.core.service.AbstractFootballService;
 import com.example.livescore.enums.EventEnum;
 import com.example.livescore.models.*;
@@ -56,7 +57,7 @@ public class DefaultEventService
         List<EventInfoEntity> eventInfos = new ArrayList<>();
 
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
-        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        TournamentEntity tournament = getTournamentByProtocol(protocol);
         PlayerEntity goalPlayer = playerService.findEntityById(dto.getPlayerId());
 
         checkForRedCard(protocol, goalPlayer);
@@ -86,7 +87,7 @@ public class DefaultEventService
         EventInfoEntity goalInfo = event.getEventInfoByEnum(GOAL);
 
         ProtocolEntity protocol = event.getProtocol();
-        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        TournamentEntity tournament = getTournamentByProtocol(protocol);
 
         //rollback statistics and delete eventInfo
         rollBackPlayerStatistics(tournament, goalInfo.getPlayer(), EventEnum.valueOf(goalInfo.getEventName()), protocol);
@@ -126,7 +127,7 @@ public class DefaultEventService
         EventEnum eventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
 
         ProtocolEntity protocol = protocolService.findEntityById(saveEventDTO.getProtocolId());
-        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        TournamentEntity tournament = getTournamentByProtocol(protocol);
         PlayerEntity player = playerService.findEntityById(saveEventDTO.getPlayerId());
 
         checkForRedCard(protocol, player);
@@ -141,27 +142,35 @@ public class DefaultEventService
     }
 
     @Override
+    @Transactional
     public EventDTO updatePenalty(Long id, SaveEventDTO saveEventDTO) {
         EventEntity event = this.findEntityById(id);
-        EventEnum eventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
-        EventInfoEntity goalInfo = event.getEventInfoByEnum(eventEnum);
+        EventEnum oldEventEnum = getOldEventEnumByEvent(event);
+        EventEnum newEventEnum = EventEnum.getEventById(saveEventDTO.getEventEnumId());
+        EventInfoEntity oldEventInfo = event.getEventInfoByEnum(oldEventEnum);
 
         ProtocolEntity protocol = event.getProtocol();
-        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        TournamentEntity tournament = getTournamentByProtocol(protocol);
 
         //rollback statistics and delete eventInfo
-        rollBackPlayerStatistics(tournament, goalInfo.getPlayer(), EventEnum.valueOf(goalInfo.getEventName()), protocol);
-        eventInfoService.delete(goalInfo.getId());
+        rollBackPlayerStatistics(tournament, oldEventInfo.getPlayer(), oldEventEnum, protocol);
+        eventInfoService.delete(oldEventInfo.getId());
 
         PlayerEntity newGoalAuthor = playerService.findEntityById(saveEventDTO.getPlayerId());
-        EventInfoEntity newEventInfo = newEventInfo(event, newGoalAuthor, eventEnum);
+        EventInfoEntity newEventInfo = newEventInfo(event, newGoalAuthor, newEventEnum);
         eventInfoService.saveEventInfo(newEventInfo);
         event.setMinute(saveEventDTO.getMinute());
 
-        increasePlayerStatistic(tournament, newGoalAuthor, eventEnum, protocol);
+        increasePlayerStatistic(tournament, newGoalAuthor, newEventEnum, protocol);
 
-        EventDTO returnDto = repository.saveAndFlush(getEntity(event)).toDTO();
-        return returnDto;
+        return repository.saveAndFlush(getEntity(event)).toDTO();
+    }
+
+    private TournamentEntity getTournamentByProtocol(ProtocolEntity protocol) {
+        return protocol
+                .getGame()
+                .getGroup()
+                .getTournament();
     }
 
     @Override
@@ -171,7 +180,7 @@ public class DefaultEventService
 
         ProtocolEntity protocol = protocolService.findEntityById(dto.getProtocolId());
         PlayerEntity player = playerService.findEntityById(dto.getPlayerId());
-        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        TournamentEntity tournament = getTournamentByProtocol(protocol);
 
         List<EventInfoEntity> events = eventInfoService.findAllEventByPlayerAndProtocol(player.getPlayerId(), protocol.getProtocolId());
 
@@ -211,7 +220,7 @@ public class DefaultEventService
     public EventDTO update(Long id, SaveEventDTO dto) {
         EventEntity event = this.findEntityById(id);
         ProtocolEntity protocol = event.getProtocol();
-        TournamentEntity tournament = protocol.getGame().getGroup().getTournament();
+        TournamentEntity tournament = getTournamentByProtocol(protocol);
         EventInfoEntity yellowCard = event.getEventInfoByEnum(YELLOW_CARD);
         EventInfoEntity redCard = event.getEventInfoByEnum(RED_CARD);
 
@@ -388,5 +397,14 @@ public class DefaultEventService
         if (eventRedCard != null || secondYellowCard != null) {
             throw EventException.build(HAS_RED_CARD_EXCEPTION, goalPlayer.getPlayerId());
         }
+    }
+
+    private EventEnum getOldEventEnumByEvent(EventEntity event) {
+        List<EventInfoEntity> oldPenaltyEventInfo = event.getEventInfo();
+        if (!oldPenaltyEventInfo.isEmpty()) {
+            String oldEventName = oldPenaltyEventInfo.get(0).getEventName();
+            return EventEnum.valueOf(oldEventName);
+        }
+        throw ResourceNotFoundException.build(event.getEventId(), "EventInfo");
     }
 }
