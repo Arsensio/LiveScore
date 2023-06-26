@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SaveCupTournamentDTO extends SaveTournamentDTO {
 
-    private boolean isPlayOf;
+    private String isPlayOf;
 }

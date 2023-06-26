@@ -88,7 +88,7 @@ public class DefaultTournamentService
 
         TournamentEntity savedTournament = repository.save(getDefaultTournamentEntity(dto,token));
 
-        if (dto.isPlayOf()) {
+        if (dto.getIsPlayOf().equals("TRUE")) {
             groupService.createPlayOfGroupsByTournament(savedTournament, teamsNum);
         } else {
             groupService.createGroupsByTournament(savedTournament, teamsNum);
