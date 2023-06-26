@@ -162,6 +162,7 @@ public class DefaultEventService
         event.setMinute(saveEventDTO.getMinute());
 
         increasePlayerStatistic(tournament, newGoalAuthor, newEventEnum, protocol);
+        event.setGameScore(protocol.getTeam1Score() + ":" + protocol.getTeam2Score());
 
         return repository.saveAndFlush(getEntity(event)).toDTO();
     }
@@ -317,7 +318,7 @@ public class DefaultEventService
         } else if (eventName == SCORE_PENALTY) {
             rollbackGoalCount(tournament, player, protocol, foundPlayerStat);
         }
-
+        protocolService.saveAndFlush(protocol);
         playerStatisticsService.saveAndFlush(foundPlayerStat);
     }
 
