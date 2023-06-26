@@ -110,6 +110,7 @@ public class DefaultGameService
     @Override
     public GameDTO endMatch(Long id) {
         GameEntity gameEntity = findEntityById(id);
+
         if (gameEntity.getGameState() == ENDED) {
             return gameEntity.toDTO();
         }
@@ -137,7 +138,7 @@ public class DefaultGameService
         groupInfoService.saveAndFlash(team2GroupInfo);
 
         teamStatisticsService.save(teamStatistics1);
-        teamStatisticsService.save(teamStatistics1);
+        teamStatisticsService.save(teamStatistics2);
 
         gameEntity.setGameState(ENDED);
         repository.save(gameEntity);
@@ -214,7 +215,7 @@ public class DefaultGameService
             teamStatistics.setWinCount(teamStatistics.getWinCount() + 1);
             teamStatistics.setPoints(teamStatistics.getPoints() + 3);
         } else if (foundTeam == rivalTeam) {
-            groupInfoEntity.setWinCount(groupInfoEntity.getWinCount() + 1);
+            groupInfoEntity.setDrawCount(groupInfoEntity.getDrawCount() + 1);
             groupInfoEntity.setPoints(groupInfoEntity.getPoints() + 1);
 
             teamStatistics.setDrawCount(teamStatistics.getDrawCount() + 1);
