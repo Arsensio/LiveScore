@@ -26,19 +26,23 @@ public class SecurityConfig {
             "/swagger-resources/**"};
     private final String INFO_UPLOAD_ENDPOINT = "/info/upload/**";
     private final String NOTIFICATION_ENDPOINTS = "/notification/**";
+    private final String REGISTER_ENDPOINT = "/auth/register";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(LOGIN_ENDPOINT).permitAll()
+                .antMatchers(REGISTER_ENDPOINT).permitAll()
                 .antMatchers(SWAGGER_ENDPOINTS).permitAll()
                 .antMatchers(GET, pathArr).permitAll()
-                .antMatchers(NOTIFICATION_ENDPOINTS).permitAll()
+                .antMatchers(GET, NOTIFICATION_ENDPOINTS).permitAll()
                 .antMatchers(POST, pathArr).hasAuthority("ADMIN")
                 .antMatchers(PUT, pathArr).hasAuthority("ADMIN")
                 .antMatchers(DELETE, pathArr).hasAuthority("ADMIN")
                 .antMatchers(INFO_UPLOAD_ENDPOINT).hasAuthority("ADMIN")
+                .antMatchers(POST, NOTIFICATION_ENDPOINTS).hasAuthority("ADMIN")
+                .antMatchers(DELETE, NOTIFICATION_ENDPOINTS).hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS)

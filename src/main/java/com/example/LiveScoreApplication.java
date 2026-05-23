@@ -8,6 +8,5 @@ public class LiveScoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LiveScoreApplication.class, args);
-        System.out.println("Hello world");
     }
 }

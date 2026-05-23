@@ -51,15 +51,14 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String saveTeamsAndPlayers(String link, Long tournamentId) throws IOException, RuntimeException, GeneralSecurityException {
         googleSheetToTeamsAndPlayers(link, tournamentId);
         return SUCCESS_MESSAGE;
     }
 
     // todo: добавить: если не сохранил одного, пусть не сохраняет никого
-    public void googleSheetToTeamsAndPlayers(String link, Long tournamentId) {
-        try {
+    public void googleSheetToTeamsAndPlayers(String link, Long tournamentId) throws GeneralSecurityException, IOException {
             final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             final String teamsSpreadsheetId = getSheetId(link);
 
@@ -104,9 +103,6 @@ public class PlayerInfoParserServiceImpl implements PlayerInfoParserService {
                     savePlayers(googleSheetToPlayers(teamsSheetRow.get(3).toString(), tournamentId, teamId));
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private List<SavePlayerDTO> googleSheetToPlayers(String link, Long tournamentId, Long teamId) throws GeneralSecurityException,

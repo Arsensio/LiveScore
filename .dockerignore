@@ -1,0 +1,12 @@
+.git
+.github
+.idea
+.vscode
+target
+build
+logs
+tokens
+*.iml
+*.iws
+*.ipr
+HELP.md

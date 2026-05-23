@@ -108,6 +108,7 @@ public class DefaultGameService
     }
 
     @Override
+    @Transactional
     public GameDTO endMatch(Long id) {
         GameEntity gameEntity = findEntityById(id);
 

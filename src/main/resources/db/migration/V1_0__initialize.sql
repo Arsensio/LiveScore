@@ -60,7 +60,7 @@ create table protocols
         foreign key (team_1_id)
             references teams (team_id),
     constraint fk_team_2
-        foreign key (team_1_id)
+        foreign key (team_2_id)
             references teams (team_id),
     constraint fk_game
         foreign key (game_id)

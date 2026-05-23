@@ -3,6 +3,7 @@ package com.example.core.exception;
 import com.example.core.exception.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -45,5 +46,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = InvalidTournamentTypeException.class)
     protected ResponseEntity<Object> handleInvalidTournamentType(InvalidTournamentTypeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorBody(ex.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(value = AuthenticationException.class)
+    protected ResponseEntity<Object> handleAuthentication(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new CustomErrorBody("Invalid username or password", LocalDateTime.now()));
     }
 }
